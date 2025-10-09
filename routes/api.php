@@ -60,9 +60,9 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+Route::post('isValidLogin', [LoginController::class, 'isValidLogin']);
 Route::post('/register', [LoginController::class, 'register']);
 Route::post('/login', [LoginController::class, 'login']);
-Route::post('isValidLogin', [LoginController::class, 'isValidLogin']);
 
 // Route::middleware('auth:api')->group(function () {
 Route::get('/profile', [LoginController::class, 'profile']);
