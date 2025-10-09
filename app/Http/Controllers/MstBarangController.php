@@ -10,6 +10,21 @@ class MstBarangController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function searchBarang()
+    {
+        $keyword = $request->input('keyword'); // Get the keyword from the request
+        $barang = DB::table('mst_barang')
+                    ->where('nama', 'like', '%' . $keyword . '%') // Search by name
+                    ->get();
+    
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'true',
+            'statusCode' => 200,
+            'data' => $barang
+        ]);    
+    }
+    
     public function index()
     {
         $data = mst_barang::all();
@@ -19,7 +34,6 @@ class MstBarangController extends Controller
             'statusCode' => 200,
             'data' => $data
         ]);        
-        // return response()->json($data);
     }
 
     /**
