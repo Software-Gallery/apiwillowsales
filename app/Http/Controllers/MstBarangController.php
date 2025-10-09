@@ -13,7 +13,7 @@ class MstBarangController extends Controller
     public function index()
     {
         $data = mst_barang::all();
-        response()->json([
+        return response()->json([
             'status' => 'Success',
             'message' => 'Data successfully retrieved',
             'statusCode' => 200,
