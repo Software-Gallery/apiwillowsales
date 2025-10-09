@@ -29,7 +29,7 @@ class MstCustomerRuteController extends Controller
         // Ambil data berdasarkan id_karyawan
         $rute = mst_customer_rute::leftJoin('mst_departemen', 'mst_customer_rute.id_departemen', '=', 'mst_departemen.id_departemen')
                               ->leftJoin('mst_customer', 'mst_customer_rute.id_customer', '=', 'mst_customer.id_customer')
-                              ->select('mst_customer_rute.*', 'mst_departemen.kode_departemen', 'mst_customer.nama as nama_customer')
+                              ->select('mst_customer_rute.*', 'mst_departemen.keterangan as nama_departemen', 'mst_customer.nama as nama_customer')
                               ->where('id_karyawan', $request->id);
     
         // Filter berdasarkan hari (misal, Day1 untuk Senin, Day2 untuk Selasa, dst.)
