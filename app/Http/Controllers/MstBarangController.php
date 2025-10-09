@@ -10,7 +10,7 @@ class MstBarangController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function searchBarang()
+    public function searchBarang(Request $request)
     {
         $keyword = $request->input('keyword'); // Get the keyword from the request
         $barang = DB::table('mst_barang')
