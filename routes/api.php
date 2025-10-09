@@ -27,6 +27,8 @@ Route::apiResource('kelurahan', MstKelurahanController::class);
 Route::apiResource('karyawan', MstKaryawanController::class);
 Route::apiResource('satuan', MstSatuanController::class);
 
+Route::get('searchBarang', [ApiController::class, 'searchBarang']);
+
 Route::get('sales-order-header', [TrnSalesOrderHeaderController::class, 'index']);
 Route::post('sales-order-header', [TrnSalesOrderHeaderController::class, 'store']);
 
