@@ -23,9 +23,9 @@ return new class extends Migration
             $table->unsignedInteger('konversi_tengah')->nullable();
             $table->text('gambar')->nullable();
             $table->boolean('is_aktif')->nullable()->default(true);
+            $table->double('harga', 8, 2);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrentOnUpdate()->useCurrent();
-
             $table->unique(['kode_barang', 'id_departemen'], 'uk_barang_kode');
         });
     }
