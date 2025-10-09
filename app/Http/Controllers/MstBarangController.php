@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\mst_barang;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MstBarangController extends Controller
 {
