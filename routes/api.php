@@ -62,7 +62,7 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/register', [LoginController::class, 'register']);
 Route::post('/login', [LoginController::class, 'login']);
-Route::post('/isValidLogin', [LoginController::class, 'isValidLogin'])->middleware('api');
+Route::post('/isValidLogin', [LoginController::class, 'isValidLogin']);
 
 // Route::middleware('auth:api')->group(function () {
 Route::get('/profile', [LoginController::class, 'profile']);
