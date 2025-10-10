@@ -8,13 +8,19 @@ use Illuminate\Support\Facades\DB;
 class KeranjangController extends Controller
 {
     public function get(Request $request) {
-        $barangs_id = DB::table('keranjangs')
-            ->where('id_karyawan', $request->id)
-            ->pluck('id_barang');
+        // $barangs_id = DB::table('keranjangs')
+        //     ->where('id_karyawan', $request->id)
+        //     ->pluck('id_barang');
 
-        $barangs = DB::table('mst_barang')
-            ->whereIn('id_barang', $barangs_id)
-            ->get();
+        // $barangs = DB::table('mst_barang')
+        //     ->whereIn('id_barang', $barangs_id)
+        //     ->get();
+
+        $barangs = DB::table('keranjangs')
+            ->join('mst_barang', 'keranjangs.id_barang', '=', 'mst_barang.id_barang')
+            ->where('keranjangs.id_karyawan', $request->id)
+            ->select('mst_barang.*', 'keranjangs.qty')
+            ->get();        
         
         return response()->json([
             'status' => 'Success',
