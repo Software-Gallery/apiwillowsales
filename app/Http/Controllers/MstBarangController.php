@@ -15,7 +15,7 @@ class MstBarangController extends Controller
     {
         $keyword = $request->input('keyword'); // Get the keyword from the request
         $barang = DB::table('mst_barang')
-                    ->where('nama', 'like', '%' . $keyword . '%') // Search by name
+                    ->where('nama_barang', 'like', '%' . $keyword . '%') // Search by name
                     ->get();
     
         return response()->json([
