@@ -48,7 +48,8 @@ class KeranjangController extends Controller
         // Simpan data ke tabel favorites
         DB::table('keranjang')->insert([
             'id_karyawan' => $request->id_karyawan,
-            'id_karyawan' => $request->id_karyawan,
+            'id_barang' => $request->id_barang,
+            'qty' => $request->qty,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
