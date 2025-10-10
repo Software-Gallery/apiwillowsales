@@ -59,8 +59,8 @@ Route::put('customer-rute/update', [MstCustomerRuteController::class, 'update'])
 Route::delete('customer-rute/delete', [MstCustomerRuteController::class, 'destroy']);
 
 Route::get('/getKeranjang', [KeranjangController::class, 'get']);
-Route::get('/addKeranjang', [KeranjangController::class, 'add']);
-Route::get('/removeKeranjang', [KeranjangController::class, 'remove']);
+Route::post('/addKeranjang', [KeranjangController::class, 'add']);
+Route::delete('/removeKeranjang', [KeranjangController::class, 'remove']);
 
 
 Route::get('/user', function (Request $request) {
