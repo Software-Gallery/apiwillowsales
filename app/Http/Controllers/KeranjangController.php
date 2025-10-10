@@ -27,8 +27,8 @@ class KeranjangController extends Controller
     public function add(Request $request) {
         // Validasi request
         $request->validate([
-            'id_karyawan' => 'required|integer|exists:mst_karyawan,id_karyawan', 
-            'id_barang' => 'required|integer|exists:mst_barang,id_barang',
+            'id_karyawan' => 'required|integer', 
+            'id_barang' => 'required|integer',
             'qty' => 'required'
         ]);
     
@@ -64,8 +64,8 @@ class KeranjangController extends Controller
     public function remove(Request $request) {
         // Validasi request
         $request->validate([
-            'id_karyawan' => 'required|integer|exists:mst_karyawan,id_karyawan', 
-            'id_barang' => 'required|integer|exists:mst_barang,id_barang',
+            'id_karyawan' => 'required|integer', 
+            'id_barang' => 'required|integer',
             'qty' => 'required'
         ]);
     
