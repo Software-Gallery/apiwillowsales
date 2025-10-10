@@ -30,6 +30,10 @@ Route::apiResource('satuan', MstSatuanController::class);
 
 Route::get('searchBarang', [MstBarangController::class, 'searchBarang']);
 
+Route::get('getKeranjang', [KeranjangController::class, 'get']);
+Route::post('addKeranjang', [KeranjangController::class, 'add']);
+Route::delete('removeKeranjang', [KeranjangController::class, 'remove']);
+
 Route::get('sales-order-header', [TrnSalesOrderHeaderController::class, 'index']);
 Route::post('sales-order-header', [TrnSalesOrderHeaderController::class, 'store']);
 
