@@ -33,7 +33,7 @@ class KeranjangController extends Controller
         ]);
     
         // Cek apakah barang sudah ada di favorit member tersebut
-        $existingFavorite = DB::table('keranjang')
+        $existingFavorite = DB::table('keranjangs')
             ->where('id_karyawan', $request->id_karyawan)
             ->where('id_barang', $request->id_barang)
             ->first();
@@ -46,7 +46,7 @@ class KeranjangController extends Controller
         }
     
         // Simpan data ke tabel favorites
-        DB::table('keranjang')->insert([
+        DB::table('keranjangs')->insert([
             'id_karyawan' => $request->id_karyawan,
             'id_barang' => $request->id_barang,
             'qty' => $request->qty,
@@ -70,7 +70,7 @@ class KeranjangController extends Controller
         ]);
     
         // Cek apakah barang ada di favorit member tersebut
-        $existingFavorite = DB::table('keranjang')
+        $existingFavorite = DB::table('keranjangs')
             ->where('id_karyawan', $request->id_karyawan)
             ->where('id_barang', $request->id_barang)
             ->first();
@@ -84,7 +84,7 @@ class KeranjangController extends Controller
         }
     
         // Hapus data dari tabel favorites
-        DB::table('keranjang')
+        DB::table('keranjangs')
             ->where('id_karyawan', $request->id_karyawan)
             ->where('id_barang', $request->id_barang)
             ->delete();
