@@ -15,6 +15,7 @@ use App\Http\Controllers\MstSatuanController;
 use App\Http\Controllers\TrnSalesOrderHeaderController;
 use App\Http\Controllers\TrnSalesOrderDetailController;
 use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\KeranjangController;
 
 // Resource routes
 Route::apiResource('barang', MstBarangController::class);
@@ -56,6 +57,10 @@ Route::post('customer-rute', [MstCustomerRuteController::class, 'store']);
 Route::get('customer-rute/show', [MstCustomerRuteController::class, 'show']);
 Route::put('customer-rute/update', [MstCustomerRuteController::class, 'update']);
 Route::delete('customer-rute/delete', [MstCustomerRuteController::class, 'destroy']);
+
+Route::get('/getKeranjang', [KeranjangController::class, 'get']);
+Route::get('/addKeranjang', [KeranjangController::class, 'add']);
+Route::get('/removeKeranjang', [KeranjangController::class, 'remove']);
 
 
 Route::get('/user', function (Request $request) {
