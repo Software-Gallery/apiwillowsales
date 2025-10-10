@@ -58,11 +58,6 @@ Route::get('customer-rute/show', [MstCustomerRuteController::class, 'show']);
 Route::put('customer-rute/update', [MstCustomerRuteController::class, 'update']);
 Route::delete('customer-rute/delete', [MstCustomerRuteController::class, 'destroy']);
 
-Route::get('/getKeranjang', [KeranjangController::class, 'get']);
-Route::post('/addKeranjang', [KeranjangController::class, 'add']);
-Route::delete('/removeKeranjang', [KeranjangController::class, 'remove']);
-
-
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
