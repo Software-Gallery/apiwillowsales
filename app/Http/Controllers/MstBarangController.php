@@ -34,6 +34,10 @@ class MstBarangController extends Controller
             ->select('mst_barang.*', DB::raw('list_stok.qty_kecil as qty'))
             ->get();        
         // $data = mst_barang::all();
+        $data->transform(function ($item) {
+            $item->qty = (float) $item->qty;
+            return $item;
+        });        
         return response()->json([
             'status' => 'Success',
             'message' => 'Data successfully retrieved',
