@@ -31,7 +31,7 @@ class MstBarangController extends Controller
         $data = DB::table('mst_barang')
             ->leftjoin('list_stok', 'mst_barang.id_barang', '=', 'list_stok.id_barang')
             // ->where('listStok', $request->id)
-            ->select('mst_barang.*', 'list_stok.qty_kecil')
+            ->select('mst_barang.*', 'list_stok.qty_kecil as qty')
             ->get();        
         // $data = mst_barang::all();
         return response()->json([
