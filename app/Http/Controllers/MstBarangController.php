@@ -13,9 +13,9 @@ class MstBarangController extends Controller
      */
     public function searchBarang(Request $request)
     {
-        $keyword = $request->input('keyword'); // Get the keyword from the request
+        $keyword = $request->input('keyword');
         $barang = DB::table('mst_barang')
-                    ->where('nama_barang', 'like', '%' . $keyword . '%') // Search by name
+                    ->where('nama_barang', 'like', '%' . $keyword . '%')
                     ->get();
     
         return response()->json([
@@ -31,7 +31,7 @@ class MstBarangController extends Controller
         $data = DB::table('mst_barang')
             ->leftjoin('list_stok', 'mst_barang.id_barang', '=', 'list_stok.id_barang')
             // ->where('listStok', $request->id)
-            ->select('mst_barang.*', 'list_stok.qty_kecil as qty')
+            ->select('mst_barang.*', 'CAST(list_stok.qty_kecil AS SIGNED INTEGER) as qty')
             ->get();        
         // $data = mst_barang::all();
         return response()->json([
