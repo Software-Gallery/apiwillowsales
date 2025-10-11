@@ -20,7 +20,12 @@ class KeranjangController extends Controller
             ->join('mst_barang', 'keranjangs.id_barang', '=', 'mst_barang.id_barang')
             ->where('keranjangs.id_karyawan', $request->id)
             ->select('mst_barang.*', 'keranjangs.qty')
-            ->get();        
+            ->get();
+
+        $barangs->transform(function ($item) {
+            $item->qty = (float) $item->qty;
+            return $item;
+        });        
         
         return response()->json([
             'status' => 'Success',
