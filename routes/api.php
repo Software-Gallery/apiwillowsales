@@ -33,7 +33,6 @@ Route::apiResource('satuan', MstSatuanController::class);
 Route::get('searchBarang', [MstBarangController::class, 'searchBarang']);
 Route::get('absengetkaryawan', [TrnAbsenController::class, 'getByIdKaryawan']);
 Route::get('checkAbsen', [TrnAbsenController::class, 'checkAbsen']);
-Route::get('insertAbsen', [TrnAbsenController::class, 'store']);
 
 Route::get('getKeranjang', [KeranjangController::class, 'get']);
 Route::post('addKeranjang', [KeranjangController::class, 'add']);
