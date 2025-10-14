@@ -28,7 +28,7 @@ Route::apiResource('kecamatan', MstKecamatanController::class);
 Route::apiResource('kelurahan', MstKelurahanController::class);
 Route::apiResource('karyawan', MstKaryawanController::class);
 Route::apiResource('satuan', MstSatuanController::class);
-Route::apiResource('absen', TrnAbsenController::class);
+//Route::apiResource('absen', TrnAbsenController::class);
 
 Route::get('searchBarang', [MstBarangController::class, 'searchBarang']);
 Route::get('absengetkaryawan', [TrnAbsenController::class, 'getByIdKaryawan']);
