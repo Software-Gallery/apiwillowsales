@@ -17,7 +17,7 @@ class TrnAbsenController extends Controller
         
         $isAbsen = $data->first()->jam_masuk == null;
         if ($isAbsen) {
-            $data = []
+            $data = [];
         }
     
         return response()->json([
