@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\TrnAbsen;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\trn_absen;
 
 class TrnAbsenController extends Controller
 {
@@ -69,7 +70,7 @@ public function store(Request $request)
     ]);
 
     // Simpan data absensi ke database
-    $absen = TrnAbsen::create($validated);
+    $absen = trn_absen::create($validated);
 
     // Kembalikan response JSON setelah berhasil menyimpan data
     return response()->json([
