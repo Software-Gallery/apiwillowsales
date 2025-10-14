@@ -16,10 +16,10 @@ return new class extends Migration
             $table->unsignedInteger('id_karyawan');
             $table->unsignedInteger('id_customer');
             $table->unsignedInteger('id_departemen');
-            $table->string('kode_sales_order'); 
+            $table->string('kode_sales_order')->nullable(); 
             $table->date('tgl'); 
             $table->time('jam_masuk'); 
-            $table->time('jam_keluar'); 
+            $table->time('jam_keluar')->nullable(); 
             $table->double('latitude'); 
             $table->double('longitude'); 
             $table->string('keterangan')->nullable(); 
