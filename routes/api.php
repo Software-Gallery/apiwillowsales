@@ -16,6 +16,7 @@ use App\Http\Controllers\TrnSalesOrderHeaderController;
 use App\Http\Controllers\TrnSalesOrderDetailController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\KeranjangController;
+use App\Http\Controllers\TrnAbsenController;
 
 // Resource routes
 Route::apiResource('barang', MstBarangController::class);
@@ -27,6 +28,7 @@ Route::apiResource('kecamatan', MstKecamatanController::class);
 Route::apiResource('kelurahan', MstKelurahanController::class);
 Route::apiResource('karyawan', MstKaryawanController::class);
 Route::apiResource('satuan', MstSatuanController::class);
+Route::apiResource('absen', TrnAbsenController::class);
 
 Route::get('searchBarang', [MstBarangController::class, 'searchBarang']);
 
