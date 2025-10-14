@@ -53,27 +53,31 @@ class TrnAbsenController extends Controller
         //
     }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'id_karyawan' => 'required|integer',
-            'id_customer' => 'required|integer',
-            'id_departemen' => 'required|integer',
-            'tgl' => 'required|date',
-            'jam_masuk' => 'required|date_format:H:i',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-            'keterangan' => 'nullable|string|max:255',
-            'alamat' => 'nullable|string|max:255',
-        ]);
+public function store(Request $request)
+{
+    // Validasi data input
+    $validated = $request->validate([
+        'id_karyawan' => 'required|integer',
+        'id_customer' => 'required|integer',
+        'id_departemen' => 'required|integer',
+        'tgl' => 'required|date',
+        'jam_masuk' => 'required|date_format:H:i',
+        'latitude' => 'required|numeric',
+        'longitude' => 'required|numeric',
+        'keterangan' => 'nullable|string|max:255',
+        'alamat' => 'nullable|string|max:255',
+    ]);
 
-        $absen = TrnAbsen::create($validated);
+    // Simpan data absensi ke database
+    $absen = TrnAbsen::create($validated);
 
-        return response()->json([
-            'message' => 'Absen berhasil disimpan!',
-            'data' => 'Test'
-        ], 201);
-    }
+    // Kembalikan response JSON setelah berhasil menyimpan data
+    return response()->json([
+        'message' => 'Absen berhasil disimpan!',
+        'data' => $absen, // Menampilkan data yang baru disimpan
+    ], 201); // HTTP status code 201 untuk "Created"
+}
+
 
     public function show(TrnAbsen $trnAbsen)
     {
