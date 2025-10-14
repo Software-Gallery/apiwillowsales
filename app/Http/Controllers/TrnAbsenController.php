@@ -14,8 +14,23 @@ class TrnAbsenController extends Controller
                     ->orderBy('tgl', 'desc')
                     ->orderBy('jam_masuk', 'desc')
                     ->get();
+    
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'true',
+            'statusCode' => 200,
+            'data' => $data
+        ]);            
+    }
+
+    public function checkAbsen(Request $request) {
+        $data = DB::table('trn_absen')
+                    ->where('id_karyawan', $request->id)
+                    ->orderBy('tgl', 'desc')
+                    ->orderBy('jam_masuk', 'desc')
+                    ->first();
         
-        $isAbsen = $data->first()->jam_masuk == null;
+        $isAbsen = $data->jam_keluar == null;
         if ($isAbsen) {
             $data = [];
         }
@@ -25,8 +40,9 @@ class TrnAbsenController extends Controller
             'message' => $isAbsen,
             'statusCode' => 200,
             'data' => $data
-        ]);            
+        ]);     
     }
+    
     public function index()
     {
         return response()->json(TrnAbsen::all());
