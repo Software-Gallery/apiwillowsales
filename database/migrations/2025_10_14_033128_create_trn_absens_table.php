@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('trn_absen', function (Blueprint $table) {
             $table->id('id_absen'); 
-            $table->foreignId('id_karyawan')->constrained('karyawan'); 
-            $table->foreignId('id_customer')->constrained('customers'); 
+            $table->unsignedInteger('id_karyawan');
+            $table->unsignedInteger('id_customer');
             $table->string('kode_sales_order'); 
             $table->date('tgl'); 
             $table->time('jam_masuk'); 
