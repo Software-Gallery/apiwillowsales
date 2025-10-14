@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('id_absen'); 
             $table->unsignedInteger('id_karyawan');
             $table->unsignedInteger('id_customer');
+            $table->unsignedInteger('id_departemen');
             $table->string('kode_sales_order'); 
             $table->date('tgl'); 
             $table->time('jam_masuk'); 
