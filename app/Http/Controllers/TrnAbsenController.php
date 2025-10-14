@@ -16,7 +16,7 @@ class TrnAbsenController extends Controller
                     ->get();
         
         $isAbsen = $data->first()->jam_masuk == null;
-        if $isAbsen {
+        if ($isAbsen) {
             $data = []
         }
     
