@@ -14,10 +14,14 @@ class TrnAbsenController extends Controller
                     ->orderBy('tgl', 'desc')
                     ->orderBy('jam_masuk', 'desc')
                     ->get();
+        $isAbsen = $data->first()->jam_masuk == null;
+        if $isAbsen {
+            $data = []
+        }
     
         return response()->json([
             'status' => 'Success',
-            'message' => 'true',
+            'message' => $isAbsen,
             'statusCode' => 200,
             'data' => $data
         ]);            
