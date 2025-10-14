@@ -10,11 +10,11 @@ class TrnAbsenController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function index()
     {
-        //
+        return response()->json(TrnAbsen::all());
     }
-
     /**
      * Show the form for creating a new resource.
      */
