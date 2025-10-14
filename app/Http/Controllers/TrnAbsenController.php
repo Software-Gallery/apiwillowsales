@@ -46,7 +46,7 @@ class TrnAbsenController extends Controller
     
     public function index()
     {
-        return response()->json(TrnAbsen::all());
+        return response()->json(trn_absen::all());
     }
 
     public function create()
@@ -80,12 +80,12 @@ public function store(Request $request)
 }
 
 
-    public function show(TrnAbsen $trnAbsen)
+    public function show(trn_absen $trnAbsen)
     {
         //
     }
 
-    public function edit(TrnAbsen $trnAbsen)
+    public function edit(trn_absen $trnAbsen)
     {
         //
     }
@@ -95,7 +95,7 @@ public function store(Request $request)
         //
     }
 
-    public function destroy(TrnAbsen $trnAbsen)
+    public function destroy(trn_absen $trnAbsen)
     {
         //
     }
