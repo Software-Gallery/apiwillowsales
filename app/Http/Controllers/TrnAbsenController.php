@@ -10,7 +10,7 @@ class TrnAbsenController extends Controller
 {
     public function getByIdKaryawan(Request $request) {
         $data = DB::table('trn_absen')
-                    ->where('id_karyawan', 'like', '%' . $request->id . '%')
+                    ->where('id_karyawan', $request->id)
                     ->get();
     
         return response()->json([
