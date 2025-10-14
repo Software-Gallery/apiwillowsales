@@ -33,7 +33,6 @@ Route::apiResource('satuan', MstSatuanController::class);
 Route::get('searchBarang', [MstBarangController::class, 'searchBarang']);
 Route::get('absengetkaryawan', [TrnAbsenController::class, 'getByIdKaryawan']);
 Route::get('checkAbsen', [TrnAbsenController::class, 'checkAbsen']);
-Route::get('insertabsen', [TrnAbsenController::class, 'store']);
 
 Route::get('getKeranjang', [KeranjangController::class, 'get']);
 Route::post('addKeranjang', [KeranjangController::class, 'add']);
@@ -42,23 +41,16 @@ Route::delete('removeKeranjang', [KeranjangController::class, 'remove']);
 Route::get('sales-order-header', [TrnSalesOrderHeaderController::class, 'index']);
 Route::post('sales-order-header', [TrnSalesOrderHeaderController::class, 'store']);
 
-// show, update, destroy need kode_sales_order & id_barang in query or body
 Route::get('sales-order-header/show', [TrnSalesOrderHeaderController::class, 'show']);
 Route::put('sales-order-header/update', [TrnSalesOrderHeaderController::class, 'update']);
 Route::delete('sales-order-header/delete', [TrnSalesOrderHeaderController::class, 'destroy']);
 
-// For trn_sales_order_detail with composite keys, we can’t use standard apiResource
-// so we define routes manually:
-
 Route::get('sales-order-detail', [TrnSalesOrderDetailController::class, 'index']);
 Route::post('sales-order-detail', [TrnSalesOrderDetailController::class, 'store']);
 
-// show, update, destroy need kode_sales_order & id_barang in query or body
 Route::get('sales-order-detail/show', [TrnSalesOrderDetailController::class, 'show']);
 Route::put('sales-order-detail/update', [TrnSalesOrderDetailController::class, 'update']);
 Route::delete('sales-order-detail/delete', [TrnSalesOrderDetailController::class, 'destroy']);
-
-// For mst_customer_rute with composite keys, custom routes:
 
 Route::get('customer-rute', [MstCustomerRuteController::class, 'index']);
 Route::get('customer-rute-by-id', [MstCustomerRuteController::class, 'getById']);
@@ -66,6 +58,13 @@ Route::post('customer-rute', [MstCustomerRuteController::class, 'store']);
 Route::get('customer-rute/show', [MstCustomerRuteController::class, 'show']);
 Route::put('customer-rute/update', [MstCustomerRuteController::class, 'update']);
 Route::delete('customer-rute/delete', [MstCustomerRuteController::class, 'destroy']);
+
+
+Route::get('absen', [TrnAbsenController::class, 'index']);
+Route::post('absen', [TrnAbsenController::class, 'store']);
+Route::get('absen/show', [TrnAbsenController::class, 'show']);
+Route::put('absen/update', [TrnAbsenController::class, 'update']);
+Route::delete('absen/delete', [TrnAbsenController::class, 'destroy']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
