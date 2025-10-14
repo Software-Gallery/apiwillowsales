@@ -31,7 +31,7 @@ class TrnAbsenController extends Controller
                     ->first();
         
         $isAbsen = $data->jam_keluar == null;
-        if ($isAbsen) {
+        if (!($isAbsen)) {
             $data = [];
         }
     
