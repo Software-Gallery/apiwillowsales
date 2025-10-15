@@ -70,5 +70,7 @@ Route::get('customer-rute/show', [MstCustomerRuteController::class, 'show']);
 Route::put('customer-rute/update', [MstCustomerRuteController::class, 'update']);
 Route::delete('customer-rute/delete', [MstCustomerRuteController::class, 'destroy']);
 
+Route::get('profile', [LoginController::class, 'profile']);
+
 // Rute searchBarang tanpa autentikasi
 Route::get('searchBarang', [MstBarangController::class, 'searchBarang']);
