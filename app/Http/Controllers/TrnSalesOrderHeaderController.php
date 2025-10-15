@@ -55,8 +55,8 @@ class TrnSalesOrderHeaderController extends Controller
         // Generate nextNomor
         $year = date('y'); 
         $month = date('m');
-        $lastSalesHeader = trn_sales_order_header::whereYear('created_at', date('Y'))
-                                       ->whereMonth('created_at', date('m'))
+        $lastSalesHeader = trn_sales_order_header::whereYear('tgl_sales_order', now()->setTimezone('Asia/Jakarta')->format('Y'))
+                                       ->whereMonth('tgl_sales_order', now()->setTimezone('Asia/Jakarta')->format('m'))
                                        ->orderByDesc('kode_sales_order')
                                        ->first();
         if ($lastSalesHeader) {
