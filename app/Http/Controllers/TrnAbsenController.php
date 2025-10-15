@@ -39,7 +39,7 @@ class TrnAbsenController extends Controller
             ->whereDate('a.tgl', '=', now()->format('Y-m-d'))
             ->select('r.*', 'a.*')
             ->get();        
-        
+        $isAbsen = true;
         // $isAbsen = $data->jam_keluar == null;
         // if (!($isAbsen)) {
         //     $data = [];
