@@ -36,6 +36,8 @@ class TrnAbsenController extends Controller
                      ->on('r.id_customer', '=', 'a.id_customer')
                      ->on('r.id_karyawan', '=', 'a.id_karyawan');
             })
+            ->leftJoin('mst_customer', 'm_customer.id_customer', '=', 'a.id_customer')
+            ->leftJoin('mst_departemen', 'm_departemen.id_departemen', '=', 'a.id_departemen')
             ->whereDate('a.tgl', '=', now()->format('Y-m-d'))
             ->select('r.*', 'a.*')
             ->get();        
