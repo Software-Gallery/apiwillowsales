@@ -9,21 +9,11 @@ use App\Models\trn_absen;
 class TrnAbsenController extends Controller
 {
     public function getByIdKaryawan(Request $request) {
-        // $data = DB::table('trn_absen')
-        //             ->where('id_karyawan', $request->id)
-        //             ->orderBy('tgl', 'desc')
-        //             ->orderBy('jam_masuk', 'desc')
-        //             ->get();
-        
-        $data = DB::table('mst_customer_rute as r')
-            ->leftJoin('trn_absen as a', function ($join) {
-                $join->on('r.id_departemen', '=', 'a.id_departemen')
-                     ->on('r.id_customer', '=', 'a.id_customer')
-                     ->on('r.id_karyawan', '=', 'a.id_karyawan');
-            })
-            ->whereDate('a.tgl', '=', now()->format('Y-m-d'))
-            ->select('r.*', 'a.*')
-            ->get();
+        $data = DB::table('trn_absen')
+                    ->where('id_karyawan', $request->id)
+                    ->orderBy('tgl', 'desc')
+                    ->orderBy('jam_masuk', 'desc')
+                    ->get();
     
         return response()->json([
             'status' => 'Success',
@@ -34,11 +24,21 @@ class TrnAbsenController extends Controller
     }
 
     public function checkAbsen(Request $request) {
-        $data = DB::table('trn_absen')
-                    ->where('id_karyawan', $request->id)
-                    ->orderBy('tgl', 'desc')
-                    ->orderBy('jam_masuk', 'desc')
-                    ->first();
+        // $data = DB::table('trn_absen')
+        //             ->where('id_karyawan', $request->id)
+        //             ->orderBy('tgl', 'desc')
+        //             ->orderBy('jam_masuk', 'desc')
+        //             ->first();
+
+        $data = DB::table('mst_customer_rute as r')
+            ->leftJoin('trn_absen as a', function ($join) {
+                $join->on('r.id_departemen', '=', 'a.id_departemen')
+                     ->on('r.id_customer', '=', 'a.id_customer')
+                     ->on('r.id_karyawan', '=', 'a.id_karyawan');
+            })
+            ->whereDate('a.tgl', '=', now()->format('Y-m-d'))
+            ->select('r.*', 'a.*')
+            ->get();        
         
         $isAbsen = $data->jam_keluar == null;
         if (!($isAbsen)) {
