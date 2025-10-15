@@ -34,17 +34,23 @@ class TrnSalesOrderHeaderController extends Controller
 
     public function store(Request $request)
     {
+        // $validated = $request->validate([
+        //     'kode_sales_order' => 'required|string|max:30|unique:trn_sales_order_header,kode_sales_order',
+        //     'tgl_sales_order' => 'nullable|date',
+        //     'id_departemen' => 'nullable|integer',
+        //     'id_customer' => 'nullable|integer',
+        //     'id_karyawan' => 'nullable|integer',
+        //     'no_ref' => 'nullable|string|max:500',
+        //     'tgl_ref' => 'nullable|date',
+        //     'keterangan' => 'nullable|string|max:200',
+        //     'total' => 'nullable|numeric',
+        // ]);
         $validated = $request->validate([
-            'kode_sales_order' => 'required|string|max:30|unique:trn_sales_order_header,kode_sales_order',
-            'tgl_sales_order' => 'nullable|date',
             'id_departemen' => 'nullable|integer',
             'id_customer' => 'nullable|integer',
             'id_karyawan' => 'nullable|integer',
-            'no_ref' => 'nullable|string|max:500',
-            'tgl_ref' => 'nullable|date',
             'keterangan' => 'nullable|string|max:200',
-            'total' => 'nullable|numeric',
-        ]);
+        ]);        
 
         $order = trn_sales_order_header::create($validated);
 
