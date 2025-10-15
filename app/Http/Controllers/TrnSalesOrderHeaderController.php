@@ -44,17 +44,39 @@ class TrnSalesOrderHeaderController extends Controller
         //     'tgl_ref' => 'nullable|date',
         //     'keterangan' => 'nullable|string|max:200',
         //     'total' => 'nullable|numeric',
-        // ]);
+        // ]);        
         $validated = $request->validate([
             'id_departemen' => 'nullable|integer',
             'id_customer' => 'nullable|integer',
             'id_karyawan' => 'nullable|integer',
             'keterangan' => 'nullable|string|max:200',
-        ]);        
+        ]);   
 
+        // Generate nextNomor
+        $year = date('y'); 
+        $month = date('m');
+        $lastSalesHeader = SalesHeader::whereYear('created_at', date('Y'))
+                                       ->whereMonth('created_at', date('m'))
+                                       ->orderByDesc('sales_number')
+                                       ->first();
+        if ($lastSalesHeader) {
+            $lastNumber = (int) substr($lastSalesHeader->sales_number, 4);
+            $nextNumber = str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
+        } else {
+            $nextNumber = '00001';
+        }                
+
+        $validated['kode_sales_order'] = $year . $month . $nextNumber;
+        $validated['tgl_sales_order'] = ;
+        
         $order = trn_sales_order_header::create($validated);
-
-        return response()->json($order, 201);
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Data successfully retrieved',
+            'statusCode' => 200,
+            'data' => $order
+        ], 201);       
+        // return response()->json($order, 201);
     }
 
     public function show($kode_sales_order)
