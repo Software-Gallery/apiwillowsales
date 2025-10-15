@@ -11,6 +11,7 @@ class trn_absen extends Model
     protected $fillable = [
         "id_karyawan",
         "id_customer",
+        "id_departemen",
         "kode_sales_order",
         "tgl",
         "jam_masuk",
