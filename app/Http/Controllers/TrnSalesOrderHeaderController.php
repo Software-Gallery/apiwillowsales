@@ -60,7 +60,7 @@ class TrnSalesOrderHeaderController extends Controller
                                        ->orderByDesc('kode_sales_order')
                                        ->first();
         if ($lastSalesHeader) {
-            $lastNumber = (int) substr($lastSalesHeader->sales_number, 4);
+            $lastNumber = (int) substr($lastSalesHeader->kode_sales_order, 4);
             $nextNumber = str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
         } else {
             $nextNumber = '00001';
