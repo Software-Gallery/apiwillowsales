@@ -10,7 +10,7 @@ class trn_sales_order_header extends Model
     protected $table = 'trn_sales_order_header';
     protected $primaryKey = 'kode_sales_order';
     protected $casts = [
-        'kode_sales_order' => 'string',
+        // 'kode_sales_order' => 'string',
         'total' => 'double',
     ];
 
