@@ -73,7 +73,7 @@ class TrnSalesOrderHeaderController extends Controller
         $order = trn_sales_order_header::create($validated);
         // dd($order);
         $neworder = trn_sales_order_header::where('kode_sales_order', $validated['kode_sales_order'])
-                                            ->get();        
+                                            ->first();        
         return response()->json([
             'status' => 'Success',
             'message' => 'Data successfully retrieved',
