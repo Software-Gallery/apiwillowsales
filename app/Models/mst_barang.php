@@ -21,5 +21,6 @@ class mst_barang extends Model
         'is_aktif',
         'created_at',
         'updated_at',
+        'harga'
     ];
 }
