@@ -39,13 +39,14 @@ class TrnAbsenController extends Controller
             ->leftJoin('mst_customer', 'mst_customer.id_customer', '=', 'a.id_customer')
             ->leftJoin('mst_departemen', 'mst_departemen.id_departemen', '=', 'a.id_departemen')
             ->whereDate('a.tgl', '=', now()->format('Y-m-d'))
+            ->orderBy('a.id_absen', 'desc')
             ->select('r.*', 'a.*', 'mst_customer.nama as nama_customer', 'mst_departemen.keterangan as nama_departemen')
-            ->get();        
-        $isAbsen = true;
-        // $isAbsen = $data->jam_keluar == null;
-        // if (!($isAbsen)) {
-        //     $data = [];
-        // }
+            ->first();        
+        // $isAbsen = true;
+        $isAbsen = $data->jam_keluar == null;
+        if (!($isAbsen)) {
+            $data = [];
+        }
     
         return response()->json([
             'status' => 'Success',
