@@ -60,7 +60,7 @@ public function store(Request $request)
         'id_customer' => 'required|integer',
         'id_departemen' => 'required|integer',
         'tgl' => 'required|date',
-        'jam_masuk' => 'required|date_format:H:i',
+        'jam_masuk' => 'required|date_format:H:i:s',
         'latitude' => 'required|numeric',
         'longitude' => 'required|numeric',
         'keterangan' => 'nullable|string|max:255',
