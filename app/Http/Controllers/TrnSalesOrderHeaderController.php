@@ -67,7 +67,7 @@ class TrnSalesOrderHeaderController extends Controller
         }                
 
         $validated['kode_sales_order'] = $year . $month . $nextNumber;
-        $validated['tgl_sales_order'] = ;
+        $validated['tgl_sales_order'] = now()->setTimezone('Asia/Jakarta')->format('Y-m-d'));
         
         $order = trn_sales_order_header::create($validated);
         return response()->json([
