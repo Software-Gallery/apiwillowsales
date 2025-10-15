@@ -71,7 +71,7 @@ class TrnSalesOrderHeaderController extends Controller
 
         // dd($validated);
         $order = trn_sales_order_header::create($validated);
-        dd($order);
+        // dd($order);
         return response()->json([
             'status' => 'Success',
             'message' => 'Data successfully retrieved',
