@@ -89,7 +89,7 @@ class TrnAbsenController extends Controller
     public function selesai(Request $request) {
         $absen = trn_absen::find($request->id);
         if ($absen) {
-            $absen->jam_keluar = $request->jam_keluar;
+            $absen->jam_keluar = now()->format('HH:mm:ss');
             $absen->kode_sales_order = $request->kode_sales_order;
             $absen->save();
             return response()->json(['message' => 'Berhasil selesaikan absen'], 201);
