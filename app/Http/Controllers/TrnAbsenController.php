@@ -38,7 +38,7 @@ class TrnAbsenController extends Controller
             })
             ->leftJoin('mst_customer', 'mst_customer.id_customer', '=', 'a.id_customer')
             ->leftJoin('mst_departemen', 'mst_departemen.id_departemen', '=', 'a.id_departemen')
-            ->whereDate('a.tgl', '=', now()->format('Y-m-d'))
+            ->whereDate('a.tgl', '=', now()->setTimezone('Asia/Jakarta')->format('Y-m-d'))
             ->orderBy('a.id_absen', 'desc')
             ->select('r.*', 'a.*', 'mst_customer.nama as nama_customer', 'mst_departemen.keterangan as nama_departemen')
             ->first();        
@@ -90,7 +90,7 @@ class TrnAbsenController extends Controller
     public function selesai(Request $request) {
         $absen = trn_absen::find($request->id_absen);
         if ($absen) {
-            $absen->jam_keluar = now()->format('H:i:s');
+            $absen->jam_keluar = now()->setTimezone('Asia/Jakarta')->format('H:i:s');
             $absen->kode_sales_order = $request->kode_sales_order;
             $absen->save();
             return response()->json(['message' => 'Berhasil selesaikan absen'], 201);
