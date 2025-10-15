@@ -73,7 +73,7 @@ public function store(Request $request)
     // ], 201);
     return response()->json([
         'message' => 'Coba test pesan',
-        'data' => $request,
+        'data' => $request->all(),
     ], 200);    
 }
 
