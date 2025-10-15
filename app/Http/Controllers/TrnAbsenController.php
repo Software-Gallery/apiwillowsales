@@ -10,7 +10,7 @@ class TrnAbsenController extends Controller
 {
     public function getByIdKaryawan(Request $request) {
         $data = DB::table('trn_absen')
-                    ->where('id_karyawan', $request->id)
+                    ->where('id_karyawan', $request->id_absen)
                     ->orderBy('tgl', 'desc')
                     ->orderBy('jam_masuk', 'desc')
                     ->get();
