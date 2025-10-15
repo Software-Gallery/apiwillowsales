@@ -87,7 +87,7 @@ class TrnAbsenController extends Controller
     }
 
     public function selesai(Request $request) {
-        $absen = trn_absen::find($request->id);
+        $absen = trn_absen::find($request->id_absen);
         if ($absen) {
             $absen->jam_keluar = now()->format('H:i:s');
             $absen->kode_sales_order = $request->kode_sales_order;
