@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\trn_sales_order_header;
+use App\Models\trn_sales_order_detail;
+use App\Models\keranjang;
 use Illuminate\Http\Request;
 
 class TrnSalesOrderHeaderController extends Controller
