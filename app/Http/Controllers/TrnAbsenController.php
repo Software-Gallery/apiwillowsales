@@ -80,6 +80,7 @@ public function store(Request $request)
     ]);
     $absen = trn_absen::create($validated);
     return response()->json([
+        'statusCode' => '200',
         'message' => 'Absen berhasil disimpan!',
         'data' => $absen,
     ], 201);
