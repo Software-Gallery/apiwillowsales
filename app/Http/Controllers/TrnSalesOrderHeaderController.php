@@ -71,6 +71,32 @@ class TrnSalesOrderHeaderController extends Controller
 
         // dd($validated);
         $order = trn_sales_order_header::create($validated);
+
+        // Ambil semua data keranjang berdasarkan id_karyawan
+        $keranjangs = keranjang::where('id_karyawan', $request->id_karyawan)->get();
+    
+        // Loop untuk setiap item di keranjang dan simpan ke trn_sales_order_detail
+        foreach ($keranjangs as $keranjang) {
+            // Hitung harga, diskon, dan subtotal jika perlu. Misalnya, kita asumsikan harga barang tersedia
+            $harga = 1000;  // Ini adalah contoh, sesuaikan dengan logika harga yang sesuai
+            $disc_cash = 0;  // Diskon tunai, misalnya 0
+            $disc_perc = 0;  // Diskon persentase, misalnya 0
+            $qty = $keranjang->qty_besar + $keranjang->qty_tengah + $keranjang->qty_kecil;
+            $subtotal = $harga * $qty - ($harga * $disc_perc / 100) - $disc_cash;
+    
+            trn_sales_order_detail::create([
+                'kode_sales_order' => $validated['kode_sales_order'],
+                'id_barang' => $keranjang->id_barang,
+                'qty_besar' => $keranjang->qty_besar,
+                'qty_tengah' => $keranjang->qty_tengah,
+                'qty_kecil' => $keranjang->qty_kecil,
+                'harga' => $harga,
+                'disc_cash' => $disc_cash,
+                'disc_perc' => $disc_perc,
+                'subtotal' => $subtotal,
+                'ket_detail' => $request->keterangan,
+            ]);
+        }        
         // dd($order);
         $neworder = trn_sales_order_header::where('kode_sales_order', $validated['kode_sales_order'])
                                             ->first();        
