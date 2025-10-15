@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\trn_sales_order_header;
 use App\Models\trn_sales_order_detail;
-use App\Models\barang;
+use App\Models\mst_barang;
 use App\Models\keranjang;
 use Illuminate\Http\Request;
 
@@ -81,7 +81,7 @@ class TrnSalesOrderHeaderController extends Controller
         // Loop untuk setiap item di keranjang dan simpan ke trn_sales_order_detail
         foreach ($keranjangs as $keranjang) {
             // Hitung harga, diskon, dan subtotal jika perlu. Misalnya, kita asumsikan harga barang tersedia
-            $barang = Barang::find($keranjang->id_barang);
+            $barang = mst_barang::find($keranjang->id_barang);
             $harga = $barang ? $barang->harga : 0;  // Jika barang tidak ditemukan, harga default 0            
             // $harga = 1000;  // Ini adalah contoh, sesuaikan dengan logika harga yang sesuai
             $disc_cash = 0;  // Diskon tunai, misalnya 0
