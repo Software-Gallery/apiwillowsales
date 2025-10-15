@@ -42,7 +42,7 @@ Route::put('absen/update', [TrnAbsenController::class, 'update']);
 Route::delete('absen/delete', [TrnAbsenController::class, 'destroy']);
 Route::get('absengetkaryawan', [TrnAbsenController::class, 'getByIdKaryawan']);
 Route::get('checkAbsen', [TrnAbsenController::class, 'checkAbsen']);
-Route::post('selesaiabsen', [TransaksiAbsenController::class, 'selesai']);
+Route::post('selesaiabsen', [TrnAbsenController::class, 'selesai']);
 
 // Rute keranjang tanpa autentikasi
 Route::get('getKeranjang', [KeranjangController::class, 'get']);
