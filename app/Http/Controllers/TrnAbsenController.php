@@ -40,10 +40,10 @@ class TrnAbsenController extends Controller
             ->select('r.*', 'a.*')
             ->get();        
         
-        $isAbsen = $data->jam_keluar == null;
-        if (!($isAbsen)) {
-            $data = [];
-        }
+        // $isAbsen = $data->jam_keluar == null;
+        // if (!($isAbsen)) {
+        //     $data = [];
+        // }
     
         return response()->json([
             'status' => 'Success',
