@@ -68,27 +68,19 @@ class TrnSalesOrderHeaderController extends Controller
         } else {
             $nextNumber = '00001';
         }                
-
         $validated['kode_sales_order'] = $year . $month . $nextNumber;
         $validated['tgl_sales_order'] = now()->setTimezone('Asia/Jakarta')->format('Y-m-d');
-
-        // dd($validated);
         $order = trn_sales_order_header::create($validated);
 
-        // Ambil semua data keranjang berdasarkan id_karyawan
+        // Create Detail
         $keranjangs = keranjang::where('id_karyawan', $request->id_karyawan)->get();
-    
-        // Loop untuk setiap item di keranjang dan simpan ke trn_sales_order_detail
         foreach ($keranjangs as $keranjang) {
-            // Hitung harga, diskon, dan subtotal jika perlu. Misalnya, kita asumsikan harga barang tersedia
             $barang = mst_barang::where('id_barang', $keranjang->id_barang);
-            $harga = $barang ? $barang->harga : 0;  // Jika barang tidak ditemukan, harga default 0            
-            // $harga = 1000;  // Ini adalah contoh, sesuaikan dengan logika harga yang sesuai
-            $disc_cash = 0;  // Diskon tunai, misalnya 0
-            $disc_perc = 0;  // Diskon persentase, misalnya 0
+            $harga = $barang ? $barang->harga : 0;
+            $disc_cash = 0;
+            $disc_perc = 0;
             $qty = $keranjang->qty_besar + $keranjang->qty_tengah + $keranjang->qty_kecil;
             $subtotal = $harga * $qty - ($harga * $disc_perc / 100) - $disc_cash;
-    
             trn_sales_order_detail::create([
                 'kode_sales_order' => $validated['kode_sales_order'],
                 'id_barang' => $keranjang->id_barang,
@@ -101,8 +93,8 @@ class TrnSalesOrderHeaderController extends Controller
                 'subtotal' => $subtotal,
                 'ket_detail' => $request->keterangan,
             ]);
+            $keranjang->delete();
         }        
-        // dd($order);
         $neworder = trn_sales_order_header::where('kode_sales_order', $validated['kode_sales_order'])
                                             ->first();        
         return response()->json([
@@ -111,7 +103,6 @@ class TrnSalesOrderHeaderController extends Controller
             'statusCode' => 200,
             'data' => $neworder
         ], 201);       
-        // return response()->json($order, 201);
     }
 
     public function show($kode_sales_order)
