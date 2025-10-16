@@ -123,24 +123,24 @@ class TrnAbsenController extends Controller
 
     public function total(Request $request) {
         $periode = $request->periode;
-        if ($periode = 'today') {
+        if ($periode == 'today') {
             $total = DB::table('trn_absen')
-                   ->whereDate('tgl', Carbon::today())
-                   ->where('id_karyawan', '=', $request->id)
-                   ->count();
-        } else if ($periode = 'week') {
+                       ->whereDate('tgl', Carbon::today())
+                       ->where('id_karyawan', '=', $request->id)
+                       ->count();
+        } else if ($periode == 'week') {
             $total = DB::table('trn_absen')
-                   ->whereBetween('tgl', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
-                   ->where('id_karyawan', '=', $request->id)
-                   ->count();
-            
-        } else if ($periode = 'month') {
+                       ->whereBetween('tgl', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
+                       ->where('id_karyawan', '=', $request->id)
+                       ->count();
+        } else if ($periode == 'month') {
             $total = DB::table('trn_absen')
-                   ->whereMonth('tgl', Carbon::now()->month)
-                   ->whereYear('tgl', Carbon::now()->year)
-                   ->where('id_karyawan', '=', $request->id)
-                   ->count();
+                       ->whereMonth('tgl', Carbon::now()->month)
+                       ->whereYear('tgl', Carbon::now()->year)
+                       ->where('id_karyawan', '=', $request->id)
+                       ->count();
         }
+
         return response()->json([
             'status' => 'Success',
             'message' => 'true',
