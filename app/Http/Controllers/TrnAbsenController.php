@@ -145,6 +145,7 @@ class TrnAbsenController extends Controller
             'status' => 'Success',
             'message' => 'true',
             'statusCode' => 200,
+            'periode' => $request->periode,
             'data' => $total
         ]);     
     }
