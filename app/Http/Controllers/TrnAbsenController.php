@@ -108,7 +108,7 @@ class TrnAbsenController extends Controller
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $imageName = $request->kode_sales_order;
             $path = $image->storeAs('public/images', $imageName);
             return response()->json([
                 'message' => 'Image uploaded successfully!',
