@@ -76,7 +76,7 @@ class TrnSalesOrderHeaderController extends Controller
         $keranjangs = keranjang::where('id_karyawan', $request->id_karyawan)
                                ->leftJoin('mst_barang', 'keranjangs.id_barang', '=', 'mst_barang.id_barang')
                                ->get();
-        $total = 0;
+        $total = -1;
         foreach ($keranjangs as $keranjang) {
             $harga = $keranjang->harga;
             $disc_cash = 0;
@@ -95,7 +95,7 @@ class TrnSalesOrderHeaderController extends Controller
                 'subtotal' => $subtotal,
                 'ket_detail' => $request->keterangan,
             ]);
-            $total += $subtotal;
+            $total = $total + $subtotal;
             $keranjang->delete();
         }        
         $neworder = trn_sales_order_header::where('kode_sales_order', $validated['kode_sales_order'])
