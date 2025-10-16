@@ -44,6 +44,7 @@ Route::get('absengetkaryawan', [TrnAbsenController::class, 'getByIdKaryawan']);
 Route::get('checkAbsen', [TrnAbsenController::class, 'checkAbsen']);
 Route::post('selesaiabsen', [TrnAbsenController::class, 'selesai']);
 Route::post('upload-image', [TrnAbsenController::class, 'uploadImage']);
+Route::get('absen-total', [TrnAbsenController::class, 'total']);
 
 // Rute keranjang tanpa autentikasi
 Route::get('getKeranjang', [KeranjangController::class, 'get']);
