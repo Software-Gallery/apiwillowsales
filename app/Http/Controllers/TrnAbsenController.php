@@ -136,7 +136,8 @@ class TrnAbsenController extends Controller
             
         } else if ($periode = 'month') {
             $total = DB::table('trn_absen')
-                   ->whereBetween('tgl', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
+                   ->whereMonth('tanggal', Carbon::now()->month)
+                   ->whereYear('tanggal', Carbon::now()->year)
                    ->where('id_karyawan', '=', $request->id)
                    ->count();
         }
