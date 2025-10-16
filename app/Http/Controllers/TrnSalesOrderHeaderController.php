@@ -80,7 +80,7 @@ class TrnSalesOrderHeaderController extends Controller
             $harga = $keranjang->harga;
             $disc_cash = 0;
             $disc_perc = 0;
-            $qty = $keranjang->qty_besar + $keranjang->qty_tengah + $keranjang->qty_kecil;
+            $qty = $keranjang->qty_besar + $keranjang->qty_tengah + $keranjang->qty_kecil + $keranjang->qty;
             $subtotal = $harga * $qty - ($harga * $disc_perc / 100) - $disc_cash;
             trn_sales_order_detail::create([
                 'kode_sales_order' => $validated['kode_sales_order'],
