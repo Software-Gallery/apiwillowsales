@@ -59,8 +59,8 @@ class TrnAbsenController extends Controller
     }
 
     public function histori(Request $request) {
-        $data = DB::table('mst_customer_rute as r')
-            ->leftJoin('trn_absen as a', function ($join) {
+        $data = DB::table('trn_absen as a')
+            ->leftJoin('mst_customer_rute as r', function ($join) {
                 $join->on('r.id_departemen', '=', 'a.id_departemen')
                      ->on('r.id_customer', '=', 'a.id_customer')
                      ->on('r.id_karyawan', '=', 'a.id_karyawan');
