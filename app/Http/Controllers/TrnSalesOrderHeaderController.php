@@ -74,7 +74,7 @@ class TrnSalesOrderHeaderController extends Controller
 
         // Create Detail
         $keranjangs = keranjang::where('id_karyawan', $request->id_karyawan)
-                               ->leftJoin('mst_barang', 'keranjang.id_barang', '=', 'mst_barang.id_barang')
+                               ->leftJoin('mst_barang', 'keranjangs.id_barang', '=', 'mst_barang.id_barang')
                                ->get();
         dd($keranjangs);
         foreach ($keranjangs as $keranjang) {
