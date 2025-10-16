@@ -99,6 +99,26 @@ class TrnAbsenController extends Controller
         }        
     }
 
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $path = $image->storeAs('public/images', $imageName);
+            return response()->json([
+                'message' => 'Image uploaded successfully!',
+                'image_url' => Storage::url($path),
+            ], 200);
+        }
+        return response()->json([
+            'message' => 'No image file uploaded!',
+        ], 400);
+    }    
+
     public function show(trn_absen $trnAbsen)
     {
         //
