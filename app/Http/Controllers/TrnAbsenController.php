@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\trn_absen;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class TrnAbsenController extends Controller
 {
@@ -119,6 +120,30 @@ class TrnAbsenController extends Controller
             'message' => 'No image file uploaded!',
         ], 400);
     }    
+
+    public function total(Request $request) {
+        $periode = $request->periode;
+        if ($periode) {
+            $total = DB::table('trn_absen')
+                   ->whereDate('tgl', Carbon::today())
+                   ->get();
+        } else if ($periode) {
+            $total = DB::table('trn_absen')
+                   ->whereBetween('tanggal', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
+                   ->get();
+            
+        } else if ($periode) {
+            $total = DB::table('trn_absen')
+                   ->whereBetween('tanggal', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
+                   ->get();
+        }
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'true',
+            'statusCode' => 200,
+            'data' => $total
+        ]);     
+    }
 
     public function show(trn_absen $trnAbsen)
     {
