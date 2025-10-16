@@ -101,8 +101,8 @@ class TrnSalesOrderHeaderController extends Controller
         $neworder = trn_sales_order_header::where('kode_sales_order', $validated['kode_sales_order'])
                                             ->first();        
 
-        $order->total = $total;
-        $order->save();
+        $neworder->total = $total;
+        $neworder->save();
         return response()->json([
             'status' => 'Success',
             'message' => 'Data successfully retrieved',
