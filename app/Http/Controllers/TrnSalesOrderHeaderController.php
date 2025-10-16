@@ -76,8 +76,7 @@ class TrnSalesOrderHeaderController extends Controller
         $keranjangs = keranjang::where('id_karyawan', $request->id_karyawan)->get();
         foreach ($keranjangs as $keranjang) {
             $barang = mst_barang::where('id_barang', $keranjang->id_barang);
-            dd($barang);
-            $harga = $barang ? $barang->harga : 0;
+            $harga = $barang != null ? $barang->harga : 0;
             $disc_cash = 0;
             $disc_perc = 0;
             $qty = $keranjang->qty_besar + $keranjang->qty_tengah + $keranjang->qty_kecil;
