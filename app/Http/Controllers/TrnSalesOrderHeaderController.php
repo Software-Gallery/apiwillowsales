@@ -73,7 +73,9 @@ class TrnSalesOrderHeaderController extends Controller
         $order = trn_sales_order_header::create($validated);
 
         // Create Detail
-        $keranjangs = keranjang::where('id_karyawan', $request->id_karyawan)->get();
+        $keranjangs = keranjang::where('id_karyawan', $request->id_karyawan)
+                               ->leftJoin('mst_barang', 'keranjang.id_barang', '=', 'mst_barang.id_barang')
+                               ->get();
         dd($keranjangs);
         foreach ($keranjangs as $keranjang) {
             $barang = mst_barang::where('id_barang', $keranjang->id_barang);
