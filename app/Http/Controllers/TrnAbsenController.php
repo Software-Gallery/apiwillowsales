@@ -123,6 +123,7 @@ class TrnAbsenController extends Controller
 
     public function total(Request $request) {
         $periode = $request->periode;
+        $total = 0;
         if ($periode == 'today') {
             $total = DB::table('trn_absen')
                        ->whereDate('tgl', Carbon::today())
