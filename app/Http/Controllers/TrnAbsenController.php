@@ -127,18 +127,18 @@ class TrnAbsenController extends Controller
             $total = DB::table('trn_absen')
                    ->whereDate('tgl', Carbon::today())
                    ->where('id_karyawan', '=', $request->id)
-                   ->get();
+                   ->count();
         } else if ($periode = 'week') {
             $total = DB::table('trn_absen')
                    ->whereBetween('tanggal', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
                    ->where('id_karyawan', '=', $request->id)
-                   ->get();
+                   ->count();
             
         } else if ($periode = 'month') {
             $total = DB::table('trn_absen')
                    ->whereBetween('tanggal', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
                    ->where('id_karyawan', '=', $request->id)
-                   ->get();
+                   ->count();
         }
         return response()->json([
             'status' => 'Success',
