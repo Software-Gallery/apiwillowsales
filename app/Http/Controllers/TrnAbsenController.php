@@ -57,6 +57,27 @@ class TrnAbsenController extends Controller
             'data' => $data
         ]);     
     }
+
+    public function histori(Request $request) {
+        $data = DB::table('mst_customer_rute as r')
+            ->leftJoin('trn_absen as a', function ($join) {
+                $join->on('r.id_departemen', '=', 'a.id_departemen')
+                     ->on('r.id_customer', '=', 'a.id_customer')
+                     ->on('r.id_karyawan', '=', 'a.id_karyawan');
+            })
+            ->leftJoin('mst_customer', 'mst_customer.id_customer', '=', 'a.id_customer')
+            ->leftJoin('mst_departemen', 'mst_departemen.id_departemen', '=', 'a.id_departemen')
+            ->whereBetween('tgl', [$request->startDate, $request->endDate])
+            ->orderBy('a.id_absen', 'desc')
+            ->select('r.*', 'a.*', 'mst_customer.nama as nama_customer', 'mst_departemen.keterangan as nama_departemen')
+            ->get();       
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'true',
+            'statusCode' => 200,
+            'data' => $data
+        ]);            
+    }
     
     public function index()
     {
