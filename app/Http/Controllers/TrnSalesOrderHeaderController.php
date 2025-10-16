@@ -76,6 +76,7 @@ class TrnSalesOrderHeaderController extends Controller
         $keranjangs = keranjang::where('id_karyawan', $request->id_karyawan)
                                ->leftJoin('mst_barang', 'keranjangs.id_barang', '=', 'mst_barang.id_barang')
                                ->get();
+        $total = 0;
         foreach ($keranjangs as $keranjang) {
             $harga = $keranjang->harga;
             $disc_cash = 0;
@@ -87,17 +88,21 @@ class TrnSalesOrderHeaderController extends Controller
                 'id_barang' => $keranjang->id_barang,
                 'qty_besar' => $keranjang->qty_besar,
                 'qty_tengah' => $keranjang->qty_tengah,
-                'qty_kecil' => $keranjang->qty_kecil,
+                'qty_kecil' => $keranjang->qty,
                 'harga' => $harga,
                 'disc_cash' => $disc_cash,
                 'disc_perc' => $disc_perc,
                 'subtotal' => $subtotal,
                 'ket_detail' => $request->keterangan,
             ]);
+            $total += $subtotal;
             $keranjang->delete();
         }        
         $neworder = trn_sales_order_header::where('kode_sales_order', $validated['kode_sales_order'])
                                             ->first();        
+
+        $order->total = $total;
+        $order->save();
         return response()->json([
             'status' => 'Success',
             'message' => 'Data successfully retrieved',
