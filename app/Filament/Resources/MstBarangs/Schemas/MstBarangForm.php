@@ -12,16 +12,12 @@ class MstBarangForm
 {
     public static function configure(Schema $schema): Schema
     {   
-        $nextNumber = substr(mst_barang::max('kode_barang')??'00000',1)+1;
+        $maxKodeBarang = mst_barang::max('kode_barang') ?? '00000';
+        $nextNumber = (int) substr($maxKodeBarang, 1) + 1;
+        $nextNumber = str_pad($nextNumber, strlen($maxKodeBarang) - 1, '0', STR_PAD_LEFT);
         $generatedKode = str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
-
         return $schema
             ->components([
-                // TextInput::make('id_barang')
-                //     ->label('ID Barang')
-                //     ->numeric()
-                //     ->required(),
-
                 TextInput::make('kode_barang')
                     ->label('Kode Barang')
                     ->maxLength(50)
