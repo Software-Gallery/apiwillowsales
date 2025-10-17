@@ -27,6 +27,7 @@ class MstCustomerRuteInfolist
                 CheckboxEntry::make('day6')->label('Sabtu'),
                 CheckboxEntry::make('day7')->label('Minggu'), 
                 CheckboxEntry::make('week1')->label('Minggu Ganjil'),
-                CheckboxEntry::make('week2')->label('Minggu Genap'),                         
+                CheckboxEntry::make('week2')->label('Minggu Genap'),
+            ]);
     }
 }
