@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class mst_tgl_aktif extends Model
 {
     protected $table = 'mst_tgl_aktif';
+    protected $primaryKey = 'id_departemen';    
     protected $fillable = [
         'id_departemen',
         'tgl_aktif',
