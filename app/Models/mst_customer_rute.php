@@ -25,17 +25,17 @@ class mst_customer_rute extends Model
 
     public function departemen()
     {
-        return $this->belongsTo(Departemen::class, 'departemen_id');
+        return $this->belongsTo(mst_departemen::class, 'id_departemen');
     }
     
     public function customer()
     {
-        return $this->belongsTo(Customer::class, 'customer_id');
+        return $this->belongsTo(mst_customer::class, 'id_customer');
     }
     
     public function karyawan()
     {
-        return $this->belongsTo(Karyawan::class, 'karyawan_id');
+        return $this->belongsTo(mst_karyawan::class, 'id_karyawan');
     }
     
 }
