@@ -3,8 +3,7 @@
 namespace App\Filament\Resources\MstCustomerRutes\Schemas;
 
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Components\CheckboxEntry;
-use Filament\Infolists\Components\Section;
+use Filament\Forms\Components\Checkbox;
 use Filament\Schemas\Schema;
 
 class MstCustomerRuteInfolist
@@ -19,15 +18,15 @@ class MstCustomerRuteInfolist
                     ->label('Customer'),
                 TextEntry::make('karyawan.nama')
                     ->label('Karyawan'),
-                CheckboxEntry::make('day1')->label('Senin'),
-                CheckboxEntry::make('day2')->label('Selasa'),
-                CheckboxEntry::make('day3')->label('Rabu'),
-                CheckboxEntry::make('day4')->label('Kamis'),
-                CheckboxEntry::make('day5')->label('Jumat'),
-                CheckboxEntry::make('day6')->label('Sabtu'),
-                CheckboxEntry::make('day7')->label('Minggu'), 
-                CheckboxEntry::make('week1')->label('Minggu Ganjil'),
-                CheckboxEntry::make('week2')->label('Minggu Genap'),
+                Checkbox::make('day1')->label('Senin'),
+                Checkbox::make('day2')->label('Selasa'),
+                Checkbox::make('day3')->label('Rabu'),
+                Checkbox::make('day4')->label('Kamis'),
+                Checkbox::make('day5')->label('Jumat'),
+                Checkbox::make('day6')->label('Sabtu'),
+                Checkbox::make('day7')->label('Minggu'), 
+                Checkbox::make('week1')->label('Minggu Ganjil'),
+                Checkbox::make('week2')->label('Minggu Genap'),
             ]);
     }
 }
