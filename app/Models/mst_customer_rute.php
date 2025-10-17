@@ -22,4 +22,20 @@ class mst_customer_rute extends Model
         'week_ganjil',
         'week_genap',
     ];
+
+    public function departemen()
+    {
+        return $this->belongsTo(Departemen::class, 'departemen_id');
+    }
+    
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
+    
+    public function karyawan()
+    {
+        return $this->belongsTo(Karyawan::class, 'karyawan_id');
+    }
+    
 }
