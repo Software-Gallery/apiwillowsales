@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class mst_customer_rute extends Model
 {
     protected $table = 'mst_customer_rute';
+    protected $primaryKey = 'id_departemen';
     protected $fillable = [
         'id_departemen',
         'id_customer',
