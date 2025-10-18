@@ -50,10 +50,6 @@ class MstBarangsTable
                 TextColumn::make('harga')
                     ->label('Harga')
                     ->numeric(),
-    
-                ImageColumn::make('gambar')
-                    ->label('Gambar')
-                    ->circular(),
             ])
             ->defaultSort('kode_barang')
             ->filters([
