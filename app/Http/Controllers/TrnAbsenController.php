@@ -130,17 +130,32 @@ class TrnAbsenController extends Controller
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = $request->kode_sales_order;
-            $path = $image->storeAs('public/images', $imageName);
+            $imageName = $request->kode_sales_order . '.' . $image->getClientOriginalExtension(); // Menyertakan ekstensi file
+
+            // Menyimpan gambar langsung di folder public/absen
+            $destinationPath = public_path('absen');
+            
+            // Pastikan folder 'absen' ada atau buat jika belum ada
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+
+            // Memindahkan file ke folder absen
+            $image->move($destinationPath, $imageName);
+            
+            // URL untuk akses gambar
+            $imageUrl = url('absen/' . $imageName);
+
             return response()->json([
                 'message' => 'Image uploaded successfully!',
-                'image_url' => Storage::url($path),
+                'image_url' => $imageUrl, // URL yang langsung mengarah ke folder public/absen/
             ], 200);
         }
+
         return response()->json([
             'message' => 'No image file uploaded!',
         ], 400);
-    }    
+    }
 
     public function total(Request $request) {
         $periode = $request->periode;
