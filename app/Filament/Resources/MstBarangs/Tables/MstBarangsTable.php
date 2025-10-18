@@ -9,7 +9,6 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
-use Illuminate\Support\Number;
 
 class MstBarangsTable
 {
@@ -50,7 +49,7 @@ class MstBarangsTable
 
                 TextColumn::make('harga')
                     ->label('Harga')
-                    ->format(fn($value) => Number::format($value)),
+                    ->numeric(),
     
                 ImageColumn::make('gambar')
                     ->label('Gambar')
