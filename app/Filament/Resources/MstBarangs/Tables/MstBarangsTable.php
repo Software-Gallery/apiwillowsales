@@ -47,6 +47,9 @@ class MstBarangsTable
                     ->label('Konversi Tengah')
                     ->formatStateUsing(fn ($state) => number_format($state, 2)),
 
+                TextColumn::make('harga')
+                    ->label('Harga'),           
+
                 ImageColumn::make('gambar')
                     ->label('Gambar')
                     ->circular(),
