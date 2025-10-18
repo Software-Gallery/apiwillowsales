@@ -48,8 +48,9 @@ class MstBarangsTable
                     ->formatStateUsing(fn ($state) => number_format($state, 2)),
 
                 TextColumn::make('harga')
-                    ->label('Harga'),           
-
+                    ->label('Harga')
+                    ->format(fn($value) => number_format($value, 0, ',', '.')),
+    
                 ImageColumn::make('gambar')
                     ->label('Gambar')
                     ->circular(),
