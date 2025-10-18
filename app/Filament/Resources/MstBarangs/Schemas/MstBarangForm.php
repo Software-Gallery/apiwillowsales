@@ -58,6 +58,8 @@ class MstBarangForm
                 FileUpload::make('gambar')
                     ->label('Gambar')
                     ->image()
+                    ->disk('public')
+                    ->directory('barang')
                     ->nullable(),
             ]);
     }
