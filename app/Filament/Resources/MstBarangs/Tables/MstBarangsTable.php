@@ -49,7 +49,7 @@ class MstBarangsTable
 
                 TextColumn::make('harga')
                     ->label('Harga')
-                    ->format(fn($value) => number_format($value, 0, ',', '.')),
+                    ->format(fn($value) => Number::format($value)),
     
                 ImageColumn::make('gambar')
                     ->label('Gambar')
