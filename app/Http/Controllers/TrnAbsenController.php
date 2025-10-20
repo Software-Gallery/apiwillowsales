@@ -45,12 +45,12 @@ class TrnAbsenController extends Controller
             ->orderBy('a.jam_masuk', 'desc')
             ->select('r.*', 'a.*', 'mst_customer.nama as nama_customer', 'mst_departemen.keterangan as nama_departemen')
             ->first();        
-        // $isAbsen = true;
-        $isAbsen = $data->jam_keluar == null;
-        if (!($isAbsen)) {
+        $data = $data ?? [];
+        $isAbsen = $data->jam_keluar === null;
+        
+        if (!$isAbsen) {
             $data = [];
-        }
-    
+        }    
         return response()->json([
             'status' => 'Success',
             'message' => $isAbsen,
