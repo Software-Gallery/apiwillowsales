@@ -73,7 +73,9 @@ class TrnAbsenController extends Controller
             ->leftJoin('mst_customer', 'mst_customer.id_customer', '=', 'a.id_customer')
             ->leftJoin('mst_departemen', 'mst_departemen.id_departemen', '=', 'a.id_departemen')
             ->whereBetween('tgl', [$request->startDate, $request->endDate])
-            ->orderBy('a.id_absen', 'desc')
+            ->where('a.id_karyawan', '=', $request->id)
+            ->orderBy('a.tgl', 'desc')
+            ->orderBy('a.jam_masuk', 'desc')
             ->select('r.*', 'a.*', 'mst_customer.nama as nama_customer', 'mst_departemen.keterangan as nama_departemen')
             ->get();       
         return response()->json([
