@@ -46,7 +46,9 @@ class TrnAbsenController extends Controller
             ->select('r.*', 'a.*', 'mst_customer.nama as nama_customer', 'mst_departemen.keterangan as nama_departemen')
             ->first();        
         $data = $data ?? [];
-        $isAbsen = $data->jam_keluar === null;
+        if ($data !== []) {
+            $isAbsen = $data->jam_keluar === null;            
+        }   
         
         if (!$isAbsen) {
             $data = [];
