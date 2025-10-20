@@ -44,7 +44,9 @@ class TrnAbsenController extends Controller
             ->orderBy('a.tgl', 'desc')
             ->orderBy('a.jam_masuk', 'desc')
             ->select('r.*', 'a.*', 'mst_customer.nama as nama_customer', 'mst_departemen.keterangan as nama_departemen')
-            ->first();        
+            ->first();      
+
+        $isAbsen = false;
         $data = $data ?? [];
         if ($data !== []) {
             $isAbsen = $data->jam_keluar === null;            
