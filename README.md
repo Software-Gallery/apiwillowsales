@@ -1,1 +1,1 @@
-![Favicon](./public/favicon.ico)
+
