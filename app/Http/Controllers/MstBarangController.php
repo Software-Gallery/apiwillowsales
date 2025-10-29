@@ -16,6 +16,7 @@ class MstBarangController extends Controller
         $keyword = $request->input('keyword');
         $barang = DB::table('mst_barang')
                     ->where('nama_barang', 'like', '%' . $keyword . '%')
+                    ->orWhere('kode_barang', 'like', '%' . $keyword . '%')
                     ->get();
     
         return response()->json([
