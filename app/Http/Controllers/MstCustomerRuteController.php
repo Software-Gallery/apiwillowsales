@@ -85,6 +85,51 @@ class MstCustomerRuteController extends Controller
         ]);
     }
 
+    public function getByIdAll()
+    {
+        $dayOfWeek = Carbon::now()->dayOfWeek;
+        $currentDate = Carbon::now();
+        $startOfMonth = $currentDate->copy()->startOfMonth();
+        $weekOfMonth = ceil(($currentDate->day + $startOfMonth->dayOfWeek) / 7);
+        $isEvenWeek = $weekOfMonth % 2 == 0;
+        $rute = mst_customer_rute::leftJoin('mst_departemen', 'mst_customer_rute.id_departemen', '=', 'mst_departemen.id_departemen') 
+            ->leftJoin('mst_customer', 'mst_customer_rute.id_customer', '=', 'mst_customer.id_customer') 
+            ->select('mst_customer_rute.*', 'mst_departemen.keterangan as nama_departemen', 'mst_customer.nama as nama_customer');
+            // ->where('id_karyawan', $request->id);
+    
+        if ($dayOfWeek == 1) {
+            $rute = $rute->where('day1', 1);
+        } elseif ($dayOfWeek == 2) {
+            $rute = $rute->where('day2', 1);
+        } elseif ($dayOfWeek == 3) {
+            $rute = $rute->where('day3', 1);
+        } elseif ($dayOfWeek == 4) {
+            $rute = $rute->where('day4', 1);
+        } elseif ($dayOfWeek == 5) {
+            $rute = $rute->where('day5', 1);
+        } elseif ($dayOfWeek == 6) {
+            $rute = $rute->where('day6', 1);
+        } elseif ($dayOfWeek == 7) {
+            $rute = $rute->where('day7', 1);
+        }
+
+        if ($isEvenWeek) {
+            $rute = $rute->where('week_genap', 1);
+        } else {
+            $rute = $rute->where('week_ganjil', 1);
+        }
+
+        $rute = $rute->get();
+        // $rute = $rute->toSql();
+    
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Data successfully retrieved',
+            'statusCode' => 200,
+            'data' => $rute
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -121,7 +166,7 @@ class MstCustomerRuteController extends Controller
             ->firstOrFail();
 
         return response()->json($rute);
-    }
+    }    
 
     public function update(Request $request)
     {
