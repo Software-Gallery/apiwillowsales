@@ -94,8 +94,8 @@ class MstCustomerRuteController extends Controller
         $isEvenWeek = $weekOfMonth % 2 == 0;
         $rute = mst_customer_rute::leftJoin('mst_departemen', 'mst_customer_rute.id_departemen', '=', 'mst_departemen.id_departemen') 
             ->leftJoin('mst_customer', 'mst_customer_rute.id_customer', '=', 'mst_customer.id_customer') 
-            ->select('mst_customer_rute.*', 'mst_departemen.keterangan as nama_departemen', 'mst_customer.nama as nama_customer');
-            // ->where('id_karyawan', $request->id);
+            ->select('mst_customer_rute.*', 'mst_departemen.keterangan as nama_departemen', 'mst_customer.nama as nama_customer', 'mst_customer.kode_customer',
+            DB::raw("CONCAT(latitude, ', ', longitude) as latlong_customer"));
     
         if ($dayOfWeek == 1) {
             $rute = $rute->where('day1', 1);
