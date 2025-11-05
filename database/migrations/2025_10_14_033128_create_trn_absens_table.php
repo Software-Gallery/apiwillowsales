@@ -24,6 +24,7 @@ return new class extends Migration
             $table->double('longitude'); 
             $table->string('keterangan')->nullable(); 
             $table->string('alamat')->nullable(); 
+            $table->string('tipe');
             $table->timestamps(); 
         });
     }
