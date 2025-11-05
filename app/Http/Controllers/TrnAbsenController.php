@@ -108,6 +108,7 @@ class TrnAbsenController extends Controller
             'longitude' => 'required|numeric',
             'keterangan' => 'nullable|string|max:255',
             'alamat' => 'nullable|string|max:255',
+            'tipe' => 'nullable|string',
         ]);
         $absen = trn_absen::create($validated);
         return response()->json([
