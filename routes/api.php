@@ -36,7 +36,7 @@ Route::apiResource('satuan', MstSatuanController::class);
 
 // Rute absensi tanpa autentikasi
 Route::get('absen', [TrnAbsenController::class, 'index']);
-Route::post('absen', [TrnAbsenController::class, 'store']);
+Route::post('absen', [TrnAbsenController::class, 'store'])->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 Route::get('absen/show', [TrnAbsenController::class, 'show']);
 Route::put('absen/update', [TrnAbsenController::class, 'update']);
 Route::delete('absen/delete', [TrnAbsenController::class, 'destroy']);

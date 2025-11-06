@@ -98,6 +98,7 @@ class TrnAbsenController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
         $validated = $request->validate([
             'id_karyawan' => 'required|integer',
             'id_customer' => 'required|integer',

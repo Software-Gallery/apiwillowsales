@@ -14,29 +14,43 @@ class MstBarangController extends Controller
     public function searchBarang(Request $request)
     {
         $keyword = $request->input('keyword');
-        $barang = DB::table('mst_barang')
+        $data = DB::table('mst_barang')
+                    ->join('mst_karyawan', 'mst_barang.id_departemen', '=', 'mst_karyawan.id_departemen')
+                    ->leftjoin('list_stok', 'mst_barang.id_barang', '=', 'list_stok.id_barang')
+                    ->where('mst_karyawan.id_karyawan', $request->id)
                     ->where('nama_barang', 'like', '%' . $keyword . '%')
                     ->orWhere('kode_barang', 'like', '%' . $keyword . '%')
+                    ->select('mst_barang.*', 'list_stok.qty_besar', 'list_stok.qty_tengah', 'list_stok.qty_kecil')
                     ->get();
+
+        $data->transform(function ($item) {
+            $item->qty_besar = (float) $item->qty_besar;
+            $item->qty_tengah = (float) $item->qty_tengah;
+            $item->qty_kecil = (float) $item->qty_kecil;
+            return $item;
+        });                            
     
         return response()->json([
             'status' => 'Success',
             'message' => 'true',
             'statusCode' => 200,
-            'data' => $barang
+            'data' => $data
         ]);    
     }
     
-    public function index()
+    public function index(Request $request)
     {
         $data = DB::table('mst_barang')
+            ->join('mst_karyawan', 'mst_barang.id_departemen', '=', 'mst_karyawan.id_departemen')
             ->leftjoin('list_stok', 'mst_barang.id_barang', '=', 'list_stok.id_barang')
-            // ->where('listStok', $request->id)
-            ->select('mst_barang.*', DB::raw('list_stok.qty_kecil as qty'))
+            ->where('mst_karyawan.id_karyawan', $request->id)
+            ->select('mst_barang.*', 'list_stok.qty_besar', 'list_stok.qty_tengah', 'list_stok.qty_kecil')
             ->get();        
         // $data = mst_barang::all();
         $data->transform(function ($item) {
-            $item->qty = (float) $item->qty;
+            $item->qty_besar = (float) $item->qty_besar;
+            $item->qty_tengah = (float) $item->qty_tengah;
+            $item->qty_kecil = (float) $item->qty_kecil;
             return $item;
         });        
         return response()->json([
