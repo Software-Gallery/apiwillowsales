@@ -122,7 +122,7 @@ class KeranjangController extends Controller
         $barangs = DB::table('trn_sales_order_detail')
             ->join('mst_barang', 'trn_sales_order_detail.id_barang', '=', 'mst_barang.id_barang')
             ->where('trn_sales_order_detail.kode_sales_order', $request->kode)
-            ->select('mst_barang.*', 'trn_sales_order_detail.qty', 'trn_sales_order_detail.qty_besar', 'trn_sales_order_detail.qty_tengah', 'trn_sales_order_detail.qty_kecil')
+            ->select('mst_barang.*', 'trn_sales_order_detail.qty_besar', 'trn_sales_order_detail.qty_tengah', 'trn_sales_order_detail.qty_kecil')
             ->get();
 
         $barangs->transform(function ($item) {
