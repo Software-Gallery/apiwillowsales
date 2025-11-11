@@ -19,7 +19,7 @@ class KeranjangController extends Controller
         $barangs = DB::table('keranjangs')
             ->join('mst_barang', 'keranjangs.id_barang', '=', 'mst_barang.id_barang')
             ->where('keranjangs.id_karyawan', $request->id)
-            ->select('mst_barang.*', 'keranjangs.qty')
+            ->select('mst_barang.*', 'keranjangs.qty', 'keranjangs.qty_besar', 'keranjangs.qty_tengah', 'keranjangs.qty_kecil')
             ->get();
 
         $barangs->transform(function ($item) {
@@ -40,36 +40,52 @@ class KeranjangController extends Controller
         $request->validate([
             'id_karyawan' => 'required|integer', 
             'id_barang' => 'required|integer',
-            'qty' => 'required'
+            'qty' => 'required|string',
         ]);
-    
-        // Cek apakah barang sudah ada di favorit member tersebut
+
+        $qtyParts = array_pad(explode('.', $request->qty), 3, 0);
+        $qty_besar = (int) $qtyParts[0];   
+        $qty_tengah = (int) $qtyParts[1];
+        $qty_kecil = (int) $qtyParts[2]; 
+
         $existingFavorite = DB::table('keranjangs')
             ->where('id_karyawan', $request->id_karyawan)
             ->where('id_barang', $request->id_barang)
             ->first();
+
         if ($existingFavorite) {
+            DB::table('keranjangs')
+                ->where('id_karyawan', $request->id_karyawan)
+                ->where('id_barang', $request->id_barang)
+                ->update([
+                    'qty_besar' => $qty_besar,
+                    'qty_tengah' => $qty_tengah,
+                    'qty_kecil' => $qty_kecil,
+                    'updated_at' => now()
+                ]);
+
             return response()->json([
-                'status' => 'Failed',
-                'message' => 'Item is already in cart',
-                'statusCode' => 400
+                'status' => 'Success',
+                'message' => 'Item quantity updated in cart',
+                'statusCode' => 200
+            ]);
+        } else {
+            DB::table('keranjangs')->insert([
+                'id_karyawan' => $request->id_karyawan,
+                'id_barang' => $request->id_barang,
+                'qty_besar' => $qty_besar,
+                'qty_tengah' => $qty_tengah,
+                'qty_kecil' => $qty_kecil,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            return response()->json([
+                'status' => 'Success',
+                'message' => 'Item added to cart',
+                'statusCode' => 200
             ]);
         }
-    
-        // Simpan data ke tabel favorites
-        DB::table('keranjangs')->insert([
-            'id_karyawan' => $request->id_karyawan,
-            'id_barang' => $request->id_barang,
-            'qty' => $request->qty,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-    
-        return response()->json([
-            'status' => 'Success',
-            'message' => 'Item added to carts',
-            'statusCode' => 200
-        ]);
     }
 
     public function remove(Request $request) {
