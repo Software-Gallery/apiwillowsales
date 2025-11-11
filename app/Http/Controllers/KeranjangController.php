@@ -8,14 +8,6 @@ use Illuminate\Support\Facades\DB;
 class KeranjangController extends Controller
 {
     public function get(Request $request) {
-        // $barangs_id = DB::table('keranjangs')
-        //     ->where('id_karyawan', $request->id)
-        //     ->pluck('id_barang');
-
-        // $barangs = DB::table('mst_barang')
-        //     ->whereIn('id_barang', $barangs_id)
-        //     ->get();
-
         $barangs = DB::table('keranjangs')
             ->join('mst_barang', 'keranjangs.id_barang', '=', 'mst_barang.id_barang')
             ->where('keranjangs.id_karyawan', $request->id)
@@ -125,4 +117,27 @@ class KeranjangController extends Controller
             'statusCode' => 200
         ]);
     }
+
+    public function getTrnDetail(Request $request) {
+        $barangs = DB::table('trn_sales_order_detail')
+            ->join('mst_barang', 'trn_sales_order_detail.id_barang', '=', 'mst_barang.id_barang')
+            ->where('trn_sales_order_detail.kode_sales_order', $request->kode)
+            ->select('mst_barang.*', 'trn_sales_order_detail.qty', 'trn_sales_order_detail.qty_besar', 'trn_sales_order_detail.qty_tengah', 'trn_sales_order_detail.qty_kecil')
+            ->get();
+
+        $barangs->transform(function ($item) {
+            $item->qty = (float) $item->qty;
+            $item->qty_besar = (float) $item->qty_besar;
+            $item->qty_tengah = (float) $item->qty_tengah;
+            $item->qty_kecil = (float) $item->qty_kecil;
+            return $item;
+        });        
+        
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'true',
+            'statusCode' => 200,
+            'data' => $barangs
+        ]);
+    }    
 }
