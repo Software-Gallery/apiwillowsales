@@ -88,7 +88,7 @@ class TrnSalesOrderHeaderController extends Controller
                 'id_barang' => $keranjang->id_barang,
                 'qty_besar' => $keranjang->qty_besar,
                 'qty_tengah' => $keranjang->qty_tengah,
-                'qty_kecil' => $keranjang->qty,
+                'qty_kecil' => $keranjang->qty_kecil,
                 'harga' => $harga,
                 'disc_cash' => $disc_cash,
                 'disc_perc' => $disc_perc,
