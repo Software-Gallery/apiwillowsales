@@ -126,7 +126,6 @@ class KeranjangController extends Controller
             ->get();
 
         $barangs->transform(function ($item) {
-            $item->qty = (float) $item->qty;
             $item->qty_besar = (float) $item->qty_besar;
             $item->qty_tengah = (float) $item->qty_tengah;
             $item->qty_kecil = (float) $item->qty_kecil;
