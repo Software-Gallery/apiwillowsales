@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Models\Login;
 
 class Login extends Model
 {
@@ -37,4 +38,10 @@ class Login extends Model
             }
         });
     }
+
+    public function karyawan()
+    {
+        return $this->belongsTo(mst_karyawan::class, 'id_karyawan');
+    }
+
 }

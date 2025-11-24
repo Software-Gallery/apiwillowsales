@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Logins\Schemas;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use App\Models\Login;
@@ -12,6 +13,12 @@ class LoginForm
     {
         return $schema
             ->components([
+                Select::make('id_karyawan')
+                    ->label('Karyawan')
+                    ->required()
+                    ->relationship('karyawan', 'nama') // tampilkan kolom nama
+                    ->searchable(),
+
                 TextInput::make('name')
                     ->required()
                     ->label('Name')
