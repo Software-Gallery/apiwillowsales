@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\trn_sales_order_detail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TrnSalesOrderDetailController extends Controller
 {
@@ -43,24 +44,40 @@ class TrnSalesOrderDetailController extends Controller
 
     public function update(Request $request)
     {
-        $detail = trn_sales_order_detail::where('kode_sales_order', $request->kode_sales_order)
-            ->where('id_barang', $request->id_barang)
-            ->firstOrFail();
-
-        $validated = $request->validate([
-            'qty_besar' => 'nullable|numeric',
-            'qty_tengah' => 'nullable|numeric',
-            'qty_kecil' => 'nullable|numeric',
-            'harga' => 'nullable|numeric',
-            'disc_cash' => 'nullable|numeric',
-            'disc_perc' => 'nullable|numeric',
-            'subtotal' => 'nullable|numeric',
-            'ket_detail' => 'nullable|string|max:200',
+        // Validasi request
+        $request->validate([ 
+            'kode_sales_order' => 'required|integer',
+            'id_barang' => 'required|integer',
+            'qty' => 'required|string',
         ]);
 
-        $detail->update($validated);
+        $qtyParts = array_pad(explode('.', $request->qty), 3, 0);
+        $qty_besar = (int) $qtyParts[0];   
+        $qty_tengah = (int) $qtyParts[1];
+        $qty_kecil = (int) $qtyParts[2]; 
 
-        return response()->json($detail);
+        $existingFavorite = DB::table('trn_sales_order_detail')
+            ->where('kode_sales_order', $request->kode_sales_order)
+            ->where('id_barang', $request->id_barang)
+            ->first();
+
+        if ($existingFavorite) {
+            DB::table('trn_sales_order_detail')
+                ->where('kode_sales_order', $request->kode_sales_order)
+                ->where('id_barang', $request->id_barang)
+                ->update([
+                    'qty_besar' => $qty_besar,
+                    'qty_tengah' => $qty_tengah,
+                    'qty_kecil' => $qty_kecil,
+                    'updated_at' => now()
+                ]);
+
+            return response()->json([
+                'status' => 'Success',
+                'message' => 'Item quantity updated in cart',
+                'statusCode' => 200
+            ]);
+        } 
     }
 
     public function destroy(Request $request)

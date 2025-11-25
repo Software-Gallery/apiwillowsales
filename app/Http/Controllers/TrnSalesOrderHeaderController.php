@@ -144,4 +144,5 @@ class TrnSalesOrderHeaderController extends Controller
 
         return response()->json(['message' => 'Sales order deleted successfully.']);
     }
+
 }
