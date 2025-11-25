@@ -38,7 +38,7 @@ class MstCustomerRuteController extends Controller
             ->where('k.id_karyawan', 1)
             ->where(function ($query) {
                 $query->where(DB::raw('MOD(WEEKOFYEAR(ta.tgl_aktif), 2)'), '=', 1)
-                    ->where('cr.week_ganjil', 1)
+                    ->where('cr.week_ganjil', $request->id)
                     ->orWhere(function ($query) {
                         $query->where(DB::raw('MOD(WEEKOFYEAR(ta.tgl_aktif), 2)'), '=', 0)
                             ->where('cr.week_genap', 1);
@@ -86,42 +86,32 @@ class MstCustomerRuteController extends Controller
         ]);
     }
 
-    public function getByIdAll()
+    public function getByIdAll(Request $request)
     {
-        $dayOfWeek = Carbon::now()->dayOfWeek;
-        $currentDate = Carbon::now();
-        $startOfMonth = $currentDate->copy()->startOfMonth();
-        $weekOfMonth = ceil(($currentDate->day + $startOfMonth->dayOfWeek) / 7);
-        $isEvenWeek = $weekOfMonth % 2 == 0;
-        $rute = mst_customer_rute::leftJoin('mst_departemen', 'mst_customer_rute.id_departemen', '=', 'mst_departemen.id_departemen') 
-            ->leftJoin('mst_customer', 'mst_customer_rute.id_customer', '=', 'mst_customer.id_customer') 
-            ->select('mst_customer_rute.*', 'mst_departemen.keterangan as nama_departemen', 'mst_customer.nama as nama_customer', 'mst_customer.kode_customer',
-            DB::raw("CONCAT(latitude, ', ', longitude) as latlong_customer"));
+        $rute = DB::table('mst_karyawan as k')
+            ->leftJoin('mst_customer as c', 'k.id_departemen', '=', 'c.id_departemen')
+            ->leftJoin('mst_departemen as d', 'c.id_departemen', '=', 'd.id_departemen')
+            ->select(
+                'c.id_departemen',
+                'c.id_customer',
+                DB::raw('0 as id_karyawan'),
+                DB::raw('1 as day1'),
+                DB::raw('1 as day2'),
+                DB::raw('1 as day3'),
+                DB::raw('1 as day4'),
+                DB::raw('1 as day5'),
+                DB::raw('1 as day6'),
+                DB::raw('1 as day7'),
+                DB::raw('1 as week_ganjil'),
+                DB::raw('1 as week_genap'),
+                'd.keterangan as nama_departemen',
+                'c.nama as nama_customer',
+                DB::raw('WEEK(CURDATE()) as week'),
+                DB::raw('NOW() as tgl_aktif')
+            )
+            ->where('k.id_karyawan', $request->id);
     
-        if ($dayOfWeek == 1) {
-            $rute = $rute->where('day1', 1);
-        } elseif ($dayOfWeek == 2) {
-            $rute = $rute->where('day2', 1);
-        } elseif ($dayOfWeek == 3) {
-            $rute = $rute->where('day3', 1);
-        } elseif ($dayOfWeek == 4) {
-            $rute = $rute->where('day4', 1);
-        } elseif ($dayOfWeek == 5) {
-            $rute = $rute->where('day5', 1);
-        } elseif ($dayOfWeek == 6) {
-            $rute = $rute->where('day6', 1);
-        } elseif ($dayOfWeek == 7) {
-            $rute = $rute->where('day7', 1);
-        }
-
-        if ($isEvenWeek) {
-            $rute = $rute->where('week_genap', 1);
-        } else {
-            $rute = $rute->where('week_ganjil', 1);
-        }
-
         $rute = $rute->get();
-        // $rute = $rute->toSql();
     
         return response()->json([
             'status' => 'Success',
