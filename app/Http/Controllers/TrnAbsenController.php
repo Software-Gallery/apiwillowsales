@@ -61,19 +61,22 @@ class TrnAbsenController extends Controller
 
     public function histori(Request $request) {
         $data = DB::table('trn_absen as a')
-            ->leftJoin('mst_customer_rute as r', function ($join) {
-                $join->on('r.id_departemen', '=', 'a.id_departemen')
-                     ->on('r.id_customer', '=', 'a.id_customer')
-                     ->on('r.id_karyawan', '=', 'a.id_karyawan');
-            })
-            ->leftJoin('mst_customer', 'mst_customer.id_customer', '=', 'a.id_customer')
-            ->leftJoin('mst_departemen', 'mst_departemen.id_departemen', '=', 'a.id_departemen')
-            ->whereBetween('tgl', [$request->startDate, $request->endDate])
-            ->where('a.id_karyawan', '=', $request->id)
+            ->leftJoin('trn_sales_order_header as h', 'a.kode_sales_order', '=', 'h.kode_sales_order')
+            ->leftJoin('mst_customer as c', 'c.id_customer', '=', 'a.id_customer')
+            ->leftJoin('mst_departemen as d', 'd.id_departemen', '=', 'a.id_departemen')
+            ->select(
+                DB::raw("c.id_departemen, c.id_customer, 0 as id_karyawan, 1 as day1, 1 as day2, 1 as day3, 1 as day4, 1 as day5, 1 as day6, 1 as day7, 1 as week_ganjil, 1 as week_genap"),
+                'a.*', 
+                'c.nama as nama_customer', 
+                'd.keterangan as nama_departemen',
+                'h.status'
+            )
+            ->whereBetween('a.tgl', ['2025-11-01', '2025-11-25'])
+            ->where('a.id_karyawan', '=', 1)
             ->orderBy('a.tgl', 'desc')
             ->orderBy('a.jam_masuk', 'desc')
-            ->select('r.*', 'a.*', 'mst_customer.nama as nama_customer', 'mst_departemen.keterangan as nama_departemen')
-            ->get();       
+            ->get();
+
         return response()->json([
             'status' => 'Success',
             'message' => 'true',
