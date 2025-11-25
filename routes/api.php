@@ -57,7 +57,7 @@ Route::delete('removeKeranjang', [KeranjangController::class, 'remove']);
 Route::get('sales-order-header', [TrnSalesOrderHeaderController::class, 'index']);
 Route::post('sales-order-header', [TrnSalesOrderHeaderController::class, 'store']);
 Route::get('sales-order-header/show', [TrnSalesOrderHeaderController::class, 'show']);
-Route::put('sales-order-header/update', [TrnSalesOrderHeaderController::class, 'update']);
+Route::post('sales-order-header/update', [TrnSalesOrderHeaderController::class, 'update']);
 Route::delete('sales-order-header/delete', [TrnSalesOrderHeaderController::class, 'destroy']);
 
 Route::get('sales-order-detail', [TrnSalesOrderDetailController::class, 'index']);
