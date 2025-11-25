@@ -25,26 +25,22 @@ class TrnAbsenController extends Controller
         ]);            
     }
 
-    public function checkAbsen(Request $request) {
-        // $data = DB::table('trn_absen')
-        //             ->where('id_karyawan', $request->id)
-        //             ->orderBy('tgl', 'desc')
-        //             ->orderBy('jam_masuk', 'desc')
-        //             ->first();
+    public function checkAbsen(Request $request) {   
 
-        $data = DB::table('mst_customer_rute as r')
-            ->leftJoin('trn_absen as a', function ($join) {
-                $join->on('r.id_departemen', '=', 'a.id_departemen')
-                     ->on('r.id_customer', '=', 'a.id_customer')
-                     ->on('r.id_karyawan', '=', 'a.id_karyawan');
-            })
-            ->leftJoin('mst_customer', 'mst_customer.id_customer', '=', 'a.id_customer')
-            ->leftJoin('mst_departemen', 'mst_departemen.id_departemen', '=', 'a.id_departemen')
+        $data = DB::table('trn_absen as a')
+            ->leftJoin('mst_customer as c', 'c.id_customer', '=', 'a.id_customer')
+            ->leftJoin('mst_departemen as d', 'd.id_departemen', '=', 'a.id_departemen')
+            ->select(
+                DB::raw('c.id_departemen, c.id_customer, 0 as id_karyawan, 1 as day1, 1 as day2, 1 as day3, 1 as day4, 1 as day5, 1 as day6, 1 as day7, 1 as week_ganjil, 1 as week_genap'),
+                'a.*',
+                'c.nama as nama_customer',
+                'd.keterangan as nama_departemen'
+            )
             ->where('a.id_karyawan', '=', $request->id)
             ->orderBy('a.tgl', 'desc')
             ->orderBy('a.jam_masuk', 'desc')
-            ->select('r.*', 'a.*', 'mst_customer.nama as nama_customer', 'mst_departemen.keterangan as nama_departemen')
-            ->first();      
+            ->first();
+
 
         $isAbsen = false;
         $data = $data ?? [];
