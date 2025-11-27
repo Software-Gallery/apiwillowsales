@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('api_token', 80)->unique()->nullable();
+            $table->string('imei', 20)->nullable();
             $table->unsignedBigInteger('id_karyawan');
             $table->timestamps();
         });

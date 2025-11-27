@@ -17,6 +17,7 @@ use App\Http\Controllers\TrnSalesOrderDetailController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\TrnAbsenController;
+use App\Http\Controllers\AppSettingController;
 
 // Rute untuk login dan register (tanpa autentikasi)
 Route::post('/login', [LoginController::class, 'login']);
@@ -79,3 +80,5 @@ Route::get('profile', [LoginController::class, 'profile']);
 
 // Rute searchBarang tanpa autentikasi
 Route::get('searchBarang', [MstBarangController::class, 'searchBarang']);
+
+Route::get('setting-info', [AppSettingController::class, 'index']);

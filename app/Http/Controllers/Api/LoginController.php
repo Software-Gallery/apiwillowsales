@@ -41,9 +41,14 @@ class LoginController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
+            'imei' => 'required',
         ]);
 
         $user = Login::where('email', $request->email)->first();
+
+        if (Str::trim($user->imei) <> '') {
+            return response()->json(['message' => 'Email ini sudah login di perangkat lain'], 401);
+        }
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Email atau password salah'], 401);
