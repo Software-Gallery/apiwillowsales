@@ -46,7 +46,7 @@ class LoginController extends Controller
 
         $user = Login::where('email', $request->email)->first();
 
-        if (Str::trim($user->imei) <> '') {
+        if (Str::trim($user->imei) <> '' && Str::trim($user->imei) <> $request->imei) {
             return response()->json(['message' => 'Email ini sudah login di perangkat lain'], 401);
         }
 
