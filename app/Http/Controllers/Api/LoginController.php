@@ -46,13 +46,13 @@ class LoginController extends Controller
 
         $user = Login::where('email', $request->email)->first();
 
-        if (Str::trim($user->imei) <> '' && Str::trim($user->imei) <> $request->imei) {
-            return response()->json(['message' => 'Email ini sudah login di perangkat lain'], 401);
-        }
-
         if (! $user || ! Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Email atau password salah'], 401);
         }
+
+        if (Str::trim($user->imei) <> '' && Str::trim($user->imei) <> $request->imei) {
+            return response()->json(['message' => 'Email ini sudah login di perangkat lain'], 401);
+        }        
 
         // Buat token baru setiap login
         $user->api_token = Str::random(60);
