@@ -56,6 +56,7 @@ class LoginController extends Controller
 
         // Buat token baru setiap login
         $user->api_token = Str::random(60);
+        $user->imei = $request->imei;
         $user->save();
 
         return response()->json([
