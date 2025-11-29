@@ -91,7 +91,7 @@ class MstCustomerRuteController extends Controller
         // $perPage = $request->per_page ?? 20;
         $perPage = 20;
         $rute = DB::table('mst_karyawan as k')
-            ->leftJoin('mst_customer as c', 'k.id_departemen', '=', 'c.id_departemen')
+            ->join('mst_customer as c', 'k.id_departemen', '=', 'c.id_departemen')
             ->leftJoin('mst_departemen as d', 'c.id_departemen', '=', 'd.id_departemen')
             ->select(
                 'c.id_departemen',
@@ -112,7 +112,10 @@ class MstCustomerRuteController extends Controller
                 DB::raw('NOW() as tgl_aktif')
             )
             ->where('k.id_karyawan', $request->id);
-    
+
+        if ($request->filled('nama')) {
+            $rute->where('c.nama', 'like', "%{$request->nama}%");
+        }
         $rute = $rute->paginate($perPage);
     
         return response()->json([
