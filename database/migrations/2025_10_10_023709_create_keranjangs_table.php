@@ -19,6 +19,9 @@ return new class extends Migration
             $table->decimal('qty_tengah', 18, 4)->default(0);
             $table->decimal('qty_kecil', 18, 4)->default(0);            
             $table->decimal('qty', 10,2);
+            $table->decimal('disc_cash', 18, 4)->default(0);
+            $table->decimal('disc_perc', 9, 4)->default(0);
+            $table->string('ket_detail', 200)->nullable();            
             $table->timestamps();
         });
     }

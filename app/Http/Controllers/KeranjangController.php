@@ -11,7 +11,7 @@ class KeranjangController extends Controller
         $barangs = DB::table('keranjangs')
             ->join('mst_barang', 'keranjangs.id_barang', '=', 'mst_barang.id_barang')
             ->where('keranjangs.id_karyawan', $request->id)
-            ->select('mst_barang.*', 'keranjangs.qty', 'keranjangs.qty_besar', 'keranjangs.qty_tengah', 'keranjangs.qty_kecil')
+            ->select('mst_barang.*', 'keranjangs.qty', 'keranjangs.qty_besar', 'keranjangs.qty_tengah', 'keranjangs.qty_kecil', 'keranjangs.disc_cash', 'keranjangs.disc_perc', 'keranjangs.ket_detail')
             ->get();
 
         $barangs->transform(function ($item) {
@@ -122,7 +122,7 @@ class KeranjangController extends Controller
         $barangs = DB::table('trn_sales_order_detail')
             ->join('mst_barang', 'trn_sales_order_detail.id_barang', '=', 'mst_barang.id_barang')
             ->where('trn_sales_order_detail.kode_sales_order', $request->kode)
-            ->select('mst_barang.*', 'trn_sales_order_detail.qty_besar', 'trn_sales_order_detail.qty_tengah', 'trn_sales_order_detail.qty_kecil')
+            ->select('mst_barang.*', 'trn_sales_order_detail.qty_besar', 'trn_sales_order_detail.qty_tengah', 'trn_sales_order_detail.qty_kecil', 'trn_sales_order_detail.disc_cash', 'trn_sales_order_detail.disc_perc', 'trn_sales_order_detail.ket_detail')
             ->get();
 
         $barangs->transform(function ($item) {
