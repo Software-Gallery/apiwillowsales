@@ -38,6 +38,9 @@ class KeranjangController extends Controller
             'id_karyawan' => 'required|integer', 
             'id_barang' => 'required|integer',
             'qty' => 'required|string',
+            'disc_cash' => 'required|integer',
+            'disc_perc' => 'required|integer',
+            'ket' => 'required|string',            
         ]);
 
         $qtyParts = array_pad(explode('.', $request->qty), 3, 0);
@@ -58,6 +61,9 @@ class KeranjangController extends Controller
                     'qty_besar' => $qty_besar,
                     'qty_tengah' => $qty_tengah,
                     'qty_kecil' => $qty_kecil,
+                    'disc_cash' => $disc_cash,
+                    'disc_perc' => $disc_perc,
+                    'ket_detail' => $ket_detail,
                     'updated_at' => now()
                 ]);
 
