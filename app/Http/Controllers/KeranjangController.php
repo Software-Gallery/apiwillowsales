@@ -63,7 +63,7 @@ class KeranjangController extends Controller
                     'qty_kecil' => $qty_kecil,
                     'disc_cash' => $request->disc_cash,
                     'disc_perc' => $request->disc_perc,
-                    'ket_detail' => $request->ket_detail,
+                    'ket_detail' => $request->ket,
                     'updated_at' => now()
                 ]);
 
