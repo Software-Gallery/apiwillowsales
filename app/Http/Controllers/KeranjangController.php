@@ -19,6 +19,8 @@ class KeranjangController extends Controller
             $item->qty_besar = (float) $item->qty_besar;
             $item->qty_tengah = (float) $item->qty_tengah;
             $item->qty_kecil = (float) $item->qty_kecil;
+            $item->disc_cash = (float) $item->disc_cash;
+            $item->disc_perc = (float) $item->disc_perc;
             return $item;
         });        
         
