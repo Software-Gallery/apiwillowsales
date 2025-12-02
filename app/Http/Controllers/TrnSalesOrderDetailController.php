@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\trn_sales_order_detail;
+use App\Models\trn_sales_order_header;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -50,8 +51,7 @@ class TrnSalesOrderDetailController extends Controller
             'id_barang' => 'required|integer',
             'qty' => 'required|string',
             'disc_cash' => 'nullable|numeric',
-            'disc_perc' => 'nullable|numeric',
-            'ket_detail' => 'nullable|string',            
+            'disc_perc' => 'nullable|numeric',       
         ]);
 
         $qtyParts = array_pad(explode('.', $request->qty), 3, 0);
@@ -76,7 +76,14 @@ class TrnSalesOrderDetailController extends Controller
                     'disc_perc' => $request->disc_perc,
                     'ket_detail' => $request->ket,                    
                     'updated_at' => now()
-                ]);
+                ]); 
+                
+            $totalOrder = $this->HitungTotal($request->kode_sales_order);
+            DB::table('trn_sales_order_header')
+                ->where('kode_sales_order', $request->kode_sales_order)
+                ->update([
+                    'total' => $totalOrder
+                ]);  
 
             return response()->json([
                 'status' => 'Success',
@@ -96,4 +103,25 @@ class TrnSalesOrderDetailController extends Controller
 
         return response()->json(['message' => 'Sales order detail deleted successfully.']);
     }
+
+    public function HitungTotal(String $nomor) {
+        $data = trn_sales_order_header::selectRaw('
+            (qty_besar * konversi_besar * konversi_tengah) AS besar,
+            (qty_tengah * konversi_tengah) AS tengah,
+            (qty_kecil) AS kecil,
+            d.harga, d.disc_cash, d.disc_perc
+        ')
+        ->from('trn_sales_order_detail as d')
+        ->leftJoin('mst_barang as b', 'b.id_barang', '=', 'd.id_barang')
+        ->where('d.kode_sales_order', $nomor)
+        ->get();
+
+        // dd($data);
+        $totalOrder = 0;
+        foreach ($data as $detail) {
+            $totalQty = ($detail->besar+$detail->tengah+$detail->kecil)*$detail->harga;
+            $totalOrder += $totalQty-($totalQty*$detail->disc_perc/100)-$detail->disc_cash;
+        }
+        return $totalOrder;
+    }    
 }

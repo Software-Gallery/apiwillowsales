@@ -67,25 +67,20 @@ class TrnSalesOrderHeaderController extends Controller
                                ->get();
         $total = 0;
         foreach ($keranjangs as $keranjang) {
-            $harga = $keranjang->harga;
-            $disc_cash = 0;
-            $disc_perc = 0;
-            $qty = $keranjang->qty_besar + $keranjang->qty_tengah + $keranjang->qty_kecil + $keranjang->qty;
-            $subtotal = $harga * $qty - ($harga * $disc_perc / 100) - $disc_cash;
+            $harga = HitungTotal($request->id_karyawan, $keranjang->id_barang);
             trn_sales_order_detail::create([
                 'kode_sales_order' => $validated['kode_sales_order'],
                 'id_barang' => $keranjang->id_barang,
                 'qty_besar' => $keranjang->qty_besar,
                 'qty_tengah' => $keranjang->qty_tengah,
                 'qty_kecil' => $keranjang->qty_kecil,
-                'harga' => $harga,
+                'harga' => $harga['total'],
                 'disc_cash' => $keranjang->disc_cash,
                 'disc_perc' => $keranjang->disc_perc,
                 'ket_detail' => $keranjang->ket_detail,
-                'subtotal' => $subtotal,
+                'subtotal' => $harga['totalDisc'],
                 'ket_detail' => $request->keterangan,
             ]);
-            $total = $total + $subtotal;
             $keranjang->delete();
         }        
         $neworder = trn_sales_order_header::where('kode_sales_order', $validated['kode_sales_order'])
@@ -133,6 +128,27 @@ class TrnSalesOrderHeaderController extends Controller
         $order->delete();
 
         return response()->json(['message' => 'Sales order deleted successfully.']);
+    }
+
+    public function HitungTotal(String $idKaryawan, String $idBarang) {
+        $data = trn_sales_order_header::selectRaw('
+            (qty_besar * konversi_besar * konversi_tengah) AS besar,
+            (qty_tengah * konversi_tengah) AS tengah,
+            (qty_kecil) AS kecil,
+            d.harga, d.disc_cash, d.disc_perc
+        ')
+        ->from('keranjangs as d')
+        ->leftJoin('mst_barang as b', 'b.id_barang', '=', 'd.id_barang')
+        ->where('d.id_karyawan', $idKaryawan)
+        ->where('b.id_barang', $idBarang)
+        ->get();
+
+        $totalQty = ($data->besar+$data->tengah+$data->kecil)*$data->harga;
+
+        return [
+            'total' => $totalQty,
+            'totalDisc' => $totalQty-($totalQty*$data->disc_perc/100)-$data->disc_cash,
+        ];
     }
 
 }
