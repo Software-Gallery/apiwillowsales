@@ -49,6 +49,9 @@ class TrnSalesOrderDetailController extends Controller
             'kode_sales_order' => 'required|integer',
             'id_barang' => 'required|integer',
             'qty' => 'required|string',
+            'disc_cash' => 'nullable|numeric',
+            'disc_perc' => 'nullable|numeric',
+            'ket_detail' => 'nullable|string',            
         ]);
 
         $qtyParts = array_pad(explode('.', $request->qty), 3, 0);
