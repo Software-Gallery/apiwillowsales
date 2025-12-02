@@ -16,8 +16,8 @@ class LoginForm
                 Select::make('id_karyawan')
                     ->label('Karyawan')
                     ->required()
-                    ->relationship('karyawan', 'nama') // tampilkan kolom nama
-                    ->searchable(),
+                    ->relationship('karyawan', 'nama'),
+                    // ->searchable(),
 
                 TextInput::make('name')
                     ->required()

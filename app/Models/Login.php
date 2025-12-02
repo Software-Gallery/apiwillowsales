@@ -12,7 +12,7 @@ class Login extends Model
     protected $table = 'login';
 
     protected $fillable = [
-        'name', 'email', 'password', 'api_token',
+        'name', 'email', 'password', 'api_token', 'id_karyawan'
     ];
 
     protected $hidden = [
