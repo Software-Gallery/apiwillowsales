@@ -24,7 +24,7 @@ return new class extends Migration
             $table->boolean('day7')->nullable()->default(false);
             $table->boolean('week_ganjil')->nullable()->default(false);
             $table->boolean('week_genap')->nullable()->default(false);
-
+            $table->timestamps();
             $table->primary(['id_departemen', 'id_customer', 'id_karyawan']);
         });
     }
