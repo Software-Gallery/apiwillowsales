@@ -40,7 +40,6 @@ class KeranjangController extends Controller
             'qty' => 'required|string',
             'disc_cash' => 'required|integer',
             'disc_perc' => 'required|integer',
-            'ket' => 'string',            
         ]);
 
         $qtyParts = array_pad(explode('.', $request->qty), 3, 0);
