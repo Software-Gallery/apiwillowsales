@@ -239,7 +239,7 @@ class MstCustomerRuteController extends Controller
             ->leftJoin('mst_tgl_aktif as ta', 'k.id_departemen', '=', 'ta.id_departemen')
             ->where('k.id_karyawan', $request->id)
             ->select('ta.tgl_aktif')
-            ->get();
+            ->first();
         return response()->json($rute, 200);
     }
 }
