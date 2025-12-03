@@ -5,8 +5,11 @@ namespace App\Filament\Resources\Logins\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\Action;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
+use App\Http\Controllers\Api\LoginController;
+use Filament\Notifications\Notification;
 
 class LoginsTable
 {
@@ -33,6 +36,18 @@ class LoginsTable
             ])
             ->recordActions([
                 EditAction::make(),
+                Action::make('reset_imei')
+                    ->label('Reset IMEI')
+                    ->icon('heroicon-o-arrow-path')
+                    ->color('warning') 
+                    ->action(function ($record) {
+                        // Panggil fungsi resetImei dengan ID record
+                        (new LoginController())->resetImei($record->id);
+                        Notification::make()
+                            ->title('IMEI berhasil direset!')
+                            ->success()
+                            ->send();
+                    }),                
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

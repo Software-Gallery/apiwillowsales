@@ -103,4 +103,13 @@ class LoginController extends Controller
         }
     }
 
+    public function resetImei(int $id)
+    {
+        DB::table('login')
+            ->where('id', $id)
+            ->update([
+                'imei' => '',
+            ]);        
+    }
+
 }
