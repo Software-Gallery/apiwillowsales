@@ -69,6 +69,7 @@ Route::delete('sales-order-detail/delete', [TrnSalesOrderDetailController::class
 
 // Rute customer rute tanpa autentikasi
 Route::get('customer-rute', [MstCustomerRuteController::class, 'index']);
+Route::get('customer-rute-tgl-aktif', [MstCustomerRuteController::class, 'tglAktif']);
 Route::get('customer-rute-all', [MstCustomerRuteController::class, 'getByIdAll']);
 Route::get('customer-rute-by-id', [MstCustomerRuteController::class, 'getById']);
 Route::post('customer-rute', [MstCustomerRuteController::class, 'store']);
