@@ -28,13 +28,10 @@ class MstCustomerRuteController extends Controller
         $isEvenWeek = $weekOfMonth % 2 == 0;
             
         $rute = DB::table('mst_karyawan as k')
-            ->leftJoin('mst_tgl_aktif as ta', 'k.id_departemen', '=', 'ta.id_departemen')
-            ->leftJoin('mst_customer_rute as cr', function ($join) {
-                $join->on('k.id_karyawan', '=', 'cr.id_karyawan')
-                    ->on('ta.id_departemen', '=', 'cr.id_departemen');
-            })
+            ->leftJoin('mst_customer_rute as cr', 'k.id_karyawan', '=', 'cr.id_karyawan')
+            ->leftJoin('mst_tgl_aktif as ta', 'cr.id_departemen', '=', 'ta.id_departemen')
             ->leftJoin('mst_customer as c', 'cr.id_customer', '=', 'c.id_customer')
-            ->leftJoin('mst_departemen as d', 'k.id_departemen', '=', 'd.id_departemen')
+            ->leftJoin('mst_departemen as d', 'ta.id_departemen', '=', 'd.id_departemen')
             ->where('k.id_karyawan', $request->id)
             ->where(function ($query) {
                 $query->where(DB::raw('MOD(WEEK(ta.tgl_aktif), 2)'), '=', 1)
@@ -47,31 +44,31 @@ class MstCustomerRuteController extends Controller
             ->where(function ($query) {
                 $query->where(function ($query) {
                     $query->where(DB::raw('DAYOFWEEK(ta.tgl_aktif)'), '=', 1)
-                        ->where('cr.day1', 1);
+                        ->where('cr.day7', 1);
                 })
                 ->orWhere(function ($query) {
                     $query->where(DB::raw('DAYOFWEEK(ta.tgl_aktif)'), '=', 2)
-                        ->where('cr.day2', 1);
+                        ->where('cr.day1', 1);
                 })
                 ->orWhere(function ($query) {
                     $query->where(DB::raw('DAYOFWEEK(ta.tgl_aktif)'), '=', 3)
-                        ->where('cr.day3', 1);
+                        ->where('cr.day2', 1);
                 })
                 ->orWhere(function ($query) {
                     $query->where(DB::raw('DAYOFWEEK(ta.tgl_aktif)'), '=', 4)
-                        ->where('cr.day4', 1);
+                        ->where('cr.day3', 1);
                 })
                 ->orWhere(function ($query) {
                     $query->where(DB::raw('DAYOFWEEK(ta.tgl_aktif)'), '=', 5)
-                        ->where('cr.day5', 1);
+                        ->where('cr.day4', 1);
                 })
                 ->orWhere(function ($query) {
                     $query->where(DB::raw('DAYOFWEEK(ta.tgl_aktif)'), '=', 6)
-                        ->where('cr.day6', 1);
+                        ->where('cr.day5', 1);
                 })
                 ->orWhere(function ($query) {
                     $query->where(DB::raw('DAYOFWEEK(ta.tgl_aktif)'), '=', 7)
-                        ->where('cr.day7', 1);
+                        ->where('cr.day6', 1);
                 });
             })
             ->select('cr.*', 'd.keterangan as nama_departemen', 'c.nama as nama_customer', DB::raw('WEEK(CURDATE()) as week'), 'ta.tgl_aktif');
@@ -108,7 +105,7 @@ class MstCustomerRuteController extends Controller
                 DB::raw('1 as week_genap'),
                 'd.keterangan as nama_departemen',
                 'c.nama as nama_customer',
-                DB::raw('WEEK(CURDATE()) as week'),
+                DB::raw('WEEK(CURDATE(),3) as week'),
                 DB::raw('NOW() as tgl_aktif')
             )
             ->where('k.id_karyawan', $request->id);
