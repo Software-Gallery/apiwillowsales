@@ -66,6 +66,7 @@ class TrnAbsenController extends Controller
             ->leftJoin('mst_departemen as d', 'd.id_departemen', '=', 'a.id_departemen')
             ->select(
                 DB::raw("c.id_departemen, c.id_customer, 0 as id_karyawan, 1 as day1, 1 as day2, 1 as day3, 1 as day4, 1 as day5, 1 as day6, 1 as day7, 1 as week_ganjil, 1 as week_genap"),
+                'h.tgl_sales_order as tgl',
                 'a.*', 
                 'c.nama as nama_customer', 
                 'd.keterangan as nama_departemen',
