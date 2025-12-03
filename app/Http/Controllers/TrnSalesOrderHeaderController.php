@@ -67,7 +67,7 @@ class TrnSalesOrderHeaderController extends Controller
                                ->get();
         $total = 0;
         foreach ($keranjangs as $keranjang) {
-            $harga = HitungTotal($request->id_karyawan, $keranjang->id_barang);
+            $harga = $this->HitungTotal($request->id_karyawan, $keranjang->id_barang);
             trn_sales_order_detail::create([
                 'kode_sales_order' => $validated['kode_sales_order'],
                 'id_barang' => $keranjang->id_barang,
@@ -135,13 +135,13 @@ class TrnSalesOrderHeaderController extends Controller
             (qty_besar * konversi_besar * konversi_tengah) AS besar,
             (qty_tengah * konversi_tengah) AS tengah,
             (qty_kecil) AS kecil,
-            d.harga, d.disc_cash, d.disc_perc
+            b.harga, d.disc_cash, d.disc_perc
         ')
         ->from('keranjangs as d')
         ->leftJoin('mst_barang as b', 'b.id_barang', '=', 'd.id_barang')
         ->where('d.id_karyawan', $idKaryawan)
         ->where('b.id_barang', $idBarang)
-        ->get();
+        ->first();
 
         $totalQty = ($data->besar+$data->tengah+$data->kecil)*$data->harga;
 

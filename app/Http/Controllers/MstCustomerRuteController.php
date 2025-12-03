@@ -37,10 +37,10 @@ class MstCustomerRuteController extends Controller
             ->leftJoin('mst_departemen as d', 'k.id_departemen', '=', 'd.id_departemen')
             ->where('k.id_karyawan', $request->id)
             ->where(function ($query) {
-                $query->where(DB::raw('MOD(WEEKOFYEAR(ta.tgl_aktif), 2)'), '=', 1)
+                $query->where(DB::raw('MOD(WEEK(ta.tgl_aktif), 2)'), '=', 1)
                     ->where('cr.week_ganjil', 1)
                     ->orWhere(function ($query) {
-                        $query->where(DB::raw('MOD(WEEKOFYEAR(ta.tgl_aktif), 2)'), '=', 0)
+                        $query->where(DB::raw('MOD(WEEK(ta.tgl_aktif), 2)'), '=', 0)
                             ->where('cr.week_genap', 1);
                     });
             })
