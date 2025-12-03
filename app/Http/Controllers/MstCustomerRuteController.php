@@ -91,7 +91,7 @@ class MstCustomerRuteController extends Controller
         })
         ->leftJoin('mst_customer AS c', 'cr.id_customer', '=', 'c.id_customer')
         ->leftJoin('mst_departemen AS d', 'ta.id_departemen', '=', 'd.id_departemen')
-        ->where('k.id_karyawan', 17)
+        ->where('k.id_karyawan', $request->id)
         ->where(function($query) {
             $query->whereRaw("CASE DAYOFWEEK(ta.tgl_aktif)
                                 WHEN 2 THEN day1  -- Monday
