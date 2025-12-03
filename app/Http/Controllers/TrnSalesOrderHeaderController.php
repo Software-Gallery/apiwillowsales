@@ -42,6 +42,7 @@ class TrnSalesOrderHeaderController extends Controller
             'id_customer' => 'nullable|integer',
             'id_karyawan' => 'nullable|integer',
             'keterangan' => 'nullable|string|max:200',
+            'tgl_sales_order' => 'nullable|date',
         ]);   
 
         // Generate nextNomor
@@ -58,7 +59,7 @@ class TrnSalesOrderHeaderController extends Controller
             $nextNumber = '00001';
         }                
         $validated['kode_sales_order'] = $year . $month . $nextNumber;
-        $validated['tgl_sales_order'] = now()->setTimezone('Asia/Jakarta')->format('Y-m-d');
+        // $validated['tgl_sales_order'] = now()->setTimezone('Asia/Jakarta')->format('Y-m-d');
         $order = trn_sales_order_header::create($validated);
 
         // Create Detail
