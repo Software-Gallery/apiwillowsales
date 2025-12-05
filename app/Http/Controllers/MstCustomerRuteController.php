@@ -240,6 +240,13 @@ class MstCustomerRuteController extends Controller
             ->where('k.id_karyawan', $request->id)
             ->select('ta.tgl_aktif')
             ->first();
-        return response()->json($rute, 200);
+        $currentDate = Carbon::now()->format('Y-m-d');
+        if ($rute->tgl_aktif == null) {
+            return response()->json([
+                'tgl_aktif' => $currentDate
+            ], 200);
+        } else {
+            return response()->json($rute, 200);
+        }    
     }
 }
