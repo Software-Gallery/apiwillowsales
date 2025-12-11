@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\trn_sales_order_detail;
 use App\Models\trn_sales_order_header;
+use App\Models\mst_barang;
+use App\Models\keranjang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
