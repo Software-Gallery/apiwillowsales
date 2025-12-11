@@ -14,8 +14,8 @@ class MstBarangController extends Controller
     public function searchBarang(Request $request)
     {
         $keyword = $request->input('keyword');
-        $data = DB::table('mst_barang')
-                    ->join('mst_karyawan', 'mst_barang.id_departemen', '=', 'mst_karyawan.id_departemen')
+        $data = DB::table('mst_karyawan')
+                    ->join('mst_barang', 'mst_barang.id_departemen', '=', 'mst_karyawan.id_departemen')
                     ->leftjoin('list_stok', 'mst_barang.id_barang', '=', 'list_stok.id_barang')
                     ->where('mst_karyawan.id_karyawan', $request->id)
                     ->where('nama_barang', 'like', '%' . $keyword . '%')
@@ -46,6 +46,7 @@ class MstBarangController extends Controller
             ->where('mst_karyawan.id_karyawan', $request->id)
             ->select('mst_barang.*', 'list_stok.qty_besar', 'list_stok.qty_tengah', 'list_stok.qty_kecil')
             ->get();        
+            dd($data);
         // $data = mst_barang::all();
         $data->transform(function ($item) {
             $item->qty_besar = (float) $item->qty_besar;
