@@ -167,25 +167,37 @@ class TrnAbsenController extends Controller
     public function total(Request $request) {
         $periode = $request->periode;
         $total = 0;
+        $karyawan = DB::table('mst_karyawan')
+                    ->where('id_karyawan', '=', $request->id)
+                    ->first();        
+
+                    
+        $tgl_aktif = DB::table('mst_tgl_aktif')
+            ->where('id_departemen', '=', $karyawan->id_departemen)
+            ->select(
+                'tgl_aktif',
+                 DB::raw('DATE_SUB(tgl_aktif, INTERVAL 7 DAY) as tgl_aktif7')
+            )
+            ->first();
         if ($periode == 'today') {
-            $total = DB::table('trn_absen')
-                       ->whereDate('tgl', Carbon::today())
-                       ->where('id_karyawan', '=', $request->id)
-                       ->distinct('id_customer')
-                       ->count();
-        } else if ($periode == 'weekly') {
-            $total = DB::table('trn_absen')
-                       ->whereBetween('tgl', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
-                       ->where('id_karyawan', '=', $request->id)
-                       ->distinct('id_customer')
-                       ->count();
+            $total = DB::table('trn_sales_order_header')
+                    ->whereDate('tgl_sales_order', Carbon::parse($tgl_aktif->tgl_aktif)) // Use $tgl_aktif here
+                    ->where('id_karyawan', '=', $request->id)
+                    ->distinct('id_customer')
+                    ->count();
+        } else if ($periode == 'weekly') {  
+            $total = DB::table('trn_sales_order_header')
+                    ->whereBetween('tgl_sales_order', [Carbon::parse($tgl_aktif->tgl_aktif), $tgl_aktif->tgl_aktif7])
+                    ->where('id_karyawan', '=', $request->id)
+                    ->distinct('id_customer')
+                    ->count();
         } else if ($periode == 'monthly') {
-            $total = DB::table('trn_absen')
-                       ->whereMonth('tgl', Carbon::now()->month)
-                       ->whereYear('tgl', Carbon::now()->year)
-                       ->where('id_karyawan', '=', $request->id)
-                       ->distinct('id_customer')
-                       ->count();
+            $total = DB::table('trn_sales_order_header')
+                    ->whereMonth('tgl_sales_order', Carbon::parse($tgl_aktif->tgl_aktif)->month) 
+                    ->whereYear('tgl_sales_order', Carbon::parse($tgl_aktif->tgl_aktif)->year) 
+                    ->where('id_karyawan', '=', $request->id)
+                    ->distinct('id_customer')
+                    ->count();
         }
 
         return response()->json([
