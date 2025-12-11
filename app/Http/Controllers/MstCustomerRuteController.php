@@ -82,7 +82,9 @@ class MstCustomerRuteController extends Controller
             'd.keterangan AS nama_departemen',
             'c.nama AS nama_customer',
             DB::raw('WEEK(ta.tgl_aktif, 3) AS WEEK'),
-            'ta.tgl_aktif'
+            'ta.tgl_aktif',
+            DB::raw('c.alamat alamat_customer'),
+            DB::raw("CONCAT(latitude, ', ', longitude) as latlong_customer"),
         )
         ->leftJoin('mst_tgl_aktif AS ta', 'k.id_departemen', '=', 'ta.id_departemen')
         ->leftJoin('mst_customer_rute AS cr', function($join) {
@@ -140,7 +142,9 @@ class MstCustomerRuteController extends Controller
                 'd.keterangan as nama_departemen',
                 'c.nama as nama_customer',
                 DB::raw('WEEK(CURDATE(),3) as week'),
-                DB::raw('NOW() as tgl_aktif')
+                DB::raw('NOW() as tgl_aktif'),
+                DB::raw('c.alamat alamat_customer'),
+                DB::raw("CONCAT(latitude, ', ', longitude) as latlong_customer"),
             )
             ->where('k.id_karyawan', $request->id);
 
