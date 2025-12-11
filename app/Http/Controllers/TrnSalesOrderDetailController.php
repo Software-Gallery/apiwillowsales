@@ -31,6 +31,9 @@ class TrnSalesOrderDetailController extends Controller
         //     'ket_detail' => 'nullable|string|max:200',
         // ]);
         // $detail = trn_sales_order_detail::create($validated);
+        $validated = $request->validate([
+            'kode_sales_order' => 'required|string|max:30',
+        ]);
         $keranjangs = keranjang::where('id_karyawan', $request->id_karyawan)
                                ->leftJoin('mst_barang', 'keranjangs.id_barang', '=', 'mst_barang.id_barang')
                                ->get();
@@ -53,7 +56,7 @@ class TrnSalesOrderDetailController extends Controller
             ]);
             $keranjang->delete();
         }        
-        $neworder = trn_sales_order_header::where('kode_sales_order', $request->id_karyawan)
+        $neworder = trn_sales_order_header::where('kode_sales_order', $validated['kode_sales_order'])
                                             ->first();        
         $neworder->status = 'POSTED';
         $neworder->total = $total;
