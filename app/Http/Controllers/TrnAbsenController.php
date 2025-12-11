@@ -187,7 +187,7 @@ class TrnAbsenController extends Controller
                     ->count();
         } else if ($periode == 'weekly') {  
             $total = DB::table('trn_sales_order_header')
-                    ->whereBetween('tgl_sales_order', [Carbon::parse($tgl_aktif->tgl_aktif), $tgl_aktif->tgl_aktif7])
+                    ->whereBetween('tgl_sales_order', [$tgl_aktif->tgl_aktif7,Carbon::parse($tgl_aktif->tgl_aktif)])
                     ->where('id_karyawan', '=', $request->id)
                     ->distinct('id_customer')
                     ->count();
