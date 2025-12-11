@@ -51,7 +51,7 @@ class TrnSalesOrderDetailController extends Controller
             ]);
             $keranjang->delete();
         }        
-        $neworder = trn_sales_order_header::where('kode_sales_order', $id_karyawan['kode_sales_order'])
+        $neworder = trn_sales_order_header::where('kode_sales_order', $request->id_karyawan)
                                             ->first();        
         $neworder->status = 'POSTED';
         $neworder->total = $total;
