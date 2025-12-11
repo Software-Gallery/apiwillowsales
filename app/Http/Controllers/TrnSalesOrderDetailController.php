@@ -42,7 +42,7 @@ class TrnSalesOrderDetailController extends Controller
         $trnSalesController = new TrnSalesOrderHeaderController();
         foreach ($keranjangs as $keranjang) {
             $harga = $trnSalesController->HitungTotal($request->id_karyawan, $keranjang->id_barang);
-            $total+=$harga;
+            $total+=$harga['total'];
             trn_sales_order_detail::create([
                 'kode_sales_order' => $validated['kode_sales_order'],
                 'id_barang' => $keranjang->id_barang,
