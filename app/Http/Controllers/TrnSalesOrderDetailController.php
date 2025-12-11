@@ -39,8 +39,9 @@ class TrnSalesOrderDetailController extends Controller
                                ->leftJoin('mst_barang', 'keranjangs.id_barang', '=', 'mst_barang.id_barang')
                                ->get();
         $total = 0;
+        $trnSalesController = new TrnSalesOrderHeaderController();
         foreach ($keranjangs as $keranjang) {
-            $harga = TrnSalesOrderHeaderController()->HitungTotal($request->id_karyawan, $keranjang->id_barang);
+            $harga = $trnSalesController->HitungTotal($request->id_karyawan, $keranjang->id_barang);
             $total+=$harga;
             trn_sales_order_detail::create([
                 'kode_sales_order' => $validated['kode_sales_order'],
