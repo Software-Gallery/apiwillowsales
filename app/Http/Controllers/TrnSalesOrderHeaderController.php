@@ -59,9 +59,8 @@ class TrnSalesOrderHeaderController extends Controller
             $nextNumber = '00001';
         }                
         $validated['kode_sales_order'] = $year . $month . $nextNumber;
-        // $validated['tgl_sales_order'] = now()->setTimezone('Asia/Jakarta')->format('Y-m-d');
+        //$validated['tgl_sales_order'] = now()->setTimezone('Asia/Jakarta')->format('Y-m-d');
         $order = trn_sales_order_header::create($validated);
-
         // Create Detail
         // $keranjangs = keranjang::where('id_karyawan', $request->id_karyawan)
         //                        ->leftJoin('mst_barang', 'keranjangs.id_barang', '=', 'mst_barang.id_barang')
@@ -93,7 +92,7 @@ class TrnSalesOrderHeaderController extends Controller
             'status' => 'Success',
             'message' => 'Data successfully retrieved',
             'statusCode' => 200,
-            'data' => $order
+            'data' => $validated
         ], 201);       
     }
 
