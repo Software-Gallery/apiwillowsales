@@ -88,6 +88,7 @@ class TrnSalesOrderHeaderController extends Controller
 
         // $neworder->total = $total;
         // $neworder->save();
+        $validated['kode_sales_order'] = (int)$validated['kode_sales_order'];
         return response()->json([
             'status' => 'Success',
             'message' => 'Data successfully retrieved',
