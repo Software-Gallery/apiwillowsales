@@ -133,23 +133,36 @@ class TrnSalesOrderHeaderController extends Controller
 
     public function HitungTotal(String $idKaryawan, String $idBarang) {
         $data = trn_sales_order_header::selectRaw('
-            (qty_besar * konversi_besar * konversi_tengah) AS besar,
-            (qty_tengah * konversi_tengah) AS tengah,
-            (qty_kecil) AS kecil,
-            b.harga, d.disc_cash, d.disc_perc
+            qty_besar*harga+qty_tengah*harga/konversi_besar+qty_kecil*harga/konversi_besar/konversi_tengah total, d.disc_cash, d.disc_perc
         ')
         ->from('keranjangs as d')
         ->leftJoin('mst_barang as b', 'b.id_barang', '=', 'd.id_barang')
         ->where('d.id_karyawan', $idKaryawan)
         ->where('b.id_barang', $idBarang)
         ->first();
-
-        $totalQty = ($data->besar+$data->tengah+$data->kecil)*$data->harga;
-
         return [
-            'total' => $totalQty,
-            'totalDisc' => $totalQty-($totalQty*$data->disc_perc/100)-$data->disc_cash,
+            'total' => $data->total,
+            'totalDisc' => $data->total-($data->total*$data->disc_perc/100)-$data->disc_cash,
         ];
     }
+    // public function HitungTotal(String $idKaryawan, String $idBarang) {
+    //     $data = trn_sales_order_header::selectRaw('
+    //         (qty_besar * konversi_besar * konversi_tengah) AS besar,
+    //         (qty_tengah * konversi_tengah) AS tengah,
+    //         (qty_kecil) AS kecil,
+    //         b.harga, d.disc_cash, d.disc_perc
+    //     ')
+    //     ->from('keranjangs as d')
+    //     ->leftJoin('mst_barang as b', 'b.id_barang', '=', 'd.id_barang')
+    //     ->where('d.id_karyawan', $idKaryawan)
+    //     ->where('b.id_barang', $idBarang)
+    //     ->first();
 
+    //     $totalQty = ($data->besar+$data->tengah+$data->kecil)*$data->harga;
+
+    //     return [
+    //         'total' => $totalQty,
+    //         'totalDisc' => $totalQty-($totalQty*$data->disc_perc/100)-$data->disc_cash,
+    //     ];
+    // }
 }
