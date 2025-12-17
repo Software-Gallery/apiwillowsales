@@ -41,7 +41,7 @@ class KeranjangController extends Controller
                         (d.qty_tengah * (b.harga - d.disc_cash) / b.konversi_besar) +
                         (d.qty_kecil * (b.harga - d.disc_cash) / (b.konversi_besar * b.konversi_tengah))
                     ) * (1 - d.disc_perc / 100)
-                ) AS harga
+                ) AS total
             ')
             ->get();
 
@@ -52,6 +52,8 @@ class KeranjangController extends Controller
             $item->qty_kecil = (float) $item->qty_kecil;
             $item->disc_cash = (float) $item->disc_cash;
             $item->disc_perc = (float) $item->disc_perc;
+            $item->subtotal = (float) $item->subtotal;
+            $item->total = (float) $item->total;
             return $item;
         });        
         
