@@ -133,9 +133,9 @@ class TrnSalesOrderHeaderController extends Controller
 
     public function HitungTotal(String $idKaryawan, String $idBarang) {
         $data = trn_sales_order_header::selectRaw('
-            (d.qty_besar * (d.harga-d.disc_cash)) + 
-            (d.qty_tengah * (d.harga-d.disc_cash) / d.konversi_besar) + 
-            (d.qty_kecil * (d.harga-d.disc_cash) / (d.konversi_besar * d.konversi_tengah))
+            (d.qty_besar * (b.harga-d.disc_cash)) + 
+            (d.qty_tengah * (b.harga-d.disc_cash) / b.konversi_besar) + 
+            (d.qty_kecil * (b.harga-d.disc_cash) / (b.konversi_besar * b.konversi_tengah))
              AS total,
             d.disc_perc
         ')
