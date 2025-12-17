@@ -49,11 +49,11 @@ class TrnSalesOrderDetailController extends Controller
                 'qty_besar' => $keranjang->qty_besar,
                 'qty_tengah' => $keranjang->qty_tengah,
                 'qty_kecil' => $keranjang->qty_kecil,
-                'harga' => $harga['total'],
+                'harga' => $harga['harga'],
                 'disc_cash' => $keranjang->disc_cash,
                 'disc_perc' => $keranjang->disc_perc,
                 'ket_detail' => $keranjang->ket_detail,
-                'subtotal' => $harga['totalDisc'],
+                'subtotal' => $harga['subtotal'],
                 'ket_detail' => $request->keterangan,
             ]);
             $keranjang->delete();
