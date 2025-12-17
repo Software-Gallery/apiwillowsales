@@ -52,7 +52,7 @@ Route::get('absen-histori', [TrnAbsenController::class, 'histori']);
 Route::get('getKeranjang', [KeranjangController::class, 'get']);
 Route::get('getTrnDetail', [KeranjangController::class, 'getTrnDetail']);
 Route::post('addKeranjang', [KeranjangController::class, 'add']);
-Route::delete('removeKeranjang', [KeranjangController::class, 'remove']);
+Route::post('removeKeranjang', [KeranjangController::class, 'remove']);
 
 // Rute sales order tanpa autentikasi
 Route::get('sales-order-header', [TrnSalesOrderHeaderController::class, 'index']);
