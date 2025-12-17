@@ -164,7 +164,7 @@ class KeranjangController extends Controller
         $barangs = DB::table('trn_sales_order_detail')
             ->join('mst_barang', 'trn_sales_order_detail.id_barang', '=', 'mst_barang.id_barang')
             ->where('trn_sales_order_detail.kode_sales_order', $request->kode)
-            ->select('mst_barang.*', 'trn_sales_order_detail.qty_besar', 'trn_sales_order_detail.qty_tengah', 'trn_sales_order_detail.qty_kecil', 'trn_sales_order_detail.disc_cash', 'trn_sales_order_detail.disc_perc', 'trn_sales_order_detail.ket_detail')
+            ->select('mst_barang.*', 'trn_sales_order_detail.qty_besar', 'trn_sales_order_detail.qty_tengah', 'trn_sales_order_detail.qty_kecil', 'trn_sales_order_detail.disc_cash', 'trn_sales_order_detail.disc_perc', 'trn_sales_order_detail.ket_detail', 'trn_sales_order_detail.harga as subtotal', 'trn_sales_order_detail.subtotal as total')
             ->get();
 
         $barangs->transform(function ($item) {
@@ -173,8 +173,10 @@ class KeranjangController extends Controller
             $item->qty_kecil = (float) $item->qty_kecil;
             $item->disc_cash = (float) $item->disc_cash;
             $item->disc_perc = (float) $item->disc_perc;
+            $item->subtotal = (float) $item->subtotal;
+            $item->total = (float) $item->total;
             return $item;
-        });        
+        });                    
         
         return response()->json([
             'status' => 'Success',
