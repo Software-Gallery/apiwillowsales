@@ -133,11 +133,18 @@ class TrnSalesOrderHeaderController extends Controller
 
     public function HitungTotal(String $idKaryawan, String $idBarang) {
         $data = trn_sales_order_header::selectRaw('
-            (d.qty_besar * (b.harga-d.disc_cash)) + 
-            (d.qty_tengah * (b.harga-d.disc_cash) / b.konversi_besar) + 
-            (d.qty_kecil * (b.harga-d.disc_cash) / (b.konversi_besar * b.konversi_tengah))
-             AS total,
-            d.disc_perc
+            (
+                (d.qty_besar * b.harga) + 
+                (d.qty_tengah * b.harga / b.konversi_besar) + 
+                (d.qty_kecil * b.harga / (b.konversi_besar * b.konversi_tengah))
+            ) AS harga,
+            (
+                (
+                    (d.qty_besar * (b.harga - d.disc_cash)) + 
+                    (d.qty_tengah * (b.harga - d.disc_cash) / b.konversi_besar) + 
+                    (d.qty_kecil * (b.harga - d.disc_cash) / (b.konversi_besar * b.konversi_tengah))
+                ) * (1 - d.disc_perc / 100) 
+            ) AS subtotal
         ')
         ->from('keranjangs as d')
         ->leftJoin('mst_barang as b', 'b.id_barang', '=', 'd.id_barang')
@@ -146,8 +153,8 @@ class TrnSalesOrderHeaderController extends Controller
         ->first();
 
         return [
-            'total' => $data->total,
-            'totalDisc' => $data->total-($data->total*$data->disc_perc/100),
+            'harga' => $data->harga,
+            'subtotal' => $data->subtotal,
         ];
     }
     // public function HitungTotal(String $idKaryawan, String $idBarang) {
