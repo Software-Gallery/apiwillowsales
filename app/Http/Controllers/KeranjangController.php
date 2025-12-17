@@ -131,7 +131,6 @@ class KeranjangController extends Controller
         $request->validate([
             'id_karyawan' => 'required|integer', 
             'id_barang' => 'required|integer',
-            'qty' => 'required'
         ]);
     
         // Cek apakah barang ada di favorit member tersebut
