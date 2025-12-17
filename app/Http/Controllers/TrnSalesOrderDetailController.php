@@ -145,10 +145,11 @@ class TrnSalesOrderDetailController extends Controller
 
     public function HitungTotal(String $nomor) {
         $data = trn_sales_order_header::selectRaw('
-            (qty_besar * konversi_besar * konversi_tengah) AS besar,
-            (qty_tengah * konversi_tengah) AS tengah,
-            (qty_kecil) AS kecil,
-            d.harga, d.disc_cash, d.disc_perc
+            (d.qty_besar * (d.harga-d.disc_cash)) + 
+            (d.qty_tengah * (d.harga-d.disc_cash) / d.konversi_besar) + 
+            (d.qty_kecil * (d.harga-d.disc_cash) / (d.konversi_besar * d.konversi_tengah))
+             AS total,
+            d.disc_perc
         ')
         ->from('trn_sales_order_detail as d')
         ->leftJoin('mst_barang as b', 'b.id_barang', '=', 'd.id_barang')
@@ -158,8 +159,8 @@ class TrnSalesOrderDetailController extends Controller
         // dd($data);
         $totalOrder = 0;
         foreach ($data as $detail) {
-            $totalQty = ($detail->besar+$detail->tengah+$detail->kecil)*$detail->harga;
-            $totalOrder += $totalQty-($totalQty*$detail->disc_perc/100)-$detail->disc_cash;
+            $totalQty = $total;
+            $totalOrder += $total-($total*$detail->disc_perc/100);
         }
         return $totalOrder;
     }    
