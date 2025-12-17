@@ -160,7 +160,7 @@ class TrnSalesOrderDetailController extends Controller
         $totalOrder = 0;
         foreach ($data as $detail) {
             $totalQty = $detail->total;
-            $totalOrder += $total-($total*$detail->disc_perc/100);
+            $totalOrder += $detail->total-($detail->total*$detail->disc_perc/100);
         }
         return $totalOrder;
     }    
