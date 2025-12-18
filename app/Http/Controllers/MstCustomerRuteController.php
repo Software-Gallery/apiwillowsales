@@ -58,6 +58,12 @@ class MstCustomerRuteController extends Controller
                 ->orWhereRaw("(MOD(WEEK(ta.tgl_aktif, 3), 2) = 0 AND week_genap = 1)");
         });
         $rute = $rute->get();
+
+        $rute->transform(function ($item) {
+            $item->value_nota = (float) $item->value_nota;
+            $item->sisa_piutang = (float) $item->sisa_piutang;
+            return $item;
+        });        
     
         return response()->json([
             'status' => 'Success',
@@ -102,6 +108,12 @@ class MstCustomerRuteController extends Controller
             $rute->where('c.nama', 'like', "%{$request->nama}%");
         }
         $rute = $rute->paginate($perPage);
+
+        $rute->transform(function ($item) {
+            $item->value_nota = (float) $item->value_nota;
+            $item->sisa_piutang = (float) $item->sisa_piutang;
+            return $item;
+        });        
     
         return response()->json([
             'status' => 'Success',
