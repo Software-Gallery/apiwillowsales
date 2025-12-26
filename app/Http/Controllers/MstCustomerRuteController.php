@@ -71,8 +71,8 @@ class MstCustomerRuteController extends Controller
             ->where(function ($query) {
                 $query->whereRaw("MOD(WEEK(ta.tgl_aktif, 3), 2) = 1 AND cr.week_ganjil = 1")
                     ->orWhereRaw("MOD(WEEK(ta.tgl_aktif, 3), 2) = 0 AND cr.week_genap = 1");
-            })
-            ->orderBy('jml_absen', 'asc');
+            });
+            // ->orderBy('jml_absen', 'asc');
 
         $rute = $rute->get();
 
