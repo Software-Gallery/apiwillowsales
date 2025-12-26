@@ -120,13 +120,12 @@ class MstCustomerRuteController extends Controller
                 DB::raw("CONCAT(latitude, ', ', longitude) as latlong_customer"),
                 'lp.jml_nota', 'lp.value_nota', 'lp.sisa_piutang',
             )
-            ->where('k.id_karyawan', $request->id);
+            ->where('k.id_karyawan', $request->id)->orderBy('c.nama', 'asc');
 
         if ($request->filled('nama')) {
             $rute->where('c.nama', 'like', "%{$request->nama}%");
         }
         $rute = $rute->paginate($perPage);
-        $rute = $rute->orderBy('c.nama', 'asc');
         $rute->transform(function ($item) {
             $item->value_nota = (float) $item->value_nota;
             $item->sisa_piutang = (float) $item->sisa_piutang;
