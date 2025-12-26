@@ -22,41 +22,58 @@ class MstCustomerRuteController extends Controller
         $startOfMonth = $currentDate->copy()->startOfMonth();
         $weekOfMonth = ceil(($currentDate->day + $startOfMonth->dayOfWeek) / 7);
         $isEvenWeek = $weekOfMonth % 2 == 0;
+        $subSalesOrder = DB::table('trn_sales_order_header')
+            ->select(
+                'id_customer',
+                'tgl_sales_order',
+                DB::raw('COUNT(*) AS jml_absen')
+            )
+            ->groupBy('id_customer', 'tgl_sales_order');
+
         $rute = DB::table('mst_karyawan AS k')
-        ->select(
-            'cr.*',
-            'd.keterangan AS nama_departemen',
-            'c.nama AS nama_customer',
-            DB::raw('WEEK(ta.tgl_aktif, 3) AS WEEK'),
-            'ta.tgl_aktif',
-            DB::raw('c.alamat alamat_customer'),
-            DB::raw("CONCAT(latitude, ', ', longitude) as latlong_customer"),
-            'lp.jml_nota', 'lp.value_nota', 'lp.sisa_piutang',
-        )
-        ->leftJoin('mst_tgl_aktif AS ta', 'k.id_departemen', '=', 'ta.id_departemen')
-        ->leftJoin('mst_customer_rute AS cr', function($join) {
-            $join->on('k.id_karyawan', '=', 'cr.id_karyawan')
-                ->on('ta.id_departemen', '=', 'cr.id_departemen');
-        })
-        ->leftJoin('mst_customer AS c', 'cr.id_customer', '=', 'c.id_customer')
-        ->leftJoin('mst_departemen AS d', 'ta.id_departemen', '=', 'd.id_departemen')
-        ->leftJoin('list_piutang AS lp', 'c.id_customer', '=', 'lp.id_customer')
-        ->where('k.id_karyawan', $request->id)
-        ->where(function($query) {
-            $query->whereRaw("CASE DAYOFWEEK(ta.tgl_aktif)
-                                WHEN 2 THEN day1  -- Monday
-                                WHEN 3 THEN day2  -- Tuesday
-                                WHEN 4 THEN day3  -- Wednesday
-                                WHEN 5 THEN day4  -- Thursday
-                                WHEN 6 THEN day5  -- Friday
-                                WHEN 7 THEN day6  -- Saturday
-                                WHEN 1 THEN day7  -- Sunday
-                            END = 1");
-        })
-        ->where(function($query) {
-            $query->whereRaw("(MOD(WEEK(ta.tgl_aktif, 3), 2) = 1 AND week_ganjil = 1)")
-                ->orWhereRaw("(MOD(WEEK(ta.tgl_aktif, 3), 2) = 0 AND week_genap = 1)");
-        });
+            ->select(
+                'cr.*',
+                'd.keterangan AS nama_departemen',
+                'c.nama AS nama_customer',
+                DB::raw('WEEK(ta.tgl_aktif, 3) AS WEEK'),
+                'ta.tgl_aktif',
+                DB::raw('c.alamat AS alamat_customer'),
+                DB::raw("CONCAT(c.latitude, ', ', c.longitude) AS latlong_customer"),
+                'lp.jml_nota',
+                'lp.value_nota',
+                'lp.sisa_piutang',
+                DB::raw('IFNULL(h.jml_absen, 0) AS jml_absen')
+            )
+            ->leftJoin('mst_tgl_aktif AS ta', 'k.id_departemen', '=', 'ta.id_departemen')
+            ->leftJoin('mst_customer_rute AS cr', function ($join) {
+                $join->on('k.id_karyawan', '=', 'cr.id_karyawan')
+                    ->on('ta.id_departemen', '=', 'cr.id_departemen');
+            })
+            ->leftJoin('mst_customer AS c', 'cr.id_customer', '=', 'c.id_customer')
+            ->leftJoin('mst_departemen AS d', 'ta.id_departemen', '=', 'd.id_departemen')
+            ->leftJoin('list_piutang AS lp', 'c.id_customer', '=', 'lp.id_customer')
+            ->leftJoinSub($subSalesOrder, 'h', function ($join) {
+                $join->on('h.id_customer', '=', 'c.id_customer')
+                    ->on('h.tgl_sales_order', '=', 'ta.tgl_aktif');
+            })
+            ->where('k.id_karyawan', $request->id)
+            ->whereRaw("
+                CASE DAYOFWEEK(ta.tgl_aktif)
+                    WHEN 2 THEN cr.day1
+                    WHEN 3 THEN cr.day2
+                    WHEN 4 THEN cr.day3
+                    WHEN 5 THEN cr.day4
+                    WHEN 6 THEN cr.day5
+                    WHEN 7 THEN cr.day6
+                    WHEN 1 THEN cr.day7
+                END = 1
+            ")
+            ->where(function ($query) {
+                $query->whereRaw("MOD(WEEK(ta.tgl_aktif, 3), 2) = 1 AND cr.week_ganjil = 1")
+                    ->orWhereRaw("MOD(WEEK(ta.tgl_aktif, 3), 2) = 0 AND cr.week_genap = 1");
+            })
+            ->orderBy('jml_absen', 'asc');
+
         $rute = $rute->get();
 
         $rute->transform(function ($item) {
