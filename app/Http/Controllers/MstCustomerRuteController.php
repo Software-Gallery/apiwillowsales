@@ -71,7 +71,8 @@ class MstCustomerRuteController extends Controller
             ->where(function ($query) {
                 $query->whereRaw("MOD(WEEK(ta.tgl_aktif, 3), 2) = 1 AND cr.week_ganjil = 1")
                     ->orWhereRaw("MOD(WEEK(ta.tgl_aktif, 3), 2) = 0 AND cr.week_genap = 1");
-            });
+            })
+            ->orderBy('c.nama', 'asc');
             // ->orderBy('jml_absen', 'asc');
 
         $rute = $rute->get();
@@ -125,7 +126,7 @@ class MstCustomerRuteController extends Controller
             $rute->where('c.nama', 'like', "%{$request->nama}%");
         }
         $rute = $rute->paginate($perPage);
-
+        $rute = $rute->orderBy('c.nama', 'asc');
         $rute->transform(function ($item) {
             $item->value_nota = (float) $item->value_nota;
             $item->sisa_piutang = (float) $item->sisa_piutang;
