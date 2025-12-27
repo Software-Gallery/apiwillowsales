@@ -69,11 +69,11 @@ class TrnAbsenController extends Controller
                 'h.tgl_sales_order as tgl',
                 'c.nama as nama_customer', 
                 'd.keterangan as nama_departemen',
-                'h.status')
+                'h.status',
+                'a.tgl as tgl_absen')
             ->whereBetween('h.tgl_sales_order', [$request->startDate, $request->endDate])
             ->where('a.id_karyawan', '=', $request->id)
-            ->orderBy('h.tgl_sales_order', 'desc')
-            ->orderBy('a.jam_masuk', 'desc')
+            ->orderBy('a.tgl', 'desc')
             ->get();
 
         return response()->json([
