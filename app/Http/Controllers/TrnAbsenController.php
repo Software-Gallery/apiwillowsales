@@ -70,11 +70,19 @@ class TrnAbsenController extends Controller
                 'c.nama as nama_customer', 
                 'd.keterangan as nama_departemen',
                 'h.status',
-                'a.tgl as tgl_absen')
+                'a.tgl as tgl_absen',
+                DB::raw('get_total_sku(a.kode_sales_order) as totalSKU'),
+                DB::raw('get_total_value(a.kode_sales_order) as totalValue'))
             ->whereBetween('h.tgl_sales_order', [$request->startDate, $request->endDate])
             ->where('a.id_karyawan', '=', $request->id)
             ->orderBy('a.tgl', 'desc')
             ->get();
+
+        $data->transform(function ($item) {
+            $item->totalSKU = (float) $item->totalSKU;
+            $item->totalValue = (float) $item->totalValue;
+            return $item;
+        });           
 
         return response()->json([
             'status' => 'Success',
