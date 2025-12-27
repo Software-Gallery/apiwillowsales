@@ -79,8 +79,8 @@ class TrnAbsenController extends Controller
             ->get();
 
         $data->transform(function ($item) {
-            $item->totalSKU   = number_format((float) $item->totalSKU, 2, '.', '');
-            $item->totalValue = number_format((float) $item->totalValue, 2, '.', '');
+            $item->totalSKU   = (float) number_format($item->totalSKU, 2, '.', '');
+            $item->totalValue = (float) number_format($item->totalValue, 2, '.', '');
             return $item;
         });
         
