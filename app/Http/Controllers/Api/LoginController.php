@@ -73,6 +73,14 @@ class LoginController extends Controller
         return $exists;
     }
 
+    public function isValidImei(Request $request) {
+        $exists = DB::table('login')->where('imei', $request->imei)->exists();
+            return response()->json([
+                'exist' => $exists,
+            ]);
+        return $exists;
+    }
+
     // 🔹 Logout
     public function logout(Request $request)
     {

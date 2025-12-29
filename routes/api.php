@@ -23,6 +23,7 @@ use App\Http\Controllers\AppSettingController;
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/register', [LoginController::class, 'register']);
 Route::post('isValidLogin', [LoginController::class, 'isValidLogin']);
+Route::post('isValidImei', [LoginController::class, 'isValidImei']);
 
 // Rute untuk semua resource yang tidak memerlukan autentikasi
 Route::apiResource('barang', MstBarangController::class);
