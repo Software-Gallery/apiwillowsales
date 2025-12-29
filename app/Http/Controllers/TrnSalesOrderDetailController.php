@@ -54,7 +54,7 @@ class TrnSalesOrderDetailController extends Controller
                 'disc_perc' => $keranjang->disc_perc,
                 'ket_detail' => $keranjang->ket_detail,
                 'subtotal' => $harga['subtotal'],
-                'ket_detail' => $request->keterangan,
+                // 'ket_detail' => $request->keterangan,
             ]);
             $keranjang->delete();
         }        
