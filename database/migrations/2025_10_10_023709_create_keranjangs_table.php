@@ -22,6 +22,7 @@ return new class extends Migration
             $table->decimal('disc_cash', 18, 4)->default(0);
             $table->decimal('disc_perc', 9, 4)->default(0);
             $table->string('ket_detail', 200)->nullable();            
+            
             $table->timestamps();
         });
     }

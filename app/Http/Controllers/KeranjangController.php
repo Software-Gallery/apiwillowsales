@@ -14,12 +14,15 @@ class KeranjangController extends Controller
         //     ->select('mst_barang.*', 'keranjangs.qty', 'keranjangs.qty_besar', 'keranjangs.qty_tengah', 'keranjangs.qty_kecil', 'keranjangs.disc_cash', 'keranjangs.disc_perc', 'keranjangs.ket_detail', )
         //     ->get();
 
-        $barangs = DB::table('keranjangs as d')
+        // $barangs = DB::table('keranjangs as d')
+        //     ->join('mst_barang as b', 'd.id_barang', '=', 'b.id_barang')
+        //     ->where('d.id_karyawan', $request->id)
+        $barangs = DB::table('trn_sales_order_detail as d')
             ->join('mst_barang as b', 'd.id_barang', '=', 'b.id_barang')
-            ->where('d.id_karyawan', $request->id)
+            ->where('d.kode_sales_order', $request->id)
             ->select(
                 'b.*',
-                'd.qty',
+                // 'd.qty',
                 'd.qty_besar',
                 'd.qty_tengah',
                 'd.qty_kecil',
@@ -46,7 +49,7 @@ class KeranjangController extends Controller
             ->get();
 
         $barangs->transform(function ($item) {
-            $item->qty = (float) $item->qty;
+            // $item->qty = (float) $item->qty;
             $item->qty_besar = (float) $item->qty_besar;
             $item->qty_tengah = (float) $item->qty_tengah;
             $item->qty_kecil = (float) $item->qty_kecil;
