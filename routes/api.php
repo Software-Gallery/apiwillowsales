@@ -68,7 +68,7 @@ Route::post('sales-order-detail', [TrnSalesOrderDetailController::class, 'store'
 Route::post('sales-order-detail/add', [TrnSalesOrderDetailController::class, 'add']);
 Route::get('sales-order-detail/show', [TrnSalesOrderDetailController::class, 'show']);
 Route::post('sales-order-detail/update', [TrnSalesOrderDetailController::class, 'update']);
-Route::delete('sales-order-detail/delete', [TrnSalesOrderDetailController::class, 'destroy']);
+Route::post('sales-order-detail/delete', [TrnSalesOrderDetailController::class, 'destroy']);
 
 // Rute customer rute tanpa autentikasi
 Route::get('customer-rute', [MstCustomerRuteController::class, 'index']);
