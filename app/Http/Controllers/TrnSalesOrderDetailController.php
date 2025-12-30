@@ -39,6 +39,15 @@ class TrnSalesOrderDetailController extends Controller
 
         // $trnSalesController = new TrnSalesOrderHeaderController();
         // $harga = $trnSalesController->HitungTotal($request->id_karyawan, $request->id_barang);
+        $barang = DB::table('mst_barang')
+        ->where('id_barang', $request->id_barang)
+        ->first();
+
+        $subtotal = (
+            ($qty_besar * ($barang->harga - $request->disc_cash)) +
+            ($qty_tengah * ($barang->harga - $request->disc_cash) / $barang->konversi_besar) +
+            ($qty_kecil * ($barang->harga - $request->disc_cash) / ($barang->konversi_besar * $barang->konversi_tengah))
+        ) * (1 - $request->disc_perc / 100);
 
         if ($existingFavorite) {
             DB::table('trn_sales_order_detail')
@@ -51,8 +60,8 @@ class TrnSalesOrderDetailController extends Controller
                     'disc_cash' => $request->disc_cash,
                     'disc_perc' => $request->disc_perc,
                     'ket_detail' => $request->ket,
-                    // 'harga' => $harga['harga'],
-                    // 'subtotal' => $harga['subtotal'],
+                    'harga' => $barang->harga,
+                    'subtotal' => $subtotal,
                     'updated_at' => now()
                 ]);
 
