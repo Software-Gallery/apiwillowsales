@@ -17,10 +17,10 @@ class TrnSalesOrderDetailController extends Controller
         return response()->json(trn_sales_order_detail::all());
     }
 
-    public function store(Request $request)
+    public function add(Request $request)
     {
         $request->validate([
-            'kode_sales_order' => 'required|string|max:30', 
+            'kode_sales_order' => 'required', 
             'id_barang' => 'required|integer',
             'qty' => 'required|string',
             'disc_cash' => 'required|integer',
@@ -84,61 +84,61 @@ class TrnSalesOrderDetailController extends Controller
             ]);
         }
     }
-    // public function store(Request $request)
-    // {
-    //     // $validated = $request->validate([
-    //     //     'kode_sales_order' => 'required|string|max:30',
-    //     //     'id_barang' => 'required|integer',
-    //     //     'qty_besar' => 'nullable|numeric',
-    //     //     'qty_tengah' => 'nullable|numeric',
-    //     //     'qty_kecil' => 'nullable|numeric',
-    //     //     'harga' => 'nullable|numeric',
-    //     //     'disc_cash' => 'nullable|numeric',
-    //     //     'disc_perc' => 'nullable|numeric',
-    //     //     'subtotal' => 'nullable|numeric',
-    //     //     'ket_detail' => 'nullable|string|max:200',
-    //     // ]);
-    //     // $detail = trn_sales_order_detail::create($validated);
-    //     $validated = $request->validate([
-    //         'kode_sales_order' => 'required|string|max:30',
-    //     ]);
-    //     $keranjangs = keranjang::where('id_karyawan', $request->id_karyawan)
-    //                            ->leftJoin('mst_barang', 'keranjangs.id_barang', '=', 'mst_barang.id_barang')
-    //                            ->get();
-    //     $total = 0;
-    //     $trnSalesController = new TrnSalesOrderHeaderController();
-    //     foreach ($keranjangs as $keranjang) {
-    //         $harga = $trnSalesController->HitungTotal($request->id_karyawan, $keranjang->id_barang);
-    //         $total+=$harga['subtotal'];
-    //         trn_sales_order_detail::create([
-    //             'kode_sales_order' => $validated['kode_sales_order'],
-    //             'id_barang' => $keranjang->id_barang,
-    //             'qty_besar' => $keranjang->qty_besar,
-    //             'qty_tengah' => $keranjang->qty_tengah,
-    //             'qty_kecil' => $keranjang->qty_kecil,
-    //             'harga' => $harga['harga'],
-    //             'disc_cash' => $keranjang->disc_cash,
-    //             'disc_perc' => $keranjang->disc_perc,
-    //             'ket_detail' => $keranjang->ket_detail,
-    //             'subtotal' => $harga['subtotal'],
-    //             // 'ket_detail' => $request->keterangan,
-    //         ]);
-    //         $keranjang->delete();
-    //     }        
-    //     $neworder = trn_sales_order_header::where('kode_sales_order', $validated['kode_sales_order'])
-    //                                         ->first();        
-    //     $neworder->status = 'POSTED';
-    //     $neworder->total = $total;
-    //     $neworder->save();
+    public function store(Request $request)
+    {
+        // $validated = $request->validate([
+        //     'kode_sales_order' => 'required|string|max:30',
+        //     'id_barang' => 'required|integer',
+        //     'qty_besar' => 'nullable|numeric',
+        //     'qty_tengah' => 'nullable|numeric',
+        //     'qty_kecil' => 'nullable|numeric',
+        //     'harga' => 'nullable|numeric',
+        //     'disc_cash' => 'nullable|numeric',
+        //     'disc_perc' => 'nullable|numeric',
+        //     'subtotal' => 'nullable|numeric',
+        //     'ket_detail' => 'nullable|string|max:200',
+        // ]);
+        // $detail = trn_sales_order_detail::create($validated);
+        $validated = $request->validate([
+            'kode_sales_order' => 'required|string|max:30',
+        ]);
+        $keranjangs = keranjang::where('id_karyawan', $request->id_karyawan)
+                               ->leftJoin('mst_barang', 'keranjangs.id_barang', '=', 'mst_barang.id_barang')
+                               ->get();
+        $total = 0;
+        $trnSalesController = new TrnSalesOrderHeaderController();
+        foreach ($keranjangs as $keranjang) {
+            $harga = $trnSalesController->HitungTotal($request->id_karyawan, $keranjang->id_barang);
+            $total+=$harga['subtotal'];
+            trn_sales_order_detail::create([
+                'kode_sales_order' => $validated['kode_sales_order'],
+                'id_barang' => $keranjang->id_barang,
+                'qty_besar' => $keranjang->qty_besar,
+                'qty_tengah' => $keranjang->qty_tengah,
+                'qty_kecil' => $keranjang->qty_kecil,
+                'harga' => $harga['harga'],
+                'disc_cash' => $keranjang->disc_cash,
+                'disc_perc' => $keranjang->disc_perc,
+                'ket_detail' => $keranjang->ket_detail,
+                'subtotal' => $harga['subtotal'],
+                // 'ket_detail' => $request->keterangan,
+            ]);
+            $keranjang->delete();
+        }        
+        $neworder = trn_sales_order_header::where('kode_sales_order', $validated['kode_sales_order'])
+                                            ->first();        
+        $neworder->status = 'POSTED';
+        $neworder->total = $total;
+        $neworder->save();
 
 
-    //     return response()->json([
-    //         'status' => 'Success',
-    //         'message' => 'Data successfully retrieved',
-    //         'statusCode' => 200,
-    //         'data' => $neworder
-    //     ], 201);       
-    // }
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Data successfully retrieved',
+            'statusCode' => 200,
+            'data' => $neworder
+        ], 201);       
+    }
 
     public function show(Request $request)
     {
