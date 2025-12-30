@@ -51,6 +51,7 @@ Route::get('absen-histori', [TrnAbsenController::class, 'histori']);
 
 // Rute keranjang tanpa autentikasi
 Route::get('getKeranjang', [KeranjangController::class, 'get']);
+Route::get('keranjang', [KeranjangController::class, 'index']);
 Route::get('getTrnDetail', [KeranjangController::class, 'getTrnDetail']);
 Route::post('addKeranjang', [KeranjangController::class, 'add']);
 Route::post('removeKeranjang', [KeranjangController::class, 'remove']);

@@ -14,10 +14,62 @@ class KeranjangController extends Controller
         //     ->select('mst_barang.*', 'keranjangs.qty', 'keranjangs.qty_besar', 'keranjangs.qty_tengah', 'keranjangs.qty_kecil', 'keranjangs.disc_cash', 'keranjangs.disc_perc', 'keranjangs.ket_detail', )
         //     ->get();
 
-        // $barangs = DB::table('keranjangs as d')
+        $barangs = DB::table('keranjangs as d')
+            ->join('mst_barang as b', 'd.id_barang', '=', 'b.id_barang')
+            ->where('d.id_karyawan', $request->id)
+        // $barangs = DB::table('trn_sales_order_detail as d')
         //     ->join('mst_barang as b', 'd.id_barang', '=', 'b.id_barang')
-        //     ->where('d.id_karyawan', $request->id)
-        $barangs = DB::table('trn_sales_order_detail as d')
+        //     ->where('d.kode_sales_order', $request->id)
+            ->select(
+                'b.*',
+                'd.qty',
+                'd.qty_besar',
+                'd.qty_tengah',
+                'd.qty_kecil',
+                'd.disc_cash',
+                'd.disc_perc',
+                'd.ket_detail'
+            )
+            ->selectRaw('
+                (
+                    (d.qty_besar * b.harga) +
+                    (d.qty_tengah * b.harga / b.konversi_besar) +
+                    (d.qty_kecil * b.harga / (b.konversi_besar * b.konversi_tengah))
+                ) AS subtotal
+            ')
+            ->selectRaw('
+                (
+                    (
+                        (d.qty_besar * (b.harga - d.disc_cash)) +
+                        (d.qty_tengah * (b.harga - d.disc_cash) / b.konversi_besar) +
+                        (d.qty_kecil * (b.harga - d.disc_cash) / (b.konversi_besar * b.konversi_tengah))
+                    ) * (1 - d.disc_perc / 100)
+                ) AS total
+            ')
+            ->get();
+
+        $barangs->transform(function ($item) {
+            $item->qty = (float) $item->qty;
+            $item->qty_besar = (float) $item->qty_besar;
+            $item->qty_tengah = (float) $item->qty_tengah;
+            $item->qty_kecil = (float) $item->qty_kecil;
+            $item->disc_cash = (float) $item->disc_cash;
+            $item->disc_perc = (float) $item->disc_perc;
+            $item->subtotal = (float) $item->subtotal;
+            $item->total = (float) $item->total;
+            return $item;
+        });        
+        
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'true',
+            'statusCode' => 200,
+            'data' => $barangs
+        ]);
+    }
+
+    public function index(Request $request, $id) {
+                $barangs = DB::table('trn_sales_order_detail as d')
             ->join('mst_barang as b', 'd.id_barang', '=', 'b.id_barang')
             ->where('d.kode_sales_order', $request->id)
             ->select(
