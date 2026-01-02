@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\trn_sales_order_header;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\trn_absen;
@@ -128,6 +129,15 @@ class TrnAbsenController extends Controller
 
     public function selesai(Request $request) {
         $absen = trn_absen::find($request->id_absen);
+        if ($request->has('keterangan')) {
+            // $trnsales = trn_absen::find($absen->kode_sales_order);
+            $trnsales = trn_sales_order_header::where('kode_sales_order', $absen->kode_sales_order)
+                                            ->first();        
+
+            $trnsales->keterangan = $request->keterangan;
+            $trnsales->save();
+            dd($trnsales);
+        }
         if ($absen) {
             $absen->jam_keluar = now()->setTimezone('Asia/Jakarta')->format('H:i:s');
             $absen->kode_sales_order = $request->kode_sales_order;

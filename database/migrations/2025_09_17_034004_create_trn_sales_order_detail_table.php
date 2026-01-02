@@ -22,6 +22,7 @@ return new class extends Migration
             $table->decimal('disc_perc', 9, 4)->default(0);
             $table->decimal('subtotal', 18, 4)->default(0);
             $table->string('ket_detail', 200)->nullable();
+            $table->string('status', 5)->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrentOnUpdate()->useCurrent();
 

@@ -19,6 +19,7 @@ class trn_sales_order_detail extends Model
         'disc_perc',
         'subtotal',
         'ket_detail',
+        'status',
         'created_at',
         'updated_at',
     ];
