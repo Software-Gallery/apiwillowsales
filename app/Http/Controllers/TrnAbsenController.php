@@ -137,7 +137,7 @@ class TrnAbsenController extends Controller
             $trnsales->keterangan = $request->keterangan;
             $trnsales->status = 'POSTED';
             $trnsales->save();
-            dd($trnsales);
+            // dd($trnsales);
         }
         if ($absen) {
             $absen->jam_keluar = now()->setTimezone('Asia/Jakarta')->format('H:i:s');
