@@ -57,6 +57,7 @@ class TrnSalesOrderDetailController extends Controller
             DB::table('trn_sales_order_detail')
                 ->where('kode_sales_order', $request->kode_sales_order)
                 ->where('id_barang', $request->id_barang)
+                ->where('status', $request->status)
                 ->update([
                     'qty_besar' => $qty_besar,
                     'qty_tengah' => $qty_tengah,
