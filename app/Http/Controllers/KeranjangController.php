@@ -84,14 +84,14 @@ class KeranjangController extends Controller
                 'd.status'
             )
             ->selectRaw('
-                (
+                IF(d.status = "BONUS", 0,
                     (d.qty_besar * b.harga) +
                     (d.qty_tengah * b.harga / b.konversi_besar) +
                     (d.qty_kecil * b.harga / (b.konversi_besar * b.konversi_tengah))
                 ) AS subtotal
             ')
             ->selectRaw('
-                (
+                IF(d.status = "BONUS", 0,
                     (
                         (d.qty_besar * (b.harga - d.disc_cash)) +
                         (d.qty_tengah * (b.harga - d.disc_cash) / b.konversi_besar) +
