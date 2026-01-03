@@ -135,6 +135,7 @@ class TrnAbsenController extends Controller
                                             ->first();        
 
             $trnsales->keterangan = $request->keterangan;
+            $trnsales->status = 'POSTED';
             $trnsales->save();
             dd($trnsales);
         }
