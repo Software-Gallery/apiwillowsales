@@ -213,16 +213,43 @@ class TrnSalesOrderDetailController extends Controller
         } 
     }
 
+    // public function destroy(Request $request)
+    // {
+    //     $detail = trn_sales_order_detail::where('kode_sales_order', $request->kode_sales_order)
+    //         ->where('id_barang', $request->id_barang)
+    //         ->firstOrFail();
+
+    //     $detail->delete();
+
+    //     return response()->json(['message' => 'Sales order detail deleted successfully.']);
+    // }
+
     public function destroy(Request $request)
     {
+        $request->validate([
+            'kode_sales_order' => 'required',
+            'id_barang' => 'required|integer',
+        ]);
+
         $detail = trn_sales_order_detail::where('kode_sales_order', $request->kode_sales_order)
             ->where('id_barang', $request->id_barang)
-            ->firstOrFail();
+            ->first();
+
+        if (!$detail) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Barang tidak ditemukan.'
+            ], 404);
+        }
 
         $detail->delete();
 
-        return response()->json(['message' => 'Sales order detail deleted successfully.']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Barang berhasil dihapus.'
+        ]);
     }
+
 
     public function HitungTotal(String $nomor) {
         $data = trn_sales_order_header::selectRaw('
