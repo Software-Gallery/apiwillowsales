@@ -49,7 +49,9 @@ class TrnSalesOrderDetailController extends Controller
             ($qty_tengah * ($barang->harga - $request->disc_cash) / $barang->konversi_besar) +
             ($qty_kecil * ($barang->harga - $request->disc_cash) / ($barang->konversi_besar * $barang->konversi_tengah))
         ) * (1 - $request->disc_perc / 100);
-
+        if ($request->status == 'BONUS') {
+            $subtotal = 0;
+        }
         if ($existingFavorite) {
             DB::table('trn_sales_order_detail')
                 ->where('kode_sales_order', $request->kode_sales_order)
@@ -83,7 +85,7 @@ class TrnSalesOrderDetailController extends Controller
                 'disc_perc' => $request->disc_perc,
                 'ket_detail' => $request->ket, 
                 'status' => $request->status,
-                // 'harga' => $harga['harga'],
+                'harga' => $barang->harga,
                 // 'subtotal' => $harga['subtotal'],               
                 'created_at' => now(),
                 'updated_at' => now(),
