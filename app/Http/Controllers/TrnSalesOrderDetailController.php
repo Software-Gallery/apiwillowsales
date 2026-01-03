@@ -36,6 +36,7 @@ class TrnSalesOrderDetailController extends Controller
         $existingFavorite = DB::table('trn_sales_order_detail')
             ->where('kode_sales_order', $request->kode_sales_order)
             ->where('id_barang', $request->id_barang)
+            ->where('status', $request->status)
             ->first();
 
         // $trnSalesController = new TrnSalesOrderHeaderController();
