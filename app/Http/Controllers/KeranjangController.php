@@ -80,7 +80,8 @@ class KeranjangController extends Controller
                 'd.qty_kecil',
                 'd.disc_cash',
                 'd.disc_perc',
-                'd.ket_detail'
+                'd.ket_detail',
+                'd.status'
             )
             ->selectRaw('
                 (
