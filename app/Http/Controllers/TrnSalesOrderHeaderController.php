@@ -7,6 +7,7 @@ use App\Models\trn_sales_order_detail;
 use App\Models\mst_barang;
 use App\Models\keranjang;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TrnSalesOrderHeaderController extends Controller
 {
@@ -46,19 +47,38 @@ class TrnSalesOrderHeaderController extends Controller
         ]);   
 
         // Generate nextNomor
-        $year = date('y'); 
-        $month = date('m');
-        $lastSalesHeader = trn_sales_order_header::whereYear('tgl_sales_order', now()->setTimezone('Asia/Jakarta')->format('Y'))
-                                       ->whereMonth('tgl_sales_order', now()->setTimezone('Asia/Jakarta')->format('m'))
-                                       ->orderByDesc('kode_sales_order')
-                                       ->first();
+        // $year = date('y'); 
+        // $month = date('m');
+        // $lastSalesHeader = trn_sales_order_header::whereYear('tgl_sales_order', now()->setTimezone('Asia/Jakarta')->format('Y'))
+        //                                ->whereMonth('tgl_sales_order', now()->setTimezone('Asia/Jakarta')->format('m'))
+        //                                ->orderByDesc('kode_sales_order')
+        //                                ->first();
+        // ambil tanggal aktif
+        $tglAktif = DB::table('mst_tgl_aktif')
+            ->where('id_departemen', $request->id_departemen)
+            ->value('tgl_aktif');   // hasilnya langsung tanggal
+
+        $year  = date('y', strtotime($tglAktif));
+        $month = date('m', strtotime($tglAktif));
+
+        $lastSalesHeader = DB::table('trn_sales_order_header')
+            // ->where('id_departemen', $request->id_departemen)
+            ->whereYear('tgl_sales_order', date('Y', strtotime($tglAktif)))
+            ->whereMonth('tgl_sales_order', date('m', strtotime($tglAktif)))
+            ->orderByDesc('kode_sales_order')
+            ->select('kode_sales_order')
+            ->first();
+
         if ($lastSalesHeader) {
             $lastNumber = (int) substr($lastSalesHeader->kode_sales_order, 4);
             $nextNumber = str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
         } else {
             $nextNumber = '00001';
-        }                
+        }
         $validated['kode_sales_order'] = $year . $month . $nextNumber;
+        if (!($request->has('tgl_sales_order'))) {
+            $validated['tgl_sales_order'] = $tglAktif;
+        }
         //$validated['tgl_sales_order'] = now()->setTimezone('Asia/Jakarta')->format('Y-m-d');
         $order = trn_sales_order_header::create($validated);
         // Create Detail

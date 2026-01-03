@@ -25,6 +25,7 @@ class TrnSalesOrderDetailController extends Controller
             'qty' => 'required|string',
             'disc_cash' => 'required|integer',
             'disc_perc' => 'required|integer',
+            'status' => 'required|string',
         ]);
 
         $qtyParts = array_pad(explode('.', $request->qty), 3, 0);
@@ -62,6 +63,7 @@ class TrnSalesOrderDetailController extends Controller
                     'ket_detail' => $request->ket,
                     'harga' => $barang->harga,
                     'subtotal' => $subtotal,
+                    'status' => $request->status,
                     'updated_at' => now()
                 ]);
 
@@ -80,6 +82,7 @@ class TrnSalesOrderDetailController extends Controller
                 'disc_cash' => $request->disc_cash,
                 'disc_perc' => $request->disc_perc,
                 'ket_detail' => $request->ket, 
+                'status' => $request->status,
                 // 'harga' => $harga['harga'],
                 // 'subtotal' => $harga['subtotal'],               
                 'created_at' => now(),
