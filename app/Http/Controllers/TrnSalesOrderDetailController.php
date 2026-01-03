@@ -231,18 +231,19 @@ class TrnSalesOrderDetailController extends Controller
             'id_barang' => 'required|integer',
         ]);
 
-        $detail = trn_sales_order_detail::where('kode_sales_order', $request->kode_sales_order)
+        trn_sales_order_detail::where('kode_sales_order', $request->kode_sales_order)
             ->where('id_barang', $request->id_barang)
-            ->first();
+            ->delete();
 
-        if (!$detail) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Barang tidak ditemukan.'
-            ], 404);
-        }
 
-        $detail->delete();
+        // dd($detail);    
+
+        // if (!$detail) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'Barang tidak ditemukan.'
+        //     ], 404);
+        // }
 
         return response()->json([
             'success' => true,
