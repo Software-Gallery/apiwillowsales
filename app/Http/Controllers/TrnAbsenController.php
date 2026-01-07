@@ -76,6 +76,7 @@ class TrnAbsenController extends Controller
                 DB::raw('get_total_value(a.kode_sales_order) as totalValue'))
             ->whereBetween('h.tgl_sales_order', [$request->startDate, $request->endDate])
             ->where('a.id_karyawan', '=', $request->id)
+            ->where('c.id_customer', 'like', '%' . $request->id_customer . '%')
             ->orderBy('a.tgl', 'desc')
             ->get();
 
