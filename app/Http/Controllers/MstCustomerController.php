@@ -4,13 +4,50 @@ namespace App\Http\Controllers;
 
 use App\Models\mst_customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MstCustomerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(mst_customer::all());
+        $customer = DB::table('mst_karyawan as k')
+            ->join('mst_customer as c', 'k.id_departemen', '=', 'c.id_departemen')
+            ->select(
+                'c.id_customer',
+                'c.nama',
+                'c.alamat'
+            )
+            ->where('k.id_karyawan', $request->id);
+
+        if ($request->filled('nama')) {
+            $keyword = $request->nama;
+
+            $customer->where('c.nama', 'like', "%{$keyword}%")
+                ->orderByRaw(
+                    "CASE 
+                        WHEN c.nama LIKE ? THEN 0 
+                        ELSE 1 
+                    END, 
+                    LOCATE(?, c.nama)",
+                    ["{$keyword}%", $keyword]
+                );
+        } else {
+            $customer->orderBy('c.nama', 'asc');
+        }
+
+        $data = $customer
+            ->limit(10)
+            ->get();
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'true',
+            'statusCode' => 200,
+            'data' => $data
+        ]);
     }
+
+
 
     public function store(Request $request)
     {
