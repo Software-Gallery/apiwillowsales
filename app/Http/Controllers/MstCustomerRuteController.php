@@ -26,9 +26,11 @@ class MstCustomerRuteController extends Controller
             ->select(
                 'id_customer',
                 'tgl_sales_order',
-                DB::raw('COUNT(*) AS jml_absen')
+                'id_karyawan',
+                DB::raw('COUNT(*) AS jml_absen'),
+                DB::raw('SUM(Total) AS sisa_piutang'),
             )
-            ->groupBy('id_customer', 'tgl_sales_order');
+            ->groupBy('id_customer', 'tgl_sales_order', 'id_karyawan');
 
         $rute = DB::table('mst_karyawan AS k')
             ->select(
@@ -39,9 +41,9 @@ class MstCustomerRuteController extends Controller
                 'ta.tgl_aktif',
                 DB::raw('c.alamat AS alamat_customer'),
                 DB::raw("CONCAT(c.latitude, ', ', c.longitude) AS latlong_customer"),
-                'lp.jml_nota',
+                DB::raw('IFNULL(h.jml_absen, 0) AS jml_nota'),
                 'lp.value_nota',
-                'lp.sisa_piutang',
+                'h.sisa_piutang',
                 DB::raw('IFNULL(h.jml_absen, 0) AS jml_absen')
             )
             ->leftJoin('mst_tgl_aktif AS ta', 'k.id_departemen', '=', 'ta.id_departemen')
@@ -54,7 +56,8 @@ class MstCustomerRuteController extends Controller
             ->leftJoin('list_piutang AS lp', 'c.id_customer', '=', 'lp.id_customer')
             ->leftJoinSub($subSalesOrder, 'h', function ($join) {
                 $join->on('h.id_customer', '=', 'c.id_customer')
-                    ->on('h.tgl_sales_order', '=', 'ta.tgl_aktif');
+                ->on('h.id_karyawan', '=', 'k.id_karyawan')
+                ->on('h.tgl_sales_order', '=', 'ta.tgl_aktif');
             })
             ->where('k.id_karyawan', $request->id)
             ->whereRaw("
