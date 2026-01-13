@@ -78,6 +78,7 @@ class TrnAbsenController extends Controller
             ->where('a.id_karyawan', '=', $request->id)
             ->where('c.id_customer', 'like', '%' . $request->id_customer . '%')
             ->orderBy('a.tgl', 'desc')
+            ->orderBy('a.jam_masuk', 'desc')
             ->get();
 
         $data->transform(function ($item) {
