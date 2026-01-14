@@ -250,6 +250,13 @@ class TrnSalesOrderDetailController extends Controller
             ->where('status', $request->status)
             ->delete();
 
+        $trnsales = trn_sales_order_header::where('kode_sales_order', $request->kode_sales_order)->first();   
+        $total = DB::selectOne(
+            'SELECT get_total_value(?) AS total',
+            [$request->kode_sales_order]
+        )->total;
+        $trnsales->total = $total;
+        $trnsales->save();
 
         // dd($detail);    
 
