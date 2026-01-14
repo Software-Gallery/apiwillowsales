@@ -71,11 +71,11 @@ class TrnSalesOrderDetailController extends Controller
                     'updated_at' => now()
                 ]);
 
-            return response()->json([
-                'status' => 'Success',
-                'message' => 'Item quantity updated in cart',
-                'statusCode' => 200
-            ]);
+            // return response()->json([
+            //     'status' => 'Success',
+            //     'message' => 'Item quantity updated in cart',
+            //     'statusCode' => 200
+            // ]);
         } else {
             DB::table('trn_sales_order_detail')->insert([
                 'kode_sales_order' => $request->kode_sales_order,
@@ -93,12 +93,24 @@ class TrnSalesOrderDetailController extends Controller
                 'updated_at' => now(),
             ]);
 
-            return response()->json([
-                'status' => 'Success',
-                'message' => 'Item added to cart',
-                'statusCode' => 200
-            ]);
+            // return response()->json([
+            //     'status' => 'Success',
+            //     'message' => 'Item added to cart',
+            //     'statusCode' => 200
+            // ]);
         }
+        $trnsales = trn_sales_order_header::where('kode_sales_order', $request->kode_sales_order)->first();   
+        $total = DB::selectOne(
+            'SELECT get_total_value(?) AS total',
+            [$request->kode_sales_order]
+        )->total;
+        $trnsales->total = $total;
+        $trnsales->save();
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Item added to cart',
+            'statusCode' => 200
+        ]);
     }
     public function store(Request $request)
     {
