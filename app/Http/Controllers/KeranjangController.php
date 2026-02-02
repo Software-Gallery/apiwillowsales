@@ -72,6 +72,7 @@ class KeranjangController extends Controller
             $barangs = DB::table('trn_sales_order_detail as d')
             ->join('mst_barang as b', 'd.id_barang', '=', 'b.id_barang')
             ->where('d.kode_sales_order', $request->id)
+            ->where('d.kode_sales_order', '<>', '0')
             ->select(
                 'b.*',
                 // 'd.qty',
