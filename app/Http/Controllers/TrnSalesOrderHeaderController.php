@@ -177,6 +177,46 @@ class TrnSalesOrderHeaderController extends Controller
             'subtotal' => $data->subtotal,
         ];
     }
+
+    public function nextNomor(Request $request) {
+        $tglAktif = DB::table('mst_tgl_aktif')
+            ->where('id_departemen', $request->id_departemen)
+            ->value('tgl_aktif');   // hasilnya langsung tanggal
+
+        $year  = date('y', strtotime($tglAktif));
+        $month = date('m', strtotime($tglAktif));
+
+        $lastSalesHeader = DB::table('trn_sales_order_header')
+            // ->where('id_departemen', $request->id_departemen)
+            ->whereYear('tgl_sales_order', date('Y', strtotime($tglAktif)))
+            ->whereMonth('tgl_sales_order', date('m', strtotime($tglAktif)))
+            ->orderByDesc('kode_sales_order')
+            ->select('kode_sales_order')
+            ->first();
+
+        if ($lastSalesHeader) {
+            $lastNumber = (int) substr($lastSalesHeader->kode_sales_order, 4);
+            $nextNumber = str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
+        } else {
+            $nextNumber = '00001';
+        }
+        $validated['kode_sales_order'] = $year . $month . $nextNumber;
+        if (!($request->has('tgl_sales_order'))) {
+            $validated['tgl_sales_order'] = $tglAktif;
+        }
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Data successfully retrieved',
+            'statusCode' => 200,
+            'tglAktif' => $tglAktif,
+            'year' => $year,
+            'month' => $month,
+            'last' =>  $lastSalesHeader,
+            'data' => $validated
+        ], 200);     
+    }
+
     // public function HitungTotal(String $idKaryawan, String $idBarang) {
     //     $data = trn_sales_order_header::selectRaw('
     //         (qty_besar * konversi_besar * konversi_tengah) AS besar,

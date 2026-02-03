@@ -121,9 +121,9 @@ class TrnAbsenController extends Controller
             'alamat' => 'nullable|string|max:255',
             'tipe' => 'nullable|string',
         ]);
-        if ($request->has('keterangan')) {
-            $validated['kode_sales_order'] = $request->kode_sales_order;
-        }
+        // if ($request->has('keterangan')) {
+        //     $validated['kode_sales_order'] = $request->kode_sales_order;
+        // }
         $absen = trn_absen::create($validated);
         return response()->json([
             'statusCode' => 200,

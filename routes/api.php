@@ -62,6 +62,8 @@ Route::post('sales-order-header', [TrnSalesOrderHeaderController::class, 'store'
 Route::get('sales-order-header/show', [TrnSalesOrderHeaderController::class, 'show']);
 Route::post('sales-order-header/update', [TrnSalesOrderHeaderController::class, 'update']);
 Route::delete('sales-order-header/delete', [TrnSalesOrderHeaderController::class, 'destroy']);
+Route::get('sales-order-header/nextNomor', [TrnSalesOrderHeaderController::class, 'nextNomor']);
+
 
 Route::get('sales-order-detail', [TrnSalesOrderDetailController::class, 'index']);
 Route::post('sales-order-detail', [TrnSalesOrderDetailController::class, 'store']);
