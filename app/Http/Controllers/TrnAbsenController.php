@@ -120,6 +120,7 @@ class TrnAbsenController extends Controller
             'keterangan' => 'nullable|string|max:255',
             'alamat' => 'nullable|string|max:255',
             'tipe' => 'nullable|string',
+            'kode_sales_order' => 'nullable'
         ]);
         // if ($request->has('keterangan')) {
         //     $validated['kode_sales_order'] = $request->kode_sales_order;
