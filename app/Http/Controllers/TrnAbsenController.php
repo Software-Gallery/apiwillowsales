@@ -123,7 +123,7 @@ class TrnAbsenController extends Controller
             // 'kode_sales_order' => 'nullable'
         ]);
 
-        if (is_null($request->kode_sales_order)) {
+        if (is_null($request->kode_sales_order) || (string)$request->kode_sales_order == '0') {
             $tglAktif = $validated['tgl'];
 
             $year  = date('y', strtotime($tglAktif));
@@ -148,7 +148,7 @@ class TrnAbsenController extends Controller
         // if ($request->has('keterangan')) {
         //     $validated['kode_sales_order'] = $request->kode_sales_order;
         // }
-        $absen = trn_absen::create($validated);
+        $absen = trn_absen::create(attributes: $validated);
         return response()->json([
             'statusCode' => 200,
             'message' => 'Absen berhasil disimpan!',
