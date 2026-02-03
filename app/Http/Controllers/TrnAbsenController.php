@@ -139,7 +139,7 @@ class TrnAbsenController extends Controller
 
             if ($lastSalesHeader) {
                 $lastNumber = (int) substr($lastSalesHeader->kode_sales_order, 4);
-                $nextNumber = str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
+                $nextNumber = str_pad($lastNumber, 5, '0', STR_PAD_LEFT);
             } else {
                 $nextNumber = '00001';
             }
