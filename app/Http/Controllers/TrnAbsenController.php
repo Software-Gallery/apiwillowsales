@@ -120,8 +120,31 @@ class TrnAbsenController extends Controller
             'keterangan' => 'nullable|string|max:255',
             'alamat' => 'nullable|string|max:255',
             'tipe' => 'nullable|string',
-            'kode_sales_order' => 'nullable'
+            // 'kode_sales_order' => 'nullable'
         ]);
+
+        if (is_null($request->kode_sales_order)) {
+            $tglAktif = $validated['tgl'];
+
+            $year  = date('y', strtotime($tglAktif));
+            $month = date('m', strtotime($tglAktif));
+
+            $lastSalesHeader = DB::table('trn_sales_order_header')
+                // ->where('id_departemen', $request->id_departemen)
+                ->whereYear('tgl_sales_order', date('Y', strtotime($tglAktif)))
+                ->whereMonth('tgl_sales_order', date('m', strtotime($tglAktif)))
+                ->orderByDesc('kode_sales_order')
+                ->select('kode_sales_order')
+                ->first();
+
+            if ($lastSalesHeader) {
+                $lastNumber = (int) substr($lastSalesHeader->kode_sales_order, 4);
+                $nextNumber = str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
+            } else {
+                $nextNumber = '00001';
+            }
+            $validated['kode_sales_order'] = $year . $month . $nextNumber;
+        }
         // if ($request->has('keterangan')) {
         //     $validated['kode_sales_order'] = $request->kode_sales_order;
         // }
