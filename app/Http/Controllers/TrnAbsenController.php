@@ -159,23 +159,23 @@ class TrnAbsenController extends Controller
     public function selesai(Request $request) {
         $absen = trn_absen::find($request->id_absen);
         
-            //$trnsales = trn_absen::find($absen->kode_sales_order);
-            $trnsales = trn_sales_order_header::where('kode_sales_order', $request->kode_sales_order)->first();   
-            
-            
-            if ($trnsales) {
-                $total = DB::selectOne(
-                    'SELECT get_total_value(?) AS total',
-                    [$absen->kode_sales_order]
-                )->total;
-                if ($request->has('keterangan')) {
-                    $trnsales->keterangan = $request->keterangan;
-                }
-                $trnsales->total = $total;
-                $trnsales->status = 'POSTED';
-                $trnsales->save();
+        //$trnsales = trn_absen::find($absen->kode_sales_order);
+        $trnsales = trn_sales_order_header::where('kode_sales_order', $request->kode_sales_order)->first();   
+        
+        
+        if ($trnsales) {
+            $total = DB::selectOne(
+                'SELECT get_total_value(?) AS total',
+                [$request->kode_sales_order]
+            )->total;
+            if ($request->has('keterangan')) {
+                $trnsales->keterangan = $request->keterangan;
             }
-            // dd($trnsales);
+            $trnsales->total = $total;
+            $trnsales->status = 'POSTED';
+            $trnsales->save();
+        }
+        // dd($trnsales);
         
         if ($absen) {
             $absen->jam_keluar = now()->setTimezone('Asia/Jakarta')->format('H:i:s');
