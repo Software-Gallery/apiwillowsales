@@ -153,14 +153,14 @@ class TrnSalesOrderDetailController extends Controller
             ]);
             //$keranjang->delete();
         }     
-        $keranjangs->delete();   
+        
         $neworder = trn_sales_order_header::where('kode_sales_order', $validated['kode_sales_order'])
                                             ->first();        
         $neworder->status = 'POSTED';
         $neworder->total = $total;
         $neworder->save();
 
-
+        $keranjangs->delete();   
         return response()->json([
             'status' => 'Success',
             'message' => 'Data successfully retrieved',
