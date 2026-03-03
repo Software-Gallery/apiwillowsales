@@ -88,7 +88,7 @@ class TrnSalesOrderDetailController extends Controller
                 'ket_detail' => $request->ket, 
                 'status' => $request->status,
                 'harga' => $barang->harga,
-                // 'subtotal' => $harga['subtotal'],               
+                 'subtotal' => $subtotal,               
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
