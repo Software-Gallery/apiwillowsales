@@ -151,8 +151,9 @@ class TrnSalesOrderDetailController extends Controller
                 'subtotal' => $harga['subtotal'],
                 // 'ket_detail' => $request->keterangan,
             ]);
-            $keranjang->delete();
-        }        
+            //$keranjang->delete();
+        }     
+        $keranjangs->delete();   
         $neworder = trn_sales_order_header::where('kode_sales_order', $validated['kode_sales_order'])
                                             ->first();        
         $neworder->status = 'POSTED';
