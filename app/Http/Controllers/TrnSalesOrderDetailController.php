@@ -23,8 +23,8 @@ class TrnSalesOrderDetailController extends Controller
             'kode_sales_order' => 'required', 
             'id_barang' => 'required|integer',
             'qty' => 'required|string',
-            'disc_cash' => 'required|integer',
-            'disc_perc' => 'required|integer',
+            'disc_cash' => 'required',
+            'disc_perc' => 'required',
             'status' => 'required|string',
         ]);
 
