@@ -8,87 +8,120 @@ use App\Models\Login;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
     // 🔹 Register
     public function register(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:login',
-            'password' => 'required|min:6',
-            'id_karyawan' => 'required|exists:mst_karyawan,id_karyawan',
-        ]);
+        Log::info('register ' . $request->id_karyawan, $request->all());
+        try {
+            $request->validate([
+                'name' => 'required',
+                'email' => 'required|email|unique:login',
+                'password' => 'required|min:6',
+                'id_karyawan' => 'required|exists:mst_karyawan,id_karyawan',
+            ]);
 
-        $user = Login::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'id_karyawan' => $request->id_karyawan,
-            'password' => Hash::make($request->password),
-            'api_token' => Str::random(60),
-        ]);
+            $user = Login::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'id_karyawan' => $request->id_karyawan,
+                'password' => Hash::make($request->password),
+                'api_token' => Str::random(60),
+            ]);
 
-        return response()->json([
-            'message' => 'Register success',
-            'token' => $user->api_token,
-        ], 201);
+            return response()->json([
+                'message' => 'Register success',
+                'token' => $user->api_token,
+            ], 201);
+        } catch (\Exception $e) {
+            Log::error('register ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
+        }
     }
 
     // 🔹 Login
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-            'imei' => 'required',
-        ]);
+        Log::info('login ' . $request->id_karyawan, $request->all());
+        try {
+            $request->validate([
+                'email' => 'required|email',
+                'password' => 'required',
+                'imei' => 'required',
+            ]);
 
-        $user = Login::where('email', $request->email)->first();
+            $user = Login::where('email', $request->email)->first();
 
-        if (! $user || ! Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Email atau password salah'], 401);
+            if (!$user || !Hash::check($request->password, $user->password)) {
+                return response()->json(['message' => 'Email atau password salah'], 401);
+            }
+
+            if (Str::trim($user->imei) <> '' && Str::trim($user->imei) <> $request->imei) {
+                return response()->json(['message' => 'Email ini sudah login di perangkat lain'], 401);
+            }
+
+            // Buat token baru setiap login
+            $user->api_token = Str::random(60);
+            $user->imei = $request->imei;
+            $user->save();
+
+            return response()->json([
+                'message' => 'Login success',
+                'token' => $user->api_token,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('login ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
-
-        if (Str::trim($user->imei) <> '' && Str::trim($user->imei) <> $request->imei) {
-            return response()->json(['message' => 'Email ini sudah login di perangkat lain'], 401);
-        }        
-
-        // Buat token baru setiap login
-        $user->api_token = Str::random(60);
-        $user->imei = $request->imei;
-        $user->save();
-
-        return response()->json([
-            'message' => 'Login success',
-            'token' => $user->api_token,
-        ]);
     }
 
-    public function isValidLogin(Request $request) {
-        $exists = DB::table('login')->where('api_token', $request->token)->exists();
+    public function isValidLogin(Request $request)
+    {
+        Log::info('isValidLogin ' . $request->id_karyawan, $request->all());
+        try {
+            $exists = DB::table('login')->where('api_token', $request->token)->exists();
             return response()->json([
                 'exist' => $exists,
             ]);
-        return $exists;
+            return $exists;
+        } catch (\Exception $e) {
+            Log::error('isValidLogin ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
+        }
     }
 
-    public function isValidImei(Request $request) {
-        $exists = DB::table('login')->where('imei', $request->imei)->exists();
+    public function isValidImei(Request $request)
+    {
+        Log::info('isValidImei ' . $request->id_karyawan, $request->all());
+        try {
+            $exists = DB::table('login')->where('imei', $request->imei)->exists();
             return response()->json([
                 'exist' => $exists,
             ]);
-        return $exists;
+            return $exists;
+        } catch (\Exception $e) {
+            Log::error('isValidImei ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
+        }
     }
 
     // 🔹 Logout
     public function logout(Request $request)
     {
-        $user = $request->user();
-        $user->api_token = null;
-        $user->save();
+        Log::info('logout ' . $request->id_karyawan, $request->all());
+        try {
+            $user = $request->user();
+            $user->api_token = null;
+            $user->save();
 
-        return response()->json(['message' => 'Logout success']);
+            return response()->json(['message' => 'Logout success']);
+        } catch (\Exception $e) {
+            Log::error('logout ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
+        }
     }
 
     // 🔹 Profile
@@ -96,7 +129,7 @@ class LoginController extends Controller
     {
         // Ambil data berdasarkan api_token
         $user = Login::where('api_token', $request->token)->first();
-    
+
         // Cek jika user ditemukan
         if ($user) {
             return response()->json([
@@ -113,11 +146,17 @@ class LoginController extends Controller
 
     public function resetImei(int $id)
     {
-        DB::table('login')
-            ->where('id', $id)
-            ->update([
-                'imei' => '',
-            ]);        
+        Log::info('resetImei ' . $id, ['id' => $id]);
+        try {
+            DB::table('login')
+                ->where('id', $id)
+                ->update([
+                    'imei' => '',
+                ]);
+        } catch (\Exception $e) {
+            Log::error('resetImei ' . $id . ' ERROR: ' . $e->getMessage(), ['id' => $id]);
+            return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
+        }
     }
 
 }

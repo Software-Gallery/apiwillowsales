@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\mst_customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MstCustomerController extends Controller
 {
@@ -51,23 +52,29 @@ class MstCustomerController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'id_customer' => 'required|integer|unique:mst_customer,id_customer',
-            'kode_customer' => 'required|string|max:50',
-            'nama' => 'nullable|string|max:100',
-            'alamat' => 'nullable|string|max:200',
-            'id_provinsi' => 'nullable|integer',
-            'id_kota' => 'nullable|integer',
-            'id_kecamatan' => 'nullable|integer',
-            'id_kelurahan' => 'nullable|integer',
-            'kode_pos' => 'nullable|string|max:5',
-            'latitutde' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
-        ]);
+        Log::info('customer store ' . $request->id_karyawan, $request->all());
+        try {
+            $validated = $request->validate([
+                'id_customer' => 'required|integer|unique:mst_customer,id_customer',
+                'kode_customer' => 'required|string|max:50',
+                'nama' => 'nullable|string|max:100',
+                'alamat' => 'nullable|string|max:200',
+                'id_provinsi' => 'nullable|integer',
+                'id_kota' => 'nullable|integer',
+                'id_kecamatan' => 'nullable|integer',
+                'id_kelurahan' => 'nullable|integer',
+                'kode_pos' => 'nullable|string|max:5',
+                'latitutde' => 'nullable|numeric',
+                'longitude' => 'nullable|numeric',
+            ]);
 
-        $customer = mst_customer::create($validated);
+            $customer = mst_customer::create($validated);
 
-        return response()->json($customer, 201);
+            return response()->json($customer, 201);
+        } catch (\Exception $e) {
+            Log::error('customer store ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function show($id)
@@ -78,31 +85,43 @@ class MstCustomerController extends Controller
 
     public function update(Request $request, $id)
     {
-        $customer = mst_customer::findOrFail($id);
+        Log::info('customer update ' . $request->id_karyawan, $request->all());
+        try {
+            $customer = mst_customer::findOrFail($id);
 
-        $validated = $request->validate([
-            'kode_customer' => 'required|string|max:50',
-            'nama' => 'nullable|string|max:100',
-            'alamat' => 'nullable|string|max:200',
-            'id_provinsi' => 'nullable|integer',
-            'id_kota' => 'nullable|integer',
-            'id_kecamatan' => 'nullable|integer',
-            'id_kelurahan' => 'nullable|integer',
-            'kode_pos' => 'nullable|string|max:5',
-            'latitutde' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
-        ]);
+            $validated = $request->validate([
+                'kode_customer' => 'required|string|max:50',
+                'nama' => 'nullable|string|max:100',
+                'alamat' => 'nullable|string|max:200',
+                'id_provinsi' => 'nullable|integer',
+                'id_kota' => 'nullable|integer',
+                'id_kecamatan' => 'nullable|integer',
+                'id_kelurahan' => 'nullable|integer',
+                'kode_pos' => 'nullable|string|max:5',
+                'latitutde' => 'nullable|numeric',
+                'longitude' => 'nullable|numeric',
+            ]);
 
-        $customer->update($validated);
+            $customer->update($validated);
 
-        return response()->json($customer);
+            return response()->json($customer);
+        } catch (\Exception $e) {
+            Log::error('customer update ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function destroy($id)
     {
-        $customer = mst_customer::findOrFail($id);
-        $customer->delete();
+        Log::info('customer destroy ' . $id, ['id' => $id]);
+        try {
+            $customer = mst_customer::findOrFail($id);
+            $customer->delete();
 
-        return response()->json(['message' => 'Customer deleted successfully.']);
+            return response()->json(['message' => 'Customer deleted successfully.']);
+        } catch (\Exception $e) {
+            Log::error('customer destroy ' . $id . ' ERROR: ' . $e->getMessage(), ['id' => $id]);
+            return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
+        }
     }
 }

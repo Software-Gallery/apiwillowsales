@@ -6,6 +6,7 @@ use App\Models\mst_customer_rute;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MstCustomerRuteController extends Controller
 {
@@ -56,8 +57,8 @@ class MstCustomerRuteController extends Controller
             ->leftJoin('list_piutang AS lp', 'c.id_customer', '=', 'lp.id_customer')
             ->leftJoinSub($subSalesOrder, 'h', function ($join) {
                 $join->on('h.id_customer', '=', 'c.id_customer')
-                ->on('h.id_karyawan', '=', 'k.id_karyawan')
-                ->on('h.tgl_sales_order', '=', 'ta.tgl_aktif');
+                    ->on('h.id_karyawan', '=', 'k.id_karyawan')
+                    ->on('h.tgl_sales_order', '=', 'ta.tgl_aktif');
             })
             ->where('k.id_karyawan', $request->id)
             ->whereRaw("
@@ -76,7 +77,7 @@ class MstCustomerRuteController extends Controller
                     ->orWhereRaw("MOD(WEEK(ta.tgl_aktif, 3), 2) = 0 AND cr.week_genap = 1");
             })
             ->orderBy('c.nama', 'asc');
-            // ->orderBy('jml_absen', 'asc');
+        // ->orderBy('jml_absen', 'asc');
 
         $rute = $rute->get();
 
@@ -84,8 +85,8 @@ class MstCustomerRuteController extends Controller
             $item->value_nota = (float) $item->value_nota;
             $item->sisa_piutang = (float) $item->sisa_piutang;
             return $item;
-        });        
-    
+        });
+
         return response()->json([
             'status' => 'Success',
             'message' => 'Data successfully retrieved',
@@ -121,7 +122,9 @@ class MstCustomerRuteController extends Controller
                 DB::raw('NOW() as tgl_aktif'),
                 DB::raw('c.alamat alamat_customer'),
                 DB::raw("CONCAT(latitude, ', ', longitude) as latlong_customer"),
-                'lp.jml_nota', 'lp.value_nota', 'lp.sisa_piutang',
+                'lp.jml_nota',
+                'lp.value_nota',
+                'lp.sisa_piutang',
             )
             ->where('k.id_karyawan', $request->id)->orderBy('c.nama', 'asc');
 
@@ -133,8 +136,8 @@ class MstCustomerRuteController extends Controller
             $item->value_nota = (float) $item->value_nota;
             $item->sisa_piutang = (float) $item->sisa_piutang;
             return $item;
-        });        
-    
+        });
+
         return response()->json([
             'status' => 'Success',
             'message' => 'Data successfully retrieved',
@@ -145,28 +148,34 @@ class MstCustomerRuteController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'id_departemen' => 'required|integer',
-            'id_customer' => 'required|integer',
-            'id_karyawan' => 'required|integer',
+        Log::info('customer-rute store ' . $request->id_karyawan, $request->all());
+        try {
+            $validated = $request->validate([
+                'id_departemen' => 'required|integer',
+                'id_customer' => 'required|integer',
+                'id_karyawan' => 'required|integer',
 
-            'day1' => 'boolean',
-            'day2' => 'boolean',
-            'day3' => 'boolean',
-            'day4' => 'boolean',
-            'day5' => 'boolean',
-            'day6' => 'boolean',
-            'day7' => 'boolean',
+                'day1' => 'boolean',
+                'day2' => 'boolean',
+                'day3' => 'boolean',
+                'day4' => 'boolean',
+                'day5' => 'boolean',
+                'day6' => 'boolean',
+                'day7' => 'boolean',
 
-            'week1' => 'boolean',
-            'week2' => 'boolean',
-            'week3' => 'boolean',
-            'week4' => 'boolean',
-        ]);
+                'week1' => 'boolean',
+                'week2' => 'boolean',
+                'week3' => 'boolean',
+                'week4' => 'boolean',
+            ]);
 
-        $rute = MstCustomerRute::create($validated);
+            $rute = MstCustomerRute::create($validated);
 
-        return response()->json($rute, 201);
+            return response()->json($rute, 201);
+        } catch (\Exception $e) {
+            Log::error('customer-rute store ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function show(Request $request)
@@ -179,48 +188,61 @@ class MstCustomerRuteController extends Controller
             ->firstOrFail();
 
         return response()->json($rute);
-    }    
+    }
 
     public function update(Request $request)
     {
-        $rute = MstCustomerRute::where('id_departemen', $request->id_departemen)
-            ->where('id_customer', $request->id_customer)
-            ->where('id_karyawan', $request->id_karyawan)
-            ->firstOrFail();
+        Log::info('customer-rute update ' . $request->id_karyawan, $request->all());
+        try {
+            $rute = MstCustomerRute::where('id_departemen', $request->id_departemen)
+                ->where('id_customer', $request->id_customer)
+                ->where('id_karyawan', $request->id_karyawan)
+                ->firstOrFail();
 
-        $validated = $request->validate([
-            'day1' => 'boolean',
-            'day2' => 'boolean',
-            'day3' => 'boolean',
-            'day4' => 'boolean',
-            'day5' => 'boolean',
-            'day6' => 'boolean',
-            'day7' => 'boolean',
+            $validated = $request->validate([
+                'day1' => 'boolean',
+                'day2' => 'boolean',
+                'day3' => 'boolean',
+                'day4' => 'boolean',
+                'day5' => 'boolean',
+                'day6' => 'boolean',
+                'day7' => 'boolean',
 
-            'week1' => 'boolean',
-            'week2' => 'boolean',
-            'week3' => 'boolean',
-            'week4' => 'boolean',
-        ]);
+                'week1' => 'boolean',
+                'week2' => 'boolean',
+                'week3' => 'boolean',
+                'week4' => 'boolean',
+            ]);
 
-        $rute->update($validated);
+            $rute->update($validated);
 
-        return response()->json($rute);
+            return response()->json($rute);
+        } catch (\Exception $e) {
+            Log::error('customer-rute update ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function destroy(Request $request)
     {
-        $rute = MstCustomerRute::where('id_departemen', $request->id_departemen)
-            ->where('id_customer', $request->id_customer)
-            ->where('id_karyawan', $request->id_karyawan)
-            ->firstOrFail();
+        Log::info('customer-rute destroy ' . $request->id_karyawan, $request->all());
+        try {
+            $rute = MstCustomerRute::where('id_departemen', $request->id_departemen)
+                ->where('id_customer', $request->id_customer)
+                ->where('id_karyawan', $request->id_karyawan)
+                ->firstOrFail();
 
-        $rute->delete();
+            $rute->delete();
 
-        return response()->json(['message' => 'Customer rute deleted successfully.']);
+            return response()->json(['message' => 'Customer rute deleted successfully.']);
+        } catch (\Exception $e) {
+            Log::error('customer-rute destroy ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
+        }
     }
 
-    public function tglAktif(Request $request) {
+    public function tglAktif(Request $request)
+    {
         $rute = DB::table('mst_karyawan as k')
             ->leftJoin('mst_tgl_aktif as ta', 'k.id_departemen', '=', 'ta.id_departemen')
             ->where('k.id_karyawan', $request->id)
@@ -233,6 +255,6 @@ class MstCustomerRuteController extends Controller
             ], 200);
         } else {
             return response()->json($rute, 200);
-        }    
+        }
     }
 }

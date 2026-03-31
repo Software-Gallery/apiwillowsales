@@ -9,6 +9,7 @@ use App\Models\keranjang;
 use App\Http\Controllers\MstBarangController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TrnSalesOrderDetailController extends Controller
 {
@@ -19,154 +20,138 @@ class TrnSalesOrderDetailController extends Controller
 
     public function add(Request $request)
     {
-        $request->validate([
-            'kode_sales_order' => 'required', 
-            'id_barang' => 'required|integer',
-            'qty' => 'required|string',
-            'disc_cash' => 'required',
-            'disc_perc' => 'required',
-            'status' => 'required|string',
-        ]);
+        Log::info('sales-order-detail add ' . $request->id_karyawan, $request->all());
+        try {
+            $request->validate([
+                'kode_sales_order' => 'required',
+                'id_barang' => 'required|integer',
+                'qty' => 'required|string',
+                'disc_cash' => 'required',
+                'disc_perc' => 'required',
+                'status' => 'required|string',
+            ]);
 
-        $qtyParts = array_pad(explode('.', $request->qty), 3, 0);
-        $qty_besar = (int) $qtyParts[0];   
-        $qty_tengah = (int) $qtyParts[1];
-        $qty_kecil = (int) $qtyParts[2]; 
+            $qtyParts = array_pad(explode('.', $request->qty), 3, 0);
+            $qty_besar = (int) $qtyParts[0];
+            $qty_tengah = (int) $qtyParts[1];
+            $qty_kecil = (int) $qtyParts[2];
 
-        $existingFavorite = DB::table('trn_sales_order_detail')
-            ->where('kode_sales_order', $request->kode_sales_order)
-            ->where('id_barang', $request->id_barang)
-            ->where('status', $request->status)
-            ->first();
-
-        // $trnSalesController = new TrnSalesOrderHeaderController();
-        // $harga = $trnSalesController->HitungTotal($request->id_karyawan, $request->id_barang);
-        $barang = DB::table('mst_barang')
-        ->where('id_barang', $request->id_barang)
-        ->first();
-
-        $subtotal = (
-            ($qty_besar * ($barang->harga - $request->disc_cash)) +
-            ($qty_tengah * ($barang->harga - $request->disc_cash) / $barang->konversi_besar) +
-            ($qty_kecil * ($barang->harga - $request->disc_cash) / ($barang->konversi_besar * $barang->konversi_tengah))
-        ) * (1 - $request->disc_perc / 100);
-        if ($request->status == 'BONUS') {
-            $subtotal = 0;
-        }
-        if ($existingFavorite) {
-            DB::table('trn_sales_order_detail')
+            $existingFavorite = DB::table('trn_sales_order_detail')
                 ->where('kode_sales_order', $request->kode_sales_order)
                 ->where('id_barang', $request->id_barang)
                 ->where('status', $request->status)
-                ->update([
+                ->first();
+
+            $barang = DB::table('mst_barang')
+                ->where('id_barang', $request->id_barang)
+                ->first();
+
+            $subtotal = (
+                ($qty_besar * ($barang->harga - $request->disc_cash)) +
+                ($qty_tengah * ($barang->harga - $request->disc_cash) / $barang->konversi_besar) +
+                ($qty_kecil * ($barang->harga - $request->disc_cash) / ($barang->konversi_besar * $barang->konversi_tengah))
+            ) * (1 - $request->disc_perc / 100);
+            if ($request->status == 'BONUS') {
+                $subtotal = 0;
+            }
+            if ($existingFavorite) {
+                DB::table('trn_sales_order_detail')
+                    ->where('kode_sales_order', $request->kode_sales_order)
+                    ->where('id_barang', $request->id_barang)
+                    ->where('status', $request->status)
+                    ->update([
+                        'qty_besar' => $qty_besar,
+                        'qty_tengah' => $qty_tengah,
+                        'qty_kecil' => $qty_kecil,
+                        'disc_cash' => $request->disc_cash,
+                        'disc_perc' => $request->disc_perc,
+                        'ket_detail' => $request->ket,
+                        'harga' => $barang->harga,
+                        'subtotal' => $subtotal,
+                        'status' => $request->status,
+                        'updated_at' => now()
+                    ]);
+            } else {
+                DB::table('trn_sales_order_detail')->insert([
+                    'kode_sales_order' => $request->kode_sales_order,
+                    'id_barang' => $request->id_barang,
                     'qty_besar' => $qty_besar,
                     'qty_tengah' => $qty_tengah,
                     'qty_kecil' => $qty_kecil,
                     'disc_cash' => $request->disc_cash,
                     'disc_perc' => $request->disc_perc,
                     'ket_detail' => $request->ket,
+                    'status' => $request->status,
                     'harga' => $barang->harga,
                     'subtotal' => $subtotal,
-                    'status' => $request->status,
-                    'updated_at' => now()
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]);
-
-            // return response()->json([
-            //     'status' => 'Success',
-            //     'message' => 'Item quantity updated in cart',
-            //     'statusCode' => 200
-            // ]);
-        } else {
-            DB::table('trn_sales_order_detail')->insert([
-                'kode_sales_order' => $request->kode_sales_order,
-                'id_barang' => $request->id_barang,
-                'qty_besar' => $qty_besar,
-                'qty_tengah' => $qty_tengah,
-                'qty_kecil' => $qty_kecil,
-                'disc_cash' => $request->disc_cash,
-                'disc_perc' => $request->disc_perc,
-                'ket_detail' => $request->ket, 
-                'status' => $request->status,
-                'harga' => $barang->harga,
-                 'subtotal' => $subtotal,               
-                'created_at' => now(),
-                'updated_at' => now(),
+            }
+            $trnsales = trn_sales_order_header::where('kode_sales_order', $request->kode_sales_order)->first();
+            $total = DB::selectOne(
+                'SELECT get_total_value(?) AS total',
+                [$request->kode_sales_order]
+            )->total;
+            $trnsales->total = $total;
+            $trnsales->save();
+            return response()->json([
+                'status' => 'Success',
+                'message' => 'Item added to cart',
+                'statusCode' => 200
             ]);
-
-            // return response()->json([
-            //     'status' => 'Success',
-            //     'message' => 'Item added to cart',
-            //     'statusCode' => 200
-            // ]);
+        } catch (\Exception $e) {
+            Log::error('sales-order-detail add ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
-        $trnsales = trn_sales_order_header::where('kode_sales_order', $request->kode_sales_order)->first();   
-        $total = DB::selectOne(
-            'SELECT get_total_value(?) AS total',
-            [$request->kode_sales_order]
-        )->total;
-        $trnsales->total = $total;
-        $trnsales->save();
-        return response()->json([
-            'status' => 'Success',
-            'message' => 'Item added to cart',
-            'statusCode' => 200
-        ]);
     }
+
     public function store(Request $request)
     {
-        // $validated = $request->validate([
-        //     'kode_sales_order' => 'required|string|max:30',
-        //     'id_barang' => 'required|integer',
-        //     'qty_besar' => 'nullable|numeric',
-        //     'qty_tengah' => 'nullable|numeric',
-        //     'qty_kecil' => 'nullable|numeric',
-        //     'harga' => 'nullable|numeric',
-        //     'disc_cash' => 'nullable|numeric',
-        //     'disc_perc' => 'nullable|numeric',
-        //     'subtotal' => 'nullable|numeric',
-        //     'ket_detail' => 'nullable|string|max:200',
-        // ]);
-        // $detail = trn_sales_order_detail::create($validated);
-        $validated = $request->validate([
-            'kode_sales_order' => 'required|string|max:30',
-        ]);
-        $keranjangs = keranjang::where('id_karyawan', $request->id_karyawan)
-                               ->leftJoin('mst_barang', 'keranjangs.id_barang', '=', 'mst_barang.id_barang')
-                               ->get();
-        $total = 0;
-        $trnSalesController = new TrnSalesOrderHeaderController();
-        foreach ($keranjangs as $keranjang) {
-            $harga = $trnSalesController->HitungTotal($request->id_karyawan, $keranjang->id_barang);
-            $total+=$harga['subtotal'];
-            trn_sales_order_detail::create([
-                'kode_sales_order' => $validated['kode_sales_order'],
-                'id_barang' => $keranjang->id_barang,
-                'qty_besar' => $keranjang->qty_besar,
-                'qty_tengah' => $keranjang->qty_tengah,
-                'qty_kecil' => $keranjang->qty_kecil,
-                'harga' => $harga['harga'],
-                'disc_cash' => $keranjang->disc_cash,
-                'disc_perc' => $keranjang->disc_perc,
-                'ket_detail' => $keranjang->ket_detail,
-                'subtotal' => $harga['subtotal'],
-                // 'ket_detail' => $request->keterangan,
+        Log::info('sales-order-detail store ' . $request->id_karyawan, $request->all());
+        try {
+            $validated = $request->validate([
+                'kode_sales_order' => 'required|string|max:30',
             ]);
-            //$keranjang->delete();
-        }     
-        
-        $neworder = trn_sales_order_header::where('kode_sales_order', $validated['kode_sales_order'])
-                                            ->first();        
-        $neworder->status = 'POSTED';
-        $neworder->total = $total;
-        $neworder->save();
+            $keranjangs = keranjang::where('id_karyawan', $request->id_karyawan)
+                ->leftJoin('mst_barang', 'keranjangs.id_barang', '=', 'mst_barang.id_barang')
+                ->get();
+            $total = 0;
+            $trnSalesController = new TrnSalesOrderHeaderController();
+            foreach ($keranjangs as $keranjang) {
+                $harga = $trnSalesController->HitungTotal($request->id_karyawan, $keranjang->id_barang);
+                $total += $harga['subtotal'];
+                trn_sales_order_detail::create([
+                    'kode_sales_order' => $validated['kode_sales_order'],
+                    'id_barang' => $keranjang->id_barang,
+                    'qty_besar' => $keranjang->qty_besar,
+                    'qty_tengah' => $keranjang->qty_tengah,
+                    'qty_kecil' => $keranjang->qty_kecil,
+                    'harga' => $harga['harga'],
+                    'disc_cash' => $keranjang->disc_cash,
+                    'disc_perc' => $keranjang->disc_perc,
+                    'ket_detail' => $keranjang->ket_detail,
+                    'subtotal' => $harga['subtotal'],
+                ]);
+            }
 
-        $keranjangs->delete();   
-        return response()->json([
-            'status' => 'Success',
-            'message' => 'Data successfully retrieved',
-            'statusCode' => 200,
-            'data' => $neworder
-        ], 201);       
+            $neworder = trn_sales_order_header::where('kode_sales_order', $validated['kode_sales_order'])
+                ->first();
+            $neworder->status = 'POSTED';
+            $neworder->total = $total;
+            $neworder->save();
+
+            $keranjangs->delete();
+            return response()->json([
+                'status' => 'Success',
+                'message' => 'Data successfully retrieved',
+                'statusCode' => 200,
+                'data' => $neworder
+            ], 201);
+        } catch (\Exception $e) {
+            Log::error('sales-order-detail store ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function show(Request $request)
@@ -180,102 +165,95 @@ class TrnSalesOrderDetailController extends Controller
 
     public function update(Request $request)
     {
-        // Validasi request
-        $request->validate([ 
-            'kode_sales_order' => 'required|integer',
-            'id_barang' => 'required|integer',
-            'qty' => 'required|string',
-            'disc_cash' => 'nullable|numeric',
-            'disc_perc' => 'nullable|numeric',       
-        ]);
+        Log::info('sales-order-detail update ' . $request->id_karyawan, $request->all());
+        try {
+            // Validasi request
+            $request->validate([
+                'kode_sales_order' => 'required|integer',
+                'id_barang' => 'required|integer',
+                'qty' => 'required|string',
+                'disc_cash' => 'nullable|numeric',
+                'disc_perc' => 'nullable|numeric',
+            ]);
 
-        $qtyParts = array_pad(explode('.', $request->qty), 3, 0);
-        $qty_besar = (int) $qtyParts[0];   
-        $qty_tengah = (int) $qtyParts[1];
-        $qty_kecil = (int) $qtyParts[2]; 
+            $qtyParts = array_pad(explode('.', $request->qty), 3, 0);
+            $qty_besar = (int) $qtyParts[0];
+            $qty_tengah = (int) $qtyParts[1];
+            $qty_kecil = (int) $qtyParts[2];
 
-        $existingFavorite = DB::table('trn_sales_order_detail')
-            ->where('kode_sales_order', $request->kode_sales_order)
-            ->where('id_barang', $request->id_barang)
-            ->first();
-
-        if ($existingFavorite) {
-            DB::table('trn_sales_order_detail')
+            $existingFavorite = DB::table('trn_sales_order_detail')
                 ->where('kode_sales_order', $request->kode_sales_order)
                 ->where('id_barang', $request->id_barang)
-                ->update([
-                    'qty_besar' => $qty_besar,
-                    'qty_tengah' => $qty_tengah,
-                    'qty_kecil' => $qty_kecil,
-                    'disc_cash' => $request->disc_cash,
-                    'disc_perc' => $request->disc_perc,
-                    'ket_detail' => $request->ket,                    
-                    'updated_at' => now()
-                ]); 
-                
-            $totalOrder = $this->HitungTotal($request->kode_sales_order);
-            DB::table('trn_sales_order_header')
-                ->where('kode_sales_order', $request->kode_sales_order)
-                ->update([
-                    'total' => $totalOrder
-                ]);  
+                ->first();
 
-            return response()->json([
-                'status' => 'Success',
-                'message' => 'Item quantity updated in cart',
-                'statusCode' => 200
-            ]);
-        } 
+            if ($existingFavorite) {
+                DB::table('trn_sales_order_detail')
+                    ->where('kode_sales_order', $request->kode_sales_order)
+                    ->where('id_barang', $request->id_barang)
+                    ->update([
+                        'qty_besar' => $qty_besar,
+                        'qty_tengah' => $qty_tengah,
+                        'qty_kecil' => $qty_kecil,
+                        'disc_cash' => $request->disc_cash,
+                        'disc_perc' => $request->disc_perc,
+                        'ket_detail' => $request->ket,
+                        'updated_at' => now()
+                    ]);
+
+                $totalOrder = $this->HitungTotal($request->kode_sales_order);
+                DB::table('trn_sales_order_header')
+                    ->where('kode_sales_order', $request->kode_sales_order)
+                    ->update([
+                        'total' => $totalOrder
+                    ]);
+
+                return response()->json([
+                    'status' => 'Success',
+                    'message' => 'Item quantity updated in cart',
+                    'statusCode' => 200
+                ]);
+            }
+        } catch (\Exception $e) {
+            Log::error('sales-order-detail update ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
+        }
     }
-
-    // public function destroy(Request $request)
-    // {
-    //     $detail = trn_sales_order_detail::where('kode_sales_order', $request->kode_sales_order)
-    //         ->where('id_barang', $request->id_barang)
-    //         ->firstOrFail();
-
-    //     $detail->delete();
-
-    //     return response()->json(['message' => 'Sales order detail deleted successfully.']);
-    // }
 
     public function destroy(Request $request)
     {
-        $request->validate([
-            'kode_sales_order' => 'required',
-            'id_barang' => 'required|integer',
-        ]);
+        Log::info('sales-order-detail delete ' . $request->id_karyawan, $request->all());
+        try {
+            $request->validate([
+                'kode_sales_order' => 'required',
+                'id_barang' => 'required|integer',
+            ]);
 
-        trn_sales_order_detail::where('kode_sales_order', $request->kode_sales_order)
-            ->where('id_barang', $request->id_barang)
-            ->where('status', $request->status)
-            ->delete();
+            trn_sales_order_detail::where('kode_sales_order', $request->kode_sales_order)
+                ->where('id_barang', $request->id_barang)
+                ->where('status', $request->status)
+                ->delete();
 
-        $trnsales = trn_sales_order_header::where('kode_sales_order', $request->kode_sales_order)->first();   
-        $total = DB::selectOne(
-            'SELECT get_total_value(?) AS total',
-            [$request->kode_sales_order]
-        )->total;
-        $trnsales->total = $total;
-        $trnsales->save();
+            $trnsales = trn_sales_order_header::where('kode_sales_order', $request->kode_sales_order)->first();
+            $total = DB::selectOne(
+                'SELECT get_total_value(?) AS total',
+                [$request->kode_sales_order]
+            )->total;
+            $trnsales->total = $total;
+            $trnsales->save();
 
-        // dd($detail);    
-
-        // if (!$detail) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'message' => 'Barang tidak ditemukan.'
-        //     ], 404);
-        // }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Barang berhasil dihapus.'
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Barang berhasil dihapus.'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('sales-order-detail delete ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
+        }
     }
 
 
-    public function HitungTotal(String $nomor) {
+    public function HitungTotal(string $nomor)
+    {
         $data = trn_sales_order_header::selectRaw('
             (d.qty_besar * (b.harga-d.disc_cash)) + 
             (d.qty_tengah * (b.harga-d.disc_cash) / b.konversi_besar) + 
@@ -283,17 +261,17 @@ class TrnSalesOrderDetailController extends Controller
              AS total,
             d.disc_perc
         ')
-        ->from('trn_sales_order_detail as d')
-        ->leftJoin('mst_barang as b', 'b.id_barang', '=', 'd.id_barang')
-        ->where('d.kode_sales_order', $nomor)
-        ->get();
+            ->from('trn_sales_order_detail as d')
+            ->leftJoin('mst_barang as b', 'b.id_barang', '=', 'd.id_barang')
+            ->where('d.kode_sales_order', $nomor)
+            ->get();
 
         // dd($data);
         $totalOrder = 0;
         foreach ($data as $detail) {
             $totalQty = $detail->total;
-            $totalOrder += $detail->total-($detail->total*$detail->disc_perc/100);
+            $totalOrder += $detail->total - ($detail->total * $detail->disc_perc / 100);
         }
         return $totalOrder;
-    }    
+    }
 }

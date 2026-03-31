@@ -4,22 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class KeranjangController extends Controller
 {
-    public function get(Request $request) {
-        // $barangs = DB::table('keranjangs')
-        //     ->join('mst_barang', 'keranjangs.id_barang', '=', 'mst_barang.id_barang')
-        //     ->where('keranjangs.id_karyawan', $request->id)
-        //     ->select('mst_barang.*', 'keranjangs.qty', 'keranjangs.qty_besar', 'keranjangs.qty_tengah', 'keranjangs.qty_kecil', 'keranjangs.disc_cash', 'keranjangs.disc_perc', 'keranjangs.ket_detail', )
-        //     ->get();
-
+    public function get(Request $request)
+    {
         $barangs = DB::table('keranjangs as d')
             ->join('mst_barang as b', 'd.id_barang', '=', 'b.id_barang')
             ->where('d.id_karyawan', $request->id)
-        // $barangs = DB::table('trn_sales_order_detail as d')
-        //     ->join('mst_barang as b', 'd.id_barang', '=', 'b.id_barang')
-        //     ->where('d.kode_sales_order', $request->id)
             ->select(
                 'b.*',
                 'd.qty',
@@ -58,8 +51,8 @@ class KeranjangController extends Controller
             $item->subtotal = (float) $item->subtotal;
             $item->total = (float) $item->total;
             return $item;
-        });        
-        
+        });
+
         return response()->json([
             'status' => 'Success',
             'message' => 'true',
@@ -68,8 +61,9 @@ class KeranjangController extends Controller
         ]);
     }
 
-    public function index(Request $request) {
-            $barangs = DB::table('trn_sales_order_detail as d')
+    public function index(Request $request)
+    {
+        $barangs = DB::table('trn_sales_order_detail as d')
             ->join('mst_barang as b', 'd.id_barang', '=', 'b.id_barang')
             ->where('d.kode_sales_order', $request->id)
             ->where('d.kode_sales_order', '<>', '0')
@@ -112,8 +106,8 @@ class KeranjangController extends Controller
             $item->subtotal = (float) $item->subtotal;
             $item->total = (float) $item->total;
             return $item;
-        });        
-        
+        });
+
         return response()->json([
             'status' => 'Success',
             'message' => 'true',
@@ -122,102 +116,117 @@ class KeranjangController extends Controller
         ]);
     }
 
-    public function add(Request $request) {
-        // Validasi request
-        $request->validate([
-            'id_karyawan' => 'required|integer', 
-            'id_barang' => 'required|integer',
-            'qty' => 'required|string',
-            'disc_cash' => 'required|integer',
-            'disc_perc' => 'required|integer',
-        ]);
+    public function add(Request $request)
+    {
+        Log::info('addKeranjang ' . $request->id_karyawan, $request->all());
+        try {
+            // Validasi request
+            $request->validate([
+                'id_karyawan' => 'required|integer',
+                'id_barang' => 'required|integer',
+                'qty' => 'required|string',
+                'disc_cash' => 'required|integer',
+                'disc_perc' => 'required|integer',
+            ]);
 
-        $qtyParts = array_pad(explode('.', $request->qty), 3, 0);
-        $qty_besar = (int) $qtyParts[0];   
-        $qty_tengah = (int) $qtyParts[1];
-        $qty_kecil = (int) $qtyParts[2]; 
+            $qtyParts = array_pad(explode('.', $request->qty), 3, 0);
+            $qty_besar = (int) $qtyParts[0];
+            $qty_tengah = (int) $qtyParts[1];
+            $qty_kecil = (int) $qtyParts[2];
 
-        $existingFavorite = DB::table('keranjangs')
-            ->where('id_karyawan', $request->id_karyawan)
-            ->where('id_barang', $request->id_barang)
-            ->first();
-
-        if ($existingFavorite) {
-            DB::table('keranjangs')
+            $existingFavorite = DB::table('keranjangs')
                 ->where('id_karyawan', $request->id_karyawan)
                 ->where('id_barang', $request->id_barang)
-                ->update([
+                ->first();
+
+            if ($existingFavorite) {
+                DB::table('keranjangs')
+                    ->where('id_karyawan', $request->id_karyawan)
+                    ->where('id_barang', $request->id_barang)
+                    ->update([
+                        'qty_besar' => $qty_besar,
+                        'qty_tengah' => $qty_tengah,
+                        'qty_kecil' => $qty_kecil,
+                        'disc_cash' => $request->disc_cash,
+                        'disc_perc' => $request->disc_perc,
+                        'ket_detail' => $request->ket,
+                        'updated_at' => now()
+                    ]);
+
+                return response()->json([
+                    'status' => 'Success',
+                    'message' => 'Item quantity updated in cart',
+                    'statusCode' => 200
+                ]);
+            } else {
+                DB::table('keranjangs')->insert([
+                    'id_karyawan' => $request->id_karyawan,
+                    'id_barang' => $request->id_barang,
                     'qty_besar' => $qty_besar,
                     'qty_tengah' => $qty_tengah,
                     'qty_kecil' => $qty_kecil,
                     'disc_cash' => $request->disc_cash,
                     'disc_perc' => $request->disc_perc,
                     'ket_detail' => $request->ket,
-                    'updated_at' => now()
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]);
 
-            return response()->json([
-                'status' => 'Success',
-                'message' => 'Item quantity updated in cart',
-                'statusCode' => 200
-            ]);
-        } else {
-            DB::table('keranjangs')->insert([
-                'id_karyawan' => $request->id_karyawan,
-                'id_barang' => $request->id_barang,
-                'qty_besar' => $qty_besar,
-                'qty_tengah' => $qty_tengah,
-                'qty_kecil' => $qty_kecil,
-                'disc_cash' => $request->disc_cash,
-                'disc_perc' => $request->disc_perc,
-                'ket_detail' => $request->ket,                
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-
-            return response()->json([
-                'status' => 'Success',
-                'message' => 'Item added to cart',
-                'statusCode' => 200
-            ]);
+                return response()->json([
+                    'status' => 'Success',
+                    'message' => 'Item added to cart',
+                    'statusCode' => 200
+                ]);
+            }
+        } catch (\Exception $e) {
+            Log::error('addKeranjang ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }
 
-    public function remove(Request $request) {
-        // Validasi request
-        $request->validate([
-            'id_karyawan' => 'required|integer', 
-            'id_barang' => 'required|integer',
-        ]);
-    
-        // Cek apakah barang ada di favorit member tersebut
-        $existingFavorite = DB::table('keranjangs')
-            ->where('id_karyawan', $request->id_karyawan)
-            ->where('id_barang', $request->id_barang)
-            ->first();
-    
-        if (!$existingFavorite) {
-            return response()->json([
-                'status' => 'Failed',
-                'message' => 'Item is not in cart',
-                'statusCode' => 400
+    public function remove(Request $request)
+    {
+        Log::info('removeKeranjang ' . $request->id_karyawan, $request->all());
+        try {
+            // Validasi request
+            $request->validate([
+                'id_karyawan' => 'required|integer',
+                'id_barang' => 'required|integer',
             ]);
+
+            // Cek apakah barang ada di favorit member tersebut
+            $existingFavorite = DB::table('keranjangs')
+                ->where('id_karyawan', $request->id_karyawan)
+                ->where('id_barang', $request->id_barang)
+                ->first();
+
+            if (!$existingFavorite) {
+                return response()->json([
+                    'status' => 'Failed',
+                    'message' => 'Item is not in cart',
+                    'statusCode' => 400
+                ]);
+            }
+
+            // Hapus data dari tabel favorites
+            DB::table('keranjangs')
+                ->where('id_karyawan', $request->id_karyawan)
+                ->where('id_barang', $request->id_barang)
+                ->delete();
+
+            return response()->json([
+                'status' => 'Success',
+                'message' => 'Item removed from cart',
+                'statusCode' => 200
+            ]);
+        } catch (\Exception $e) {
+            Log::error('removeKeranjang ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
-    
-        // Hapus data dari tabel favorites
-        DB::table('keranjangs')
-            ->where('id_karyawan', $request->id_karyawan)
-            ->where('id_barang', $request->id_barang)
-            ->delete();
-    
-        return response()->json([
-            'status' => 'Success',
-            'message' => 'Item removed from cart',
-            'statusCode' => 200
-        ]);
     }
 
-    public function getTrnDetail(Request $request) {
+    public function getTrnDetail(Request $request)
+    {
         $barangs = DB::table('trn_sales_order_detail')
             ->join('mst_barang', 'trn_sales_order_detail.id_barang', '=', 'mst_barang.id_barang')
             ->where('trn_sales_order_detail.kode_sales_order', $request->kode)
@@ -233,13 +242,13 @@ class KeranjangController extends Controller
             $item->subtotal = (float) $item->subtotal;
             $item->total = (float) $item->total;
             return $item;
-        });                    
-        
+        });
+
         return response()->json([
             'status' => 'Success',
             'message' => 'true',
             'statusCode' => 200,
             'data' => $barangs
         ]);
-    }    
+    }
 }
