@@ -52,7 +52,7 @@ class MstCustomerController extends Controller
 
     public function store(Request $request)
     {
-        Log::info('customer store ' . $request->id_karyawan, $request->all());
+        Log::info('customer store ' . 'kodekaryawan=' . $request->id_karyawan, $request->all());
         try {
             $validated = $request->validate([
                 'id_customer' => 'required|integer|unique:mst_customer,id_customer',
@@ -72,7 +72,7 @@ class MstCustomerController extends Controller
 
             return response()->json($customer, 201);
         } catch (\Exception $e) {
-            Log::error('customer store ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            Log::error('customer store ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }
@@ -85,7 +85,7 @@ class MstCustomerController extends Controller
 
     public function update(Request $request, $id)
     {
-        Log::info('customer update ' . $request->id_karyawan, $request->all());
+        Log::info('customer update ' . 'kodekaryawan=' . $request->id_karyawan, $request->all());
         try {
             $customer = mst_customer::findOrFail($id);
 
@@ -106,7 +106,7 @@ class MstCustomerController extends Controller
 
             return response()->json($customer);
         } catch (\Exception $e) {
-            Log::error('customer update ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            Log::error('customer update ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }

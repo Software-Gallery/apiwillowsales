@@ -148,7 +148,7 @@ class MstCustomerRuteController extends Controller
 
     public function store(Request $request)
     {
-        Log::info('customer-rute store ' . $request->id_karyawan, $request->all());
+        Log::info('customer-rute store ' . 'kodekaryawan=' . $request->id_karyawan, $request->all());
         try {
             $validated = $request->validate([
                 'id_departemen' => 'required|integer',
@@ -173,7 +173,7 @@ class MstCustomerRuteController extends Controller
 
             return response()->json($rute, 201);
         } catch (\Exception $e) {
-            Log::error('customer-rute store ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            Log::error('customer-rute store ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }
@@ -184,7 +184,7 @@ class MstCustomerRuteController extends Controller
         // kita ambil dengan kombinasi 3 id:
         $rute = MstCustomerRute::where('id_departemen', $request->id_departemen)
             ->where('id_customer', $request->id_customer)
-            ->where('id_karyawan', $request->id_karyawan)
+            ->where('id_karyawan', 'kodekaryawan=' . $request->id_karyawan)
             ->firstOrFail();
 
         return response()->json($rute);
@@ -192,11 +192,11 @@ class MstCustomerRuteController extends Controller
 
     public function update(Request $request)
     {
-        Log::info('customer-rute update ' . $request->id_karyawan, $request->all());
+        Log::info('customer-rute update ' . 'kodekaryawan=' . $request->id_karyawan, $request->all());
         try {
             $rute = MstCustomerRute::where('id_departemen', $request->id_departemen)
                 ->where('id_customer', $request->id_customer)
-                ->where('id_karyawan', $request->id_karyawan)
+                ->where('id_karyawan', 'kodekaryawan=' . $request->id_karyawan)
                 ->firstOrFail();
 
             $validated = $request->validate([
@@ -218,25 +218,25 @@ class MstCustomerRuteController extends Controller
 
             return response()->json($rute);
         } catch (\Exception $e) {
-            Log::error('customer-rute update ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            Log::error('customer-rute update ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }
 
     public function destroy(Request $request)
     {
-        Log::info('customer-rute destroy ' . $request->id_karyawan, $request->all());
+        Log::info('customer-rute destroy ' . 'kodekaryawan=' . $request->id_karyawan, $request->all());
         try {
             $rute = MstCustomerRute::where('id_departemen', $request->id_departemen)
                 ->where('id_customer', $request->id_customer)
-                ->where('id_karyawan', $request->id_karyawan)
+                ->where('id_karyawan', 'kodekaryawan=' . $request->id_karyawan)
                 ->firstOrFail();
 
             $rute->delete();
 
             return response()->json(['message' => 'Customer rute deleted successfully.']);
         } catch (\Exception $e) {
-            Log::error('customer-rute destroy ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            Log::error('customer-rute destroy ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }

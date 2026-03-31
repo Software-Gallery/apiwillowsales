@@ -125,7 +125,7 @@ class TrnAbsenController extends Controller
 
     public function store(Request $request)
     {
-        Log::info('absen store ' . $request->id_karyawan, $request->all());
+        Log::info('absen store ' . 'kodekaryawan=' . $request->id_karyawan, $request->all());
         try {
             // dd($request->all());
             $validated = $request->validate([
@@ -171,14 +171,14 @@ class TrnAbsenController extends Controller
                 'data' => $absen,
             ], 201);
         } catch (\Exception $e) {
-            Log::error('absen store ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            Log::error('absen store ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }
 
     public function selesai(Request $request)
     {
-        Log::info('selesaiabsen ' . $request->id_karyawan, $request->all());
+        Log::info('selesaiabsen ' . 'kodekaryawan=' . $request->id_karyawan, $request->all());
         try {
             $absen = trn_absen::find($request->id_absen);
 
@@ -209,14 +209,14 @@ class TrnAbsenController extends Controller
                 return response()->json(['message' => 'Data tidak ditemukan'], 404);
             }
         } catch (\Exception $e) {
-            Log::error('selesaiabsen ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            Log::error('selesaiabsen ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }
 
     public function uploadImage(Request $request)
     {
-        Log::info('upload-image ' . $request->id_karyawan, ['kode_sales_order' => $request->kode_sales_order]);
+        Log::info('upload-image ' . 'kodekaryawan=' . $request->id_karyawan, ['kode_sales_order' => $request->kode_sales_order]);
         try {
             $request->validate([
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -250,7 +250,7 @@ class TrnAbsenController extends Controller
                 'message' => 'No image file uploaded!',
             ], 400);
         } catch (\Exception $e) {
-            Log::error('upload-image ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), ['kode_sales_order' => $request->kode_sales_order]);
+            Log::error('upload-image ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), ['kode_sales_order' => $request->kode_sales_order]);
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }

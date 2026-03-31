@@ -20,7 +20,7 @@ class TrnSalesOrderDetailController extends Controller
 
     public function add(Request $request)
     {
-        Log::info('sales-order-detail add ' . $request->id_karyawan, $request->all());
+        Log::info('sales-order-detail add ' . 'kodekaryawan=' . $request->id_karyawan, $request->all());
         try {
             $request->validate([
                 'kode_sales_order' => 'required',
@@ -101,25 +101,25 @@ class TrnSalesOrderDetailController extends Controller
                 'statusCode' => 200
             ]);
         } catch (\Exception $e) {
-            Log::error('sales-order-detail add ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            Log::error('sales-order-detail add ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }
 
     public function store(Request $request)
     {
-        Log::info('sales-order-detail store ' . $request->id_karyawan, $request->all());
+        Log::info('sales-order-detail store ' . 'kodekaryawan=' . $request->id_karyawan, $request->all());
         try {
             $validated = $request->validate([
                 'kode_sales_order' => 'required|string|max:30',
             ]);
-            $keranjangs = keranjang::where('id_karyawan', $request->id_karyawan)
+            $keranjangs = keranjang::where('id_karyawan', 'kodekaryawan=' . $request->id_karyawan)
                 ->leftJoin('mst_barang', 'keranjangs.id_barang', '=', 'mst_barang.id_barang')
                 ->get();
             $total = 0;
             $trnSalesController = new TrnSalesOrderHeaderController();
             foreach ($keranjangs as $keranjang) {
-                $harga = $trnSalesController->HitungTotal($request->id_karyawan, $keranjang->id_barang);
+                $harga = $trnSalesController->HitungTotal('kodekaryawan=' . $request->id_karyawan, $keranjang->id_barang);
                 $total += $harga['subtotal'];
                 trn_sales_order_detail::create([
                     'kode_sales_order' => $validated['kode_sales_order'],
@@ -149,7 +149,7 @@ class TrnSalesOrderDetailController extends Controller
                 'data' => $neworder
             ], 201);
         } catch (\Exception $e) {
-            Log::error('sales-order-detail store ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            Log::error('sales-order-detail store ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }
@@ -165,7 +165,7 @@ class TrnSalesOrderDetailController extends Controller
 
     public function update(Request $request)
     {
-        Log::info('sales-order-detail update ' . $request->id_karyawan, $request->all());
+        Log::info('sales-order-detail update ' . 'kodekaryawan=' . $request->id_karyawan, $request->all());
         try {
             // Validasi request
             $request->validate([
@@ -214,14 +214,14 @@ class TrnSalesOrderDetailController extends Controller
                 ]);
             }
         } catch (\Exception $e) {
-            Log::error('sales-order-detail update ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            Log::error('sales-order-detail update ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }
 
     public function destroy(Request $request)
     {
-        Log::info('sales-order-detail delete ' . $request->id_karyawan, $request->all());
+        Log::info('sales-order-detail delete ' . 'kodekaryawan=' . $request->id_karyawan, $request->all());
         try {
             $request->validate([
                 'kode_sales_order' => 'required',
@@ -246,7 +246,7 @@ class TrnSalesOrderDetailController extends Controller
                 'message' => 'Barang berhasil dihapus.'
             ]);
         } catch (\Exception $e) {
-            Log::error('sales-order-detail delete ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            Log::error('sales-order-detail delete ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }

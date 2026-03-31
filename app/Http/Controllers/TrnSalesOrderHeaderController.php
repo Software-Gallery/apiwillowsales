@@ -40,7 +40,7 @@ class TrnSalesOrderHeaderController extends Controller
 
     public function store(Request $request)
     {
-        Log::info('sales-order-header store ' . $request->id_karyawan, $request->all());
+        Log::info('sales-order-header store ' . 'kodekaryawan=' . $request->id_karyawan, $request->all());
         try {
             $validated = $request->validate([
                 'id_departemen' => 'nullable|integer',
@@ -84,7 +84,7 @@ class TrnSalesOrderHeaderController extends Controller
                 'data' => $validated
             ], 201);
         } catch (\Exception $e) {
-            Log::error('sales-order-header store ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            Log::error('sales-order-header store ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }
@@ -97,7 +97,7 @@ class TrnSalesOrderHeaderController extends Controller
 
     public function update(Request $request)
     {
-        Log::info('sales-order-header update ' . $request->id_karyawan, $request->all());
+        Log::info('sales-order-header update ' . 'kodekaryawan=' . $request->id_karyawan, $request->all());
         try {
             $order = trn_sales_order_header::findOrFail($request->kode_sales_order);
 
@@ -116,7 +116,7 @@ class TrnSalesOrderHeaderController extends Controller
 
             return response()->json($order);
         } catch (\Exception $e) {
-            Log::error('sales-order-header update ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            Log::error('sales-order-header update ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }

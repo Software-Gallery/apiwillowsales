@@ -118,7 +118,7 @@ class KeranjangController extends Controller
 
     public function add(Request $request)
     {
-        Log::info('addKeranjang ' . $request->id_karyawan, $request->all());
+        Log::info('addKeranjang ' . 'kodekaryawan=' . $request->id_karyawan, $request->all());
         try {
             // Validasi request
             $request->validate([
@@ -135,13 +135,13 @@ class KeranjangController extends Controller
             $qty_kecil = (int) $qtyParts[2];
 
             $existingFavorite = DB::table('keranjangs')
-                ->where('id_karyawan', $request->id_karyawan)
+                ->where('id_karyawan', 'kodekaryawan=' . $request->id_karyawan)
                 ->where('id_barang', $request->id_barang)
                 ->first();
 
             if ($existingFavorite) {
                 DB::table('keranjangs')
-                    ->where('id_karyawan', $request->id_karyawan)
+                    ->where('id_karyawan', 'kodekaryawan=' . $request->id_karyawan)
                     ->where('id_barang', $request->id_barang)
                     ->update([
                         'qty_besar' => $qty_besar,
@@ -160,7 +160,7 @@ class KeranjangController extends Controller
                 ]);
             } else {
                 DB::table('keranjangs')->insert([
-                    'id_karyawan' => $request->id_karyawan,
+                    'id_karyawan' => 'kodekaryawan=' . $request->id_karyawan,
                     'id_barang' => $request->id_barang,
                     'qty_besar' => $qty_besar,
                     'qty_tengah' => $qty_tengah,
@@ -179,14 +179,14 @@ class KeranjangController extends Controller
                 ]);
             }
         } catch (\Exception $e) {
-            Log::error('addKeranjang ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            Log::error('addKeranjang ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }
 
     public function remove(Request $request)
     {
-        Log::info('removeKeranjang ' . $request->id_karyawan, $request->all());
+        Log::info('removeKeranjang ' . 'kodekaryawan=' . $request->id_karyawan, $request->all());
         try {
             // Validasi request
             $request->validate([
@@ -196,7 +196,7 @@ class KeranjangController extends Controller
 
             // Cek apakah barang ada di favorit member tersebut
             $existingFavorite = DB::table('keranjangs')
-                ->where('id_karyawan', $request->id_karyawan)
+                ->where('id_karyawan', 'kodekaryawan=' . $request->id_karyawan)
                 ->where('id_barang', $request->id_barang)
                 ->first();
 
@@ -210,7 +210,7 @@ class KeranjangController extends Controller
 
             // Hapus data dari tabel favorites
             DB::table('keranjangs')
-                ->where('id_karyawan', $request->id_karyawan)
+                ->where('id_karyawan', 'kodekaryawan=' . $request->id_karyawan)
                 ->where('id_barang', $request->id_barang)
                 ->delete();
 
@@ -220,7 +220,7 @@ class KeranjangController extends Controller
                 'statusCode' => 200
             ]);
         } catch (\Exception $e) {
-            Log::error('removeKeranjang ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            Log::error('removeKeranjang ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }

@@ -15,7 +15,7 @@ class LoginController extends Controller
     // 🔹 Register
     public function register(Request $request)
     {
-        Log::info('register ' . $request->id_karyawan, $request->all());
+        Log::info('register ' . 'kodekaryawan=' . $request->id_karyawan, $request->all());
         try {
             $request->validate([
                 'name' => 'required',
@@ -27,7 +27,7 @@ class LoginController extends Controller
             $user = Login::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'id_karyawan' => $request->id_karyawan,
+                'id_karyawan' => 'kodekaryawan=' . $request->id_karyawan,
                 'password' => Hash::make($request->password),
                 'api_token' => Str::random(60),
             ]);
@@ -37,7 +37,7 @@ class LoginController extends Controller
                 'token' => $user->api_token,
             ], 201);
         } catch (\Exception $e) {
-            Log::error('register ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            Log::error('register ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }
@@ -45,7 +45,7 @@ class LoginController extends Controller
     // 🔹 Login
     public function login(Request $request)
     {
-        Log::info('login ' . $request->id_karyawan, $request->all());
+        Log::info('login ' . 'kodekaryawan=' . $request->id_karyawan, $request->all());
         try {
             $request->validate([
                 'email' => 'required|email',
@@ -73,14 +73,14 @@ class LoginController extends Controller
                 'token' => $user->api_token,
             ]);
         } catch (\Exception $e) {
-            Log::error('login ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            Log::error('login ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }
 
     public function isValidLogin(Request $request)
     {
-        Log::info('isValidLogin ' . $request->id_karyawan, $request->all());
+        Log::info('isValidLogin ' . 'kodekaryawan=' . $request->id_karyawan, $request->all());
         try {
             $exists = DB::table('login')->where('api_token', $request->token)->exists();
             return response()->json([
@@ -88,14 +88,14 @@ class LoginController extends Controller
             ]);
             return $exists;
         } catch (\Exception $e) {
-            Log::error('isValidLogin ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            Log::error('isValidLogin ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }
 
     public function isValidImei(Request $request)
     {
-        Log::info('isValidImei ' . $request->id_karyawan, $request->all());
+        Log::info('isValidImei ' . 'kodekaryawan=' . $request->id_karyawan, $request->all());
         try {
             $exists = DB::table('login')->where('imei', $request->imei)->exists();
             return response()->json([
@@ -103,7 +103,7 @@ class LoginController extends Controller
             ]);
             return $exists;
         } catch (\Exception $e) {
-            Log::error('isValidImei ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            Log::error('isValidImei ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }
@@ -111,7 +111,7 @@ class LoginController extends Controller
     // 🔹 Logout
     public function logout(Request $request)
     {
-        Log::info('logout ' . $request->id_karyawan, $request->all());
+        Log::info('logout ' . 'kodekaryawan=' . $request->id_karyawan, $request->all());
         try {
             $user = $request->user();
             $user->api_token = null;
@@ -119,7 +119,7 @@ class LoginController extends Controller
 
             return response()->json(['message' => 'Logout success']);
         } catch (\Exception $e) {
-            Log::error('logout ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            Log::error('logout ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }

@@ -77,7 +77,7 @@ class MstBarangController extends Controller
      */
     public function store(Request $request)
     {
-        Log::info('barang store ' . $request->id_karyawan, $request->all());
+        Log::info('barang store ' . 'kodekaryawan=' . $request->id_karyawan, $request->all());
         try {
             $validated = $request->validate([
                 'id_barang' => 'required|integer|unique:mst_barang,id_barang',
@@ -95,7 +95,7 @@ class MstBarangController extends Controller
 
             return response()->json($barang, 201);
         } catch (\Exception $e) {
-            Log::error('barang store ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            Log::error('barang store ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }
@@ -122,7 +122,7 @@ class MstBarangController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Log::info('barang update ' . $request->id_karyawan, $request->all());
+        Log::info('barang update ' . 'kodekaryawan=' . $request->id_karyawan, $request->all());
         try {
             $barang = mst_barang::findOrFail($id);
 
@@ -141,7 +141,7 @@ class MstBarangController extends Controller
 
             return response()->json($barang);
         } catch (\Exception $e) {
-            Log::error('barang update ' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
+            Log::error('barang update ' . 'kodekaryawan=' . $request->id_karyawan . ' ERROR: ' . $e->getMessage(), $request->all());
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }
