@@ -23,15 +23,24 @@ class MstCustomerRuteController extends Controller
         $startOfMonth = $currentDate->copy()->startOfMonth();
         $weekOfMonth = ceil(($currentDate->day + $startOfMonth->dayOfWeek) / 7);
         $isEvenWeek = $weekOfMonth % 2 == 0;
-        $subSalesOrder = DB::table('trn_sales_order_header')
+        $subSalesOrder = DB::table('trn_sales_order_header as soh')
+            ->join('mst_tgl_aktif as ta', function ($join) {
+                $join->on('soh.tgl_sales_order', '=', 'ta.tgl_aktif');
+            })
             ->select(
-                'id_customer',
-                'tgl_sales_order',
-                'id_karyawan',
+                'ta.id_departemen',
+                'soh.id_customer',
+                'soh.tgl_sales_order',
+                'soh.id_karyawan',
                 DB::raw('COUNT(*) AS jml_absen'),
-                DB::raw('SUM(Total) AS sisa_piutang'),
+                DB::raw('SUM(soh.Total) AS sisa_piutang')
             )
-            ->groupBy('id_customer', 'tgl_sales_order', 'id_karyawan');
+            ->groupBy(
+                'ta.id_departemen',
+                'soh.id_customer',
+                'soh.tgl_sales_order',
+                'soh.id_karyawan'
+            );
 
         $rute = DB::table('mst_karyawan AS k')
             ->select(
@@ -44,7 +53,7 @@ class MstCustomerRuteController extends Controller
                 DB::raw("CONCAT(c.latitude, ', ', c.longitude) AS latlong_customer"),
                 DB::raw('IFNULL(h.jml_absen, 0) AS jml_nota'),
                 'lp.value_nota',
-                'h.sisa_piutang',
+                'lp.sisa_piutang',
                 DB::raw('IFNULL(h.jml_absen, 0) AS jml_absen')
             )
             ->leftJoin('mst_tgl_aktif AS ta', 'k.id_departemen', '=', 'ta.id_departemen')
@@ -58,6 +67,7 @@ class MstCustomerRuteController extends Controller
             ->leftJoinSub($subSalesOrder, 'h', function ($join) {
                 $join->on('h.id_customer', '=', 'c.id_customer')
                     ->on('h.id_karyawan', '=', 'k.id_karyawan')
+                    ->on('h.id_departemen', '=', 'ta.id_departemen')
                     ->on('h.tgl_sales_order', '=', 'ta.tgl_aktif');
             })
             ->where('k.id_karyawan', $request->id)
