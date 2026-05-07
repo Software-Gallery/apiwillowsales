@@ -126,7 +126,9 @@ class MstCustomerRuteController extends Controller
                 'lp.value_nota',
                 'lp.sisa_piutang',
             )
-            ->where('k.id_karyawan', $request->id)->orderBy('c.nama', 'asc');
+            ->where('k.id_karyawan', $request->id)
+            ->where('c.is_aktif', 1)
+            ->orderBy('c.nama', 'asc');
 
         if ($request->filled('nama')) {
             $rute->where('c.nama', 'like', "%{$request->nama}%");
