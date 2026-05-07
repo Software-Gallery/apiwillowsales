@@ -54,7 +54,8 @@ class MstCustomerRuteController extends Controller
                 DB::raw('IFNULL(h.jml_absen, 0) AS jml_nota'),
                 'lp.value_nota',
                 'lp.sisa_piutang',
-                DB::raw('IFNULL(h.jml_absen, 0) AS jml_absen')
+                DB::raw('IFNULL(h.jml_absen, 0) AS jml_absen'),
+                'c.kode_customer'
             )
             ->leftJoin('mst_tgl_aktif AS ta', 'k.id_departemen', '=', 'ta.id_departemen')
             ->leftJoin('mst_customer_rute AS cr', function ($join) {
@@ -116,8 +117,9 @@ class MstCustomerRuteController extends Controller
             ->select(
                 'c.id_departemen',
                 'c.id_customer',
+                'c.kode_customer',
                 DB::raw('0 as id_karyawan'),
-                DB::raw('1 as day1'),
+                DB::raw('1 as day1' ),
                 DB::raw('1 as day2'),
                 DB::raw('1 as day3'),
                 DB::raw('1 as day4'),
@@ -138,10 +140,13 @@ class MstCustomerRuteController extends Controller
             )
             ->where('k.id_karyawan', $request->id)
             ->where('c.is_aktif', 1)
-            ->orderBy('c.nama', 'asc');
+            ->orderBy('c.nama', 'asc'); 
 
         if ($request->filled('nama')) {
-            $rute->where('c.nama', 'like', "%{$request->nama}%");
+            $rute->where(function ($query) use ($request) {
+                $query->where('c.nama', 'like', "%{$request->nama}%")
+                    ->orWhere('c.kode_customer', 'like', "%{$request->nama}%");
+            });
         }
         $rute = $rute->paginate($perPage);
         $rute->transform(function ($item) {
