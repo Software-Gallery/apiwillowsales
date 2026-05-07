@@ -19,6 +19,7 @@ class MstBarangController extends Controller
             ->join('mst_barang', 'mst_barang.id_departemen', '=', 'mst_karyawan.id_departemen')
             ->leftjoin('list_stok', 'mst_barang.id_barang', '=', 'list_stok.id_barang')
             ->where('mst_karyawan.id_karyawan', $request->id)
+            ->where('mst_barang.is_aktif', 1)
             ->where('nama_barang', 'like', '%' . $keyword . '%')
             ->orWhere('kode_barang', 'like', '%' . $keyword . '%')
             ->select('mst_barang.*', 'list_stok.qty_besar', 'list_stok.qty_tengah', 'list_stok.qty_kecil')
@@ -45,6 +46,7 @@ class MstBarangController extends Controller
             ->join('mst_barang', 'mst_barang.id_departemen', '=', 'mst_karyawan.id_departemen')
             ->leftjoin('list_stok', 'mst_barang.id_barang', '=', 'list_stok.id_barang')
             ->where('mst_karyawan.id_karyawan', $request->id)
+            ->where('mst_barang.is_aktif', 1)
             ->select('mst_barang.*', 'list_stok.qty_besar', 'list_stok.qty_tengah', 'list_stok.qty_kecil')
             ->get();
 
